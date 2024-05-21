@@ -4,7 +4,16 @@ library(zoo)
 library(purrr)
 library(tidyr)
 # Read the data
-path <- "/Users/alexlin/summer_stat/prof_data/YVR climate daily 2013 to 2024.csv"
+#path <- "/Users/alexlin/summer_stat/prof_data/YVR climate daily 2013 to 2024.csv"
+
+
+# Check the current working directory
+getwd()
+
+# If necessary, set the working directory to the 'r' folder
+setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
+
+path <- "../data/YVR climate daily 2013 to 2024 copy.csv"
 df_raw <- read.csv(path)
 
 # Select specific columns
