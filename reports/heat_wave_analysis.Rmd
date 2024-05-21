@@ -50,8 +50,8 @@ df_percentiles$Percentile_90
 
 ## plot given year temp dist vs baseline 90th
 ```{r, echo=FALSE,message=FALSE}
-df_plot_year_begin <- prepare_plot_data("Percentile_90", 2017, "MAX_TEMPERATURE")
-plot_percentiles_vs_year(df_plot_year_begin,2017)
+df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
+plot_percentiles_vs_year(df_plot_year_begin,1938)
 
 
 ```
@@ -87,7 +87,16 @@ process_data_for_hw(df_for_hw)
 
 ```{r, echo=FALSE,message=FALSE}
 # Analysis for each year
-for (year_single in 2013:2015) {
+# Define the start, end, and step for the sequence
+start_year <- 1937
+end_year <- 2024
+step <- 40
+
+# Generate the sequence of years
+years <- seq(start_year, end_year, by = step)
+
+# Loop over the sequence of years
+for (year_single in years) {
   df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
   summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
   plots <- plot_case_summary(summaries, year_single)
@@ -102,7 +111,7 @@ for (year_single in 2013:2015) {
 
 ```{r, echo=FALSE,message=FALSE}
 # Process all years and generate plots
-plots <- process_all_years_and_generate_plots(2013, 2024)
+plots <- process_all_years_and_generate_plots(1937,2024)
 
 # Print the generated plots
 print(plots$total_plot)

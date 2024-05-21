@@ -14,11 +14,31 @@ getwd()
 setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
 
 path <- "../data/YVR climate daily 2013 to 2024 copy.csv"
-df_raw <- read.csv(path)
 
-# Select specific columns
-df <- select(df_raw, x, y, LOCAL_DATE, TOTAL_PRECIPITATION, 
-             MAX_TEMPERATURE, MIN_TEMPERATURE, TOTAL_RAIN, MIN_REL_HUMIDITY)
+
+# Define file paths
+file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
+                "../data/YVR1108447-daily1964to1991.csv",
+                "../data/YVR1108447-daily1991to2013.csv",
+                "../data/YVR climate daily 2013 to 2024 copy.csv")
+
+# Define the columns needed
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", 
+                    "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
+
+# Function to read and select necessary columns
+read_and_select <- function(file_path) {
+  read.csv(file_path) %>%
+    select(all_of(needed_columns))
+}
+
+# Read and combine all datasets
+df <- map_dfr(file_paths, read_and_select)
+
+# Display the first few rows of the combined data
+head(df)
+
+
 
 # 1. Summary Statistics
 summary_stats <- summary(df)
