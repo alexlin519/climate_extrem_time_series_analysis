@@ -1,7 +1,7 @@
 Dataset Introduction
 
 Description
-This dataset contains daily weather data from the Vancouver International Airport (YVR) for the period from 2013 to 2024. This dataset is valuable for analyzing weather patterns in terms of temperature, identifying dry and wet periods, and studying climate trends, especially heat wave, in the Vancouver area.
+This dataset contains daily weather data from the Vancouver International Airport (YVR) for the period from 1937 to 2024. This dataset is valuable for analyzing weather patterns in terms of temperature, identifying dry and wet periods, and studying climate trends, especially heat wave, in the Vancouver area.
 
 Data Source
 The data was obtained from the Government of Canada's climate data portal. The data can be accessed through the following links: https://climate.weather.gc.ca/
@@ -49,4 +49,4 @@ PROVINCE_CODE
 
 
 Objective
-The objective of this analysis is to identify and characterize "dry" and "wet" periods during the months of May to September over the years 2013 to 2024. The analysis aims to provide insights into the seasonal weather patterns and trends in the Vancouver area.
+The objective of this analysis is to identify and characterize "dry" and "wet" periods during the months of May to September over the years 1937 to 2024. The analysis aims to provide insights into the seasonal weather patterns and trends in the Vancouver area.
