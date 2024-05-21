@@ -1,0 +1,121 @@
+---
+title: "week2 heat wave analysis"
+output: html_document
+date: "2024-05-17"
+---
+# Data
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+source("../R/read_data.R")  ## read data
+source("../R/data_wrangling.R") ## data wrangling
+source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting
+source("../R/data_for_hw_plot.R") 
+source("../R/hw_plot_overview.R") 
+```
+
+
+
+
+## overview
+```{r, echo=FALSE}
+summary_stats
+missing_values
+```
+## check wrangling data
+```{r, echo=FALSE,results = 'hide'}
+# Print a specific row's rolling window
+df_wrangling$rolling_window[[1]] # First row
+df_wrangling$rolling_window[[5]]  # sample row
+df_wrangling$rolling_window[[10]] # sample row
+df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+```
+check temp dist for in a random day from all year value
+```{r, echo=FALSE,results = 'show'}
+# Check the result
+#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[1]] # First row
+#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[5]]  # sample row
+df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
+#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
+length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
+```
+
+
+get 90th from the all year for all day value
+```{r, echo=FALSE,results = 'show'}
+# Print the result
+df_percentiles$Percentile_90
+```
+
+# Plot
+
+## plot given year temp dist vs baseline 90th
+```{r, echo=FALSE,message=FALSE}
+df_plot_year_begin <- prepare_plot_data("Percentile_90", 2017, "MAX_TEMPERATURE")
+plot_percentiles_vs_year(df_plot_year_begin,2017)
+
+
+```
+```{r, echo=FALSE}
+
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 2014, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,2014)
+```
+
+```{r, echo=FALSE,message=FALSE}
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,2021)
+```
+
+
+## Analyze the hw
+
+## hw dist for certain 1 year
+
+prepare for the data
+```{r, echo=FALSE,message=FALSE}
+year_analysis_hw <- 2019
+df_for_hw <- prepare_plot_data("Percentile_90", year_analysis_hw, "MAX_TEMPERATURE")
+process_data_for_hw(df_for_hw)
+```
+
+
+## plot hw analysis for all year
+
+```{r, echo=FALSE,message=FALSE}
+# Analysis for each year
+for (year_single in 2013:2015) {
+  df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
+  summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
+  plots <- plot_case_summary(summaries, year_single)
+  
+  print(plots$month_plot)
+  print(plots$hw_length_plot)
+}
+
+```
+
+## plot overall count of hw through years
+
+```{r, echo=FALSE,message=FALSE}
+# Process all years and generate plots
+plots <- process_all_years_and_generate_plots(2013, 2024)
+
+# Print the generated plots
+print(plots$total_plot)
+print(plots$filtered_plot)
+
+```
+
+```{r, echo=FALSE}
+```
+
+```{r, echo=FALSE}
+```
+
+
+
+
