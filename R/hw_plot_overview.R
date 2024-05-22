@@ -19,6 +19,13 @@ process_and_summarize_year <- function(year) {
   return(case_summary)
 }
 
+# df_plot_year <- prepare_plot_data("Percentile_90", year, "MAX_TEMPERATURE")
+# df_plot_year # it is only one year
+# test1 <- process_data_for_hw(df_plot_year)
+# test1
+# case_summary
+
+
 # Function to generate the plot
 generate_plot <- function(data, title) {
   plot <- ggplot(data, aes(x = Year, y = Count, fill = as.factor(Case_Length))) +
@@ -41,12 +48,13 @@ process_all_years_and_generate_plots <- function(start_year, end_year) {
     case_summaries_all_years_count <- bind_rows(case_summaries_all_years_count, case_summary)
   }
   
-  total_plot <- generate_plot(case_summaries_all_years_count, 
-                              "Total Sum of HW Counts by Year")
+  #total_plot <- generate_plot(case_summaries_all_years_count, 
+   #                           "Total Sum of HW Counts by Year")
   filtered_case_summaries_count <- case_summaries_all_years_count %>%
-    filter(Case_Length >= 2)
+    filter(Case_Length >= 3)
   filtered_plot <- generate_plot(filtered_case_summaries_count, 
-                                 "Total Sum of HW by Year (HW last >= 2 days)")
+                                 "Total Sum of HW by Year (HW last >= 3 days)")
   
-  return(list(total_plot = total_plot, filtered_plot = filtered_plot))
+  #return(list(total_plot = total_plot, filtered_plot = filtered_plot))
+  return( filtered_plot)
 }

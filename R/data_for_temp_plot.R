@@ -34,12 +34,15 @@ prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE") 
   df_for_plot_year <- df_plot_year %>%
     mutate(
       DayOfYear = as.numeric(format(as.Date(paste0(year, "-", Month, "-", Day), format = "%Y-%m-%d"), "%j"))
+      #DayOfYear = paste(Month, Day, sep = "-")
+
     )
   
   return(df_for_plot_year)
 }
 
-
+#df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
+#df_plot_year
 
 ## functions for plotting
 

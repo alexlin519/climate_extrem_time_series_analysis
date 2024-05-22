@@ -1,16 +1,21 @@
 ---
-title: "week2 heat wave analysis"
+title: "week3 YVR heat wave analysis"
 output: html_document
-date: "2024-05-17"
+date: "2024-05-20"
 ---
 # Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/read_data.R")  ## read data
 source("../R/data_wrangling.R") ## data wrangling
-source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting
-source("../R/data_for_hw_plot.R") 
+source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
+source("../R/data_for_hw_plot.R")  
+source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
+
+start_year <- 1937
+end_year <- 2024
+step <- 40
 ```
 
 
@@ -64,12 +69,34 @@ plot_percentiles_vs_year(df_plot_year,2014)
 ```
 
 ```{r, echo=FALSE,message=FALSE}
-# Example usage:
-df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
-# Example usage:
-plot_percentiles_vs_year(df_plot_year,2021)
+# Main function to loop through multiple years
+plot_all_years <- function(start_year, end_year) {
+  for (year in start_year:end_year) {
+    df_plot_year <- prepare_plot_data("Percentile_90", year, "MAX_TEMPERATURE")
+    print(plot_percentiles_vs_year(df_plot_year, year))
+  }
+}
+#plot_all_years(2000, 2024)
+
 ```
 
+
+
+## plot all year temp in grey vs baseline 
+```{r, echo=FALSE,message=FALSE}
+# Example usage:
+#Assuming the range of years is from 2000 to 2024 and the specific year to highlight is 2014
+
+print(plot_all_years_with_baseline(start_year,end_year,2000))
+
+
+print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
+```
+
+```{r, echo=FALSE,message=FALSE}
+# Example usage:
+print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
+```
 
 ## Analyze the hw
 
@@ -88,9 +115,7 @@ process_data_for_hw(df_for_hw)
 ```{r, echo=FALSE,message=FALSE}
 # Analysis for each year
 # Define the start, end, and step for the sequence
-start_year <- 1937
-end_year <- 2024
-step <- 40
+
 
 # Generate the sequence of years
 years <- seq(start_year, end_year, by = step)
@@ -111,15 +136,20 @@ for (year_single in years) {
 
 ```{r, echo=FALSE,message=FALSE}
 # Process all years and generate plots
-plots <- process_all_years_and_generate_plots(1937,2024)
+filtered_plot <- process_all_years_and_generate_plots(start_year,1980)
 
 # Print the generated plots
-print(plots$total_plot)
-print(plots$filtered_plot)
+#print(plots$total_plot)
+print(filtered_plot)
 
 ```
 
 ```{r, echo=FALSE}
+# Process all years and generate plots
+filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
+
+# Print the generated plots
+print(filtered_plot)
 ```
 
 ```{r, echo=FALSE}
