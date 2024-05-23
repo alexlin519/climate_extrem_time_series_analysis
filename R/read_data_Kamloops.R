@@ -14,10 +14,10 @@ getwd()
 setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
 
 # Define file paths
-file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
-                "../data/YVR1108447-daily1964to1991.csv",
-                "../data/YVR1108447-daily1991to2013.csv",
-                "../data/YVR climate daily 2013 to 2024 copy.csv")
+file_paths <- c("../data/KAMLOOPS Daily Climate Data copy.csv",
+                "../data/KAMLOOPS Daily Climate Data (1) copy.csv",
+                "../data/KAMLOOPS Daily climate data (2) copy.csv",
+                "../data/KAMLOOPS 2024 Daily Climate Data.csv")
 
 # Define the columns needed
 needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", 
@@ -29,11 +29,12 @@ read_and_select <- function(file_path) {
     select(all_of(needed_columns))
 }
 
-# Read and combine all datasets
+# Read and combine all data sets
 df <- map_dfr(file_paths, read_and_select)
 
 # Display the first few rows of the combined data
 head(df)
+tail(df)
 
 
 

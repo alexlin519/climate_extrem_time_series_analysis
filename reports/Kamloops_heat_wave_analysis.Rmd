@@ -6,14 +6,14 @@ date: "2024-05-20"
 # Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data.R")  ## read data
+source("../R/read_data_Kamloops.R")  ## read data
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
-
-start_year <- 1937
+source("../R/heatmap_real.R") 
+start_year <- 1951
 end_year <- 2024
 step <- 40
 ```
@@ -54,12 +54,7 @@ df_percentiles$Percentile_90
 # Plot
 
 ## plot given year temp dist vs baseline 90th
-```{r, echo=FALSE,message=FALSE}
-df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
-plot_percentiles_vs_year(df_plot_year_begin,1938)
 
-
-```
 ```{r, echo=FALSE}
 
 # Example usage:
@@ -93,10 +88,7 @@ print(plot_all_years_with_baseline(start_year,end_year,2000))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 
-```{r, echo=FALSE,message=FALSE}
-# Example usage:
-print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
-```
+
 
 ## Analyze the hw
 
@@ -144,7 +136,7 @@ print(filtered_plot)
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,,message=FALSE}
 # Process all years and generate plots
 filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
 
@@ -152,9 +144,34 @@ filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
 print(filtered_plot)
 ```
 
-```{r, echo=FALSE}
+## plot for heat map
+
+
+```{r, echo=FALSE,message=FALSE}
+# Assuming you have data frames named df_2021, df_2022, ..., df_2025
+# Loop through the years to dynamically add each data frame to the list
+ list_of_dfs <- list()
+ 
+ for (year in start_year:end_year) {
+   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+   
+   # Add the prepared data frame to the list
+   list_of_dfs[[as.character(year)]] <- prepared_df
+ }
+ # Combine the data frames into one
+ combined_df <- do.call(rbind, list_of_dfs)
+```
+
+```{r, echo=FALSE,message=FALSE}
+heatmap <- create_heatmap(combined_df, "01-01","12-31")
+print(heatmap)
+ 
 ```
 
 
-
-
+```{r, echo=FALSE,message=FALSE}
+heatmap <- create_heatmap(combined_df, "04-01","10-31")
+print(heatmap)
+ 
+```
