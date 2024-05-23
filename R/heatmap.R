@@ -198,3 +198,50 @@ ggplot(data_melted_filtered, aes(x = DayOfYear, y = Year, fill = value)) +
         axis.title = element_text(size = 12)) +
   scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
 
+
+
+
+
+
+
+
+
+
+##final
+library(reshape2)
+library(ggplot2)
+
+# Add a binary column indicating whether the temperature is higher than the baseline
+data_fifty_years$Temp_Higher <- ifelse(data_fifty_years$MAX_TEMP_YEAR > data_fifty_years$Baseline_Temp, 
+                                       "Higher", "Not Higher")
+
+# Filter data for April 1st to September 30th
+data_filtered <- data_fifty_years[data_fifty_years$Date >= as.Date("2020-04-01") &
+                                    data_fifty_years$Date <= as.Date("2020-09-30"), ]
+
+# Reshape data for heatmap
+data_melted_temp <- melt(data_filtered, id.vars = c("Year", "DayOfYear"), 
+                         measure.vars = "MAX_TEMP_YEAR")
+
+data_melted_temp$Temp_Higher <- ifelse(data_melted_temp$value > data_filtered$Baseline_Temp, 
+                                       "Higher", "Not Higher")
+
+# Create a new column for color mapping
+data_melted_temp$Color <- ifelse(data_melted_temp$Temp_Higher == "Higher", data_melted_temp$value, NA)
+
+# Create heatmap
+ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
+  geom_tile(aes(fill = Color)) +
+  scale_fill_gradient2(low = "white", mid = "yellow", high = "red", 
+                       midpoint = mean(data_filtered$MAX_TEMP_YEAR[data_filtered$Temp_Higher == "Higher"], na.rm = TRUE), 
+                       na.value = "white", name = "Temperature") +
+  labs(title = "Temperature Comparison Heatmap (April 1st to September 30th) Over 50 Years", 
+       x = "Day of Year", y = "Year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+        plot.title = element_text(size = 14, face = "bold"),
+        axis.title = element_text(size = 12)) +
+  scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
+
+
+
