@@ -1,4 +1,7 @@
 library(scales)
+library(ggplot2)
+#install.packages("reshape2")
+library(reshape2)
 ##bugfree
 prepare_heatmap_plot_data <- function(raw_df,baseline_col, target_year, temp_col = "MAX_TEMPERATURE") {
   # Check if df and df_percentiles are data frames
@@ -45,50 +48,7 @@ prepare_heatmap_plot_data <- function(raw_df,baseline_col, target_year, temp_col
 
 
 
-df_heatmap_plot <- prepare_heatmap_plot_data(df,"Percentile_90", 2021, "MAX_TEMPERATURE")
-df_heatmap_plot
 
-## final with our data
-##final
-# library(reshape2)
-# library(ggplot2)
-# 
-# # Add a binary column indicating whether the temperature is higher than the baseline
-# df_heatmap_plot$Temp_Higher <- ifelse(df_heatmap_plot$Max_Temp_Year > df_heatmap_plot$Percentile_90, 
-#                                       "Higher", "Not Higher")
-# 
-# # Filter data for April 1st to September 30th
-# # df_heatmap_plot_filter <- df_heatmap_plot[df_heatmap_plot$Date >= as.Date("2020-04-01") &
-# #                                    df_heatmap_plot$Date <= as.Date("2020-09-30"), ]
-# df_heatmap_plot_filter <- df_heatmap_plot %>%
-#   filter(DayOfYear >= "04-01" & DayOfYear <= "09-30")
-# df_heatmap_plot_filter
-# 
-# # Reshape data for heatmap
-# data_melted_temp <- melt(df_heatmap_plot_filter, id.vars = c("Year", "DayOfYear"), 
-#                          measure.vars = "Max_Temp_Year")
-# 
-# data_melted_temp$Temp_Higher <- ifelse(data_melted_temp$value > df_heatmap_plot_filter$Percentile_90, 
-#                                        "Higher", "Not Higher")
-# 
-# # Create a new column for color mapping
-# data_melted_temp$Color <- ifelse(data_melted_temp$Temp_Higher == "Higher", data_melted_temp$value, NA)
-# 
-# # Create heatmap
-# ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
-#   geom_tile(aes(fill = Color)) +
-#   scale_fill_gradient2(low = "blue", mid = "yellow", high = "red", 
-#                        midpoint = mean(data_filtered$MAX_TEMP_YEAR[data_filtered$Temp_Higher == "Higher"], na.rm = TRUE), 
-#                        na.value = "white", name = "Temperature") +
-#   labs(title = "Temperature Comparison Heatmap (April 1st to September 30th) Over 50 Years", 
-#        x = "Day of Year", y = "Year") +
-#   theme_minimal() +
-#   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
-#         plot.title = element_text(size = 14, face = "bold"),
-#         axis.title = element_text(size = 12)) +
-#   scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
-# 
-# 
 create_heatmap <- function(df, start_date, end_date) {
   # Add a binary column indicating whether the temperature is higher than the baseline
   df$Temp_Higher <- ifelse(df$Max_Temp_Year > df$Percentile_90, "Higher", "Not Higher")
@@ -132,54 +92,3 @@ create_heatmap <- function(df, start_date, end_date) {
   return(heatmap_plot)
 }
 
-heatmap <- create_heatmap(df_heatmap_plot, "01-01","12-31")
-print(heatmap)
- 
- 
- 
- 
- 
-
- 
- 
- 
- 
- 
-
- 
- 
- 
- 
- 
-
- 
- 
- 
- df_heatmap_plot <- prepare_heatmap_plot_data(df,"Percentile_90", 2021, "MAX_TEMPERATURE")
- df_heatmap_plot
-
-
-# Assuming you have data frames named df_2021, df_2022, ..., df_2025
-# Loop through the years to dynamically add each data frame to the list
- list_of_dfs <- list()
- 
- for (year in 1990:2010) {
-   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-   
-   # Add the prepared data frame to the list
-   list_of_dfs[[as.character(year)]] <- prepared_df
- }
- 
- 
- 
- 
- # Combine the data frames into one
- combined_df <- do.call(rbind, list_of_dfs)
- 
- combined_df
- 
- 
- heatmap <- create_heatmap(combined_df, "01-01","12-31")
- print(heatmap)
- 

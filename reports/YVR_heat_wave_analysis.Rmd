@@ -12,7 +12,7 @@ source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for 
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
-
+source("../R/heatmap_real.R") 
 start_year <- 1937
 end_year <- 2024
 step <- 40
@@ -144,7 +144,7 @@ print(filtered_plot)
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,,message=FALSE}
 # Process all years and generate plots
 filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
 
@@ -152,9 +152,34 @@ filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
 print(filtered_plot)
 ```
 
+## plot for heat map
+
+
 ```{r, echo=FALSE}
+# Assuming you have data frames named df_2021, df_2022, ..., df_2025
+# Loop through the years to dynamically add each data frame to the list
+ list_of_dfs <- list()
+ 
+ for (year in start_year:end_year) {
+   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+   
+   # Add the prepared data frame to the list
+   list_of_dfs[[as.character(year)]] <- prepared_df
+ }
+ # Combine the data frames into one
+ combined_df <- do.call(rbind, list_of_dfs)
+```
+
+```{r, echo=FALSE,message=FALSE}
+heatmap <- create_heatmap(combined_df, "01-01","12-31")
+print(heatmap)
+ 
 ```
 
 
-
-
+```{r, echo=FALSE,message=FALSE}
+heatmap <- create_heatmap(combined_df, "04-01","10-31")
+print(heatmap)
+ 
+```
