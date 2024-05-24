@@ -49,6 +49,19 @@ get 90th from the all year for all day value
 ```{r, echo=FALSE,results = 'show'}
 # Print the result
 df_percentiles$Percentile_90
+station_name <- "Kamloops"
+df_percentiles <- df_percentiles %>%
+  mutate(Station = station_name)
+
+
+# Select specific columns to save
+selected_columns <- df_percentiles %>%
+  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+# Define the path to save the CSV file
+save_path <- "../output/Kamloops_percentiles.csv"
+
+## Save the selected columns as a CSV file
+write.csv(selected_columns, file = save_path, row.names = FALSE)
 ```
 
 # Plot
@@ -172,6 +185,78 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap(combined_df, "04-01","10-31")
+print(heatmap)
+ 
+```
+```{r, echo=FALSE,message=FALSE}
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+print(heatmap)
+```
+
+
+
+
+
+
+```{r, echo=FALSE,message=FALSE}
+list_of_dfs <- list()
+
+for (year in 1941:1960) {
+  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+  
+  # Add the prepared data frame to the list
+  list_of_dfs[[as.character(year)]] <- prepared_df
+}
+# Combine the data frames into one
+combined_df <- do.call(rbind, list_of_dfs)
+
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+print(heatmap)
+
+
+list_of_dfs <- list()
+for (year in 1960:1980) {
+  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+  
+  # Add the prepared data frame to the list
+  list_of_dfs[[as.character(year)]] <- prepared_df
+}
+# Combine the data frames into one
+combined_df <- do.call(rbind, list_of_dfs)
+
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+print(heatmap)
+
+list_of_dfs <- list()
+for (year in 1980:2000) {
+  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+  
+  # Add the prepared data frame to the list
+  list_of_dfs[[as.character(year)]] <- prepared_df
+}
+# Combine the data frames into one
+combined_df <- do.call(rbind, list_of_dfs)
+
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+print(heatmap)
+
+
+
+list_of_dfs <- list()
+for (year in 2000:2024) {
+  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+  
+  # Add the prepared data frame to the list
+  list_of_dfs[[as.character(year)]] <- prepared_df
+}
+# Combine the data frames into one
+combined_df <- do.call(rbind, list_of_dfs)
+
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
 print(heatmap)
  
 ```

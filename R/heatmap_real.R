@@ -92,3 +92,43 @@ create_heatmap <- function(df, start_date, end_date) {
   return(heatmap_plot)
 }
 
+
+
+create_heatmap_diff <- function(df, start_date, end_date) {
+  # Add a binary column indicating whether the temperature is higher than the baseline
+  df$Temp_Higher <- ifelse(df$Max_Temp_Year > df$Percentile_90, "Higher", "Not Higher")
+  
+  # Filter data for the specified date range
+  df_filtered <- df %>%
+    filter(DayOfYear >= start_date & DayOfYear <= end_date)
+  
+  # Reshape data for heatmap
+  
+  data_melted_temp <- melt(df_filtered, id.vars = c("Year", "DayOfYear"),
+                           measure.vars = "Max_Temp_Year")
+  data_melted_temp$Temp_Higher <- ifelse(data_melted_temp$value > df_filtered$Percentile_90,
+                                         "Higher", "Not Higher")
+  
+
+  df_filtered$Temp_Diff <- df_filtered$Max_Temp_Year - df_filtered$Percentile_90
+  
+  data_melted_temp$Color <- ifelse(data_melted_temp$Temp_Higher == "Higher",df_filtered$Temp_Diff, NA)
+  
+  # Create heatmap
+  heatmap_plot <- ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
+    geom_tile(aes(fill = Color)) +
+    # scale_fill_gradientn(colors = c("#0000FF", "blue", "white", "red", "#FF0000"), 
+    #                      values = scales::rescale(c(-11, -8, 0, 8, 11)), 
+    #                      name = "Temp Difference")+
+    scale_fill_viridis_c(na.value = "white",name = "Temp Difference")+
+    #scale_fill_gradient(na.value = "white",name = "Temp Difference",low = "blue", high = "red")+
+    labs(title = "Temperature Comparison Heatmap (April 1st to September 30th) Over 50 Years",
+         x = "Day of Year", y = "Year") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) +
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
+  
+  return(heatmap_plot)
+}

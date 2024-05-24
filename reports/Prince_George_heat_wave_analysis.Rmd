@@ -1,19 +1,20 @@
 ---
-title: "week3 YVR heat wave analysis"
+title: "week3 PRINCE GEORGE heat wave analysis"
 output: html_document
 date: "2024-05-20"
 ---
 # Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data.R")  ## read data
+source("../R/read_data_Prince_George.R")  ## read data
+df <- df_pg 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1937
+start_year <- 1942
 end_year <- 2024
 step <- 40
 ```
@@ -49,8 +50,7 @@ get 90th from the all year for all day value
 ```{r, echo=FALSE,results = 'show'}
 # Print the result
 df_percentiles$Percentile_90
-
-station_name <- "YVR"
+station_name <- "Prince_George"
 df_percentiles <- df_percentiles %>%
   mutate(Station = station_name)
 
@@ -58,7 +58,7 @@ df_percentiles <- df_percentiles %>%
 selected_columns <- df_percentiles %>%
   select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
-save_path <- "../output/YVR_percentiles.csv"
+save_path <- "../output/PriGeog_percentiles.csv"
 
 ## Save the selected columns as a CSV file
 write.csv(selected_columns, file = save_path, row.names = FALSE)
@@ -67,12 +67,7 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 # Plot
 
 ## plot given year temp dist vs baseline 90th
-```{r, echo=FALSE,message=FALSE}
-df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
-plot_percentiles_vs_year(df_plot_year_begin,1938)
 
-
-```
 ```{r, echo=FALSE}
 
 # Example usage:
@@ -106,9 +101,13 @@ print(plot_all_years_with_baseline(start_year,end_year,2000))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 
+
 ```{r, echo=FALSE,message=FALSE}
 # Example usage:
-print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
+#Assuming the range of years is from 2000 to 2024 and the specific year to highlight is 2014
+print(plot_all_years_highlight_specific_year(start_year,end_year,2020))
+print(plot_all_years_highlight_specific_year(start_year,end_year,2022))
+print(plot_all_years_highlight_specific_year(start_year,end_year,2019))
 ```
 
 ## Analyze the hw
@@ -187,7 +186,6 @@ print(filtered_plot)
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap(combined_df, "01-01","12-31")
 print(heatmap)
- 
 ```
 
 
@@ -200,8 +198,8 @@ print(heatmap)
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
 print(heatmap)
- 
 ```
+
 
 
 

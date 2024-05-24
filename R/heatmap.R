@@ -278,3 +278,60 @@ ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
 
 
 
+
+
+
+
+
+
+#### lab
+df <- combined_df
+# Add a binary column indicating whether the temperature is higher than the baseline
+df$Temp_Higher <- ifelse(df$Max_Temp_Year > df$Percentile_90, "Higher", "Not Higher")
+
+# Filter data for the specified date range
+df_filtered <- df %>%
+  filter(DayOfYear >= "04-01" & DayOfYear <= "10-31")
+
+# Reshape data for heatmap
+data_melted_temp <- melt(df_filtered, id.vars = c("Year", "DayOfYear"),
+                         measure.vars = "Max_Temp_Year")
+
+data_melted_temp$Temp_Higher <- ifelse(data_melted_temp$value > df_filtered$Percentile_90,
+                                       "Higher", "Not Higher")
+
+# data_melted_temp <- melt(df_filtered, id.vars = c("Year", "DayOfYear"),
+#                          measure.vars = "Temp_Diff")
+# Create a new column for color mapping
+df_filtered$Temp_Diff <- df_filtered$Max_Temp_Year - df_filtered$Percentile_90
+df_filtered
+
+data_melted_temp$Color <- ifelse(data_melted_temp$Temp_Higher == "Higher", data_melted_temp$value, NA)
+
+#percentile_20 <- quantile(df_filtered$Max_Temp_Year, probs = 0.2, na.rm = TRUE)
+
+# Create heatmap
+heatmap_plot <- ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
+  geom_tile(aes(fill = Color)) +
+  
+  # scale_fill_gradientn(colors = c("blue", "yellow", "red"),
+  #                      values = rescale(values),
+  #                      na.value = "white",
+  #                      name = "Temperature") +
+  scale_fill_gradient2(low = "blue", mid = "yellow", high = "red",
+                       midpoint = 4+ mean(df_filtered$Max_Temp_Year[df_filtered$Temp_Higher == "Higher"], na.rm = TRUE),
+                       #midpoint = percentile_20,
+                       na.value = "white", name = "Temperature") +
+  labs(title = "Temperature Comparison Heatmap (April 1st to September 30th) Over 50 Years",
+       x = "Day of Year", y = "Year") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+        plot.title = element_text(size = 14, face = "bold"),
+        axis.title = element_text(size = 12)) +
+  scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
+
+heatmap_plot
+ok
+
+
+

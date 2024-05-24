@@ -21,6 +21,7 @@ get_rolling_window <- function(x, width = 15) {
   return(windows)
 }
 # Apply the function to create the rolling window column
+
 df_wrangling <- df %>%
   mutate(rolling_window = get_rolling_window(MAX_TEMPERATURE))
 
