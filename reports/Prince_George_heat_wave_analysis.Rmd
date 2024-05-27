@@ -183,6 +183,21 @@ print(filtered_plot)
  combined_df <- do.call(rbind, list_of_dfs)
 ```
 
+
+```{r, echo=FALSE,message=FALSE}
+#combined_df
+
+selected_columns <- combined_df %>%
+  select(Year,DayOfYear,Max_Temp_Year,Percentile_90,Station)  # Adjust column names as needed
+# Define the path to save the CSV file
+save_path <- "../output/Prince_George_heatmap_data.csv"
+
+## Save the selected columns as a CSV file
+write.csv(selected_columns, file = save_path, row.names = FALSE)
+
+```
+
+
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap(combined_df, "01-01","12-31")
 print(heatmap)
