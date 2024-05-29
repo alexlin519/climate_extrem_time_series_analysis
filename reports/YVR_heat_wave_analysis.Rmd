@@ -15,8 +15,10 @@ source("../R/hw_plot_overview.R")
 source("../R/heatmap_real.R") 
 start_year <- 1937
 end_year <- 2024
+
 step <- 40
 ```
+
 
 
 
@@ -214,13 +216,25 @@ print(heatmap)
  
 ```
 
+
+
+```{r, echo=FALSE,message=FALSE}
+create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+```
+
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
 print(heatmap)
  
 ```
 
+```{r, echo=FALSE,message=FALSE}
+create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
 
+```
 
 ```{r, echo=FALSE,message=FALSE}
 list_of_dfs <- list()
