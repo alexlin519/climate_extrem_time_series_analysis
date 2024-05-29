@@ -122,13 +122,40 @@ for (i in 1:(length(stations)-1)) {
 
 ```{r, echo=FALSE,message=FALSE}
 
-generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
+dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
+
+```
+```{r, echo=FALSE,message=FALSE}
+# Assuming label_dataframes is already defined
+results <- analyze_extrem_scatter(dftop20)
+
+# Display the results
+print(results$unique_year_counts)
+print(results$unique_yearmonth_counts)
+
+
 
 ```
 
 
 ```{r, echo=FALSE,message=FALSE}
 
-generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
+df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
+
 
 ```
+```{r, echo=FALSE,message=FALSE}
+# Assuming label_dataframes is already defined
+results <- analyze_extrem_scatter(df_top20_35)
+
+# Display the results
+print(results$unique_year_counts)
+print(results$unique_yearmonth_counts)
+
+
+
+```
+
+
+
+
