@@ -123,7 +123,7 @@ for (i in 1:(length(stations)-1)) {
 ```{r, echo=FALSE,message=FALSE}
 
 dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
-
+dftop20
 ```
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined

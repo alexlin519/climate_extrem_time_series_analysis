@@ -69,18 +69,21 @@ analyze_extrem_scatter <- function(label_dataframes) {
   for (name in names(label_dataframes)) {
     df <- label_dataframes[[name]]
     
+    # Extract month from DayOfYear
+    df <- df %>%
+      mutate(Month = sub("^0", "", substr(DayOfYear, 1, 2)))
+    
     # Count unique values for each year
     unique_year_counts <- df %>%
       group_by(Year) %>%
-      summarise(unique_count = n_distinct(DayOfYear)) %>%
+      summarise(unique_count = n_distinct(DayOfYear),
+                Month = paste(unique(Month), collapse = "\n")) %>%
       rename(!!paste0("unique_count_", name) := unique_count)
     
     # Store the result with the dataframe name as key
-    unique_year_counts_list[[name]] <- unique_year_counts
+    unique_year_counts_list[[name]] <- unique_year_counts 
     
-    # Extract month from DayOfYear
-    df <- df %>%
-      mutate(Month = substr(DayOfYear, 1, 2))
+    
     
     # Combine Year and Month into a new column YearMonth
     df <- df %>%
@@ -111,6 +114,7 @@ analyze_extrem_scatter <- function(label_dataframes) {
   # Create and display a stacked bar plot
   plot <- ggplot(combined_unique_year_counts, aes(x = Year, y = unique_count, fill = Comparison)) +
     geom_bar(stat = "identity", position = "stack") +
+    geom_text(aes(label = Month), position = position_stack(vjust = 0.5), size = 3,lineheight = 0.8) +
     labs(title = "Unique Count by Year and Comparison",
          x = "Year",
          y = "Unique Count",
@@ -119,6 +123,11 @@ analyze_extrem_scatter <- function(label_dataframes) {
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) # Adjust text angle and size
   
   print(plot)
+  
+  # De-select the Plot_Months column before returning the results
+  unique_year_counts_list <- lapply(unique_year_counts_list, function(df) {
+    df %>% select(-Month)
+  })
   
   return(list(unique_year_counts = unique_year_counts_list, unique_yearmonth_counts = unique_yearmonth_counts_list))
 }
