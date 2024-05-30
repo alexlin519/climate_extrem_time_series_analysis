@@ -184,7 +184,7 @@ summary_df_hw_day
    list_of_dfs[[as.character(year)]] <- prepared_df
  }
  # Combine the data frames into one
- combined_df2 <- do.call(rbind, list_of_dfs)
+ combined_df <- do.call(rbind, list_of_dfs)
  
 ```
 

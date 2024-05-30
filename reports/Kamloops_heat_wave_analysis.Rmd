@@ -237,6 +237,11 @@ print(heatmap)
 
 
 
+```{r, echo=FALSE,message=FALSE}
+df_3_yvr <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+```
 
 
 
