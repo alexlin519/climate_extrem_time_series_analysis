@@ -9,6 +9,10 @@ knitr::opts_chunk$set(echo = TRUE)
 source("../R/station compare/read data.R")  ## read data
 source("../R/station compare/plot_90th.R")  ## clean data for 90th line plot 
 source("../R/station compare/scatter_2_station.R") ## plot for 2 station compare for all the station 
+
+source("../R/station compare/read_data_3day_hw.R")  ## read data
+source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
+
 ```
 
 
@@ -80,6 +84,8 @@ negative_temps <- filtered_heatmap_all %>%
 negative_temps
 ```
 
+# plot
+## scatter
 ```{r, echo=FALSE,message=FALSE}
 library(ggplot2)
 library(dplyr)
@@ -156,6 +162,20 @@ print(results$unique_yearmonth_counts)
 
 ```
 
+## line segment
+```{r, echo=FALSE,message=FALSE}
 
+df_filtered_line_seg <- df_line_seg[ (df_line_seg$Heatwave) == "Heatwave",]
+#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
 
+# Check for and remove any remaining NA values in the station column
+df_filtered_line_seg <- df_filtered_line_seg %>%
+  filter(!is.na(station))
+line_segment_plot(df_filtered_line_seg)
+  
+```
+```{r, echo=FALSE,message=FALSE}
 
+#
+
+```

@@ -141,20 +141,20 @@ for (year_single in years) {
 
 ```{r, echo=FALSE,message=FALSE}
 # Process all years and generate plots
-filtered_plot <- process_all_years_and_generate_plots(start_year,1980)
+summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
 
 # Print the generated plots
 #print(plots$total_plot)
-print(filtered_plot)
+print(summary_df_hw_day)
 
 ```
 
 ```{r, echo=FALSE,,message=FALSE}
 # Process all years and generate plots
-filtered_plot <- process_all_years_and_generate_plots(1980,end_year)
+summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
 
 # Print the generated plots
-print(filtered_plot)
+summary_df_hw_day
 ```
 
 ## plot for heat map
@@ -189,6 +189,8 @@ save_path <- "../output/Kamloops_heatmap_data.csv"
 write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ```
+
+
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap(combined_df, "01-01","12-31")
 print(heatmap)
@@ -201,6 +203,33 @@ heatmap <- create_heatmap(combined_df, "04-01","10-31")
 print(heatmap)
  
 ```
+
+```{r, echo=FALSE,message=FALSE}
+df_3_yvr <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_5_yvr <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+```
+
+```{r, echo=FALSE,message=FALSE}
+#df_3_yvr
+# Rename the column
+colnames(df_3_yvr)[colnames(df_3_yvr) == "Color"] <- "daily_max_temp"
+# Add the new column
+df_3_yvr$station <- "Kamloops"
+# Save the updated dataframe to a file
+write.csv(df_3_yvr, "../output/Kamloops_heatmap_3_dayHW.csv", row.names = FALSE)
+
+
+#df_5_yvr
+# Rename the column
+colnames(df_5_yvr)[colnames(df_5_yvr) == "Color"] <- "daily_max_temp"
+# Add the new column
+df_5_yvr$station <- "Kamloops"
+# Save the updated dataframe to a file
+write.csv(df_5_yvr, "../output/Kamloops_heatmap_5_dayHW.csv", row.names = FALSE)
+
+```
+
 ```{r, echo=FALSE,message=FALSE}
 heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
 print(heatmap)
@@ -222,9 +251,9 @@ for (year in 1941:1960) {
   list_of_dfs[[as.character(year)]] <- prepared_df
 }
 # Combine the data frames into one
-combined_df <- do.call(rbind, list_of_dfs)
+combined_df2 <- do.call(rbind, list_of_dfs)
 
-heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
 print(heatmap)
 
 
@@ -237,9 +266,9 @@ for (year in 1960:1980) {
   list_of_dfs[[as.character(year)]] <- prepared_df
 }
 # Combine the data frames into one
-combined_df <- do.call(rbind, list_of_dfs)
+combined_df2 <- do.call(rbind, list_of_dfs)
 
-heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
 print(heatmap)
 
 list_of_dfs <- list()
@@ -251,9 +280,9 @@ for (year in 1980:2000) {
   list_of_dfs[[as.character(year)]] <- prepared_df
 }
 # Combine the data frames into one
-combined_df <- do.call(rbind, list_of_dfs)
+combined_df2 <- do.call(rbind, list_of_dfs)
 
-heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
 print(heatmap)
 
 
@@ -267,9 +296,9 @@ for (year in 2000:2024) {
   list_of_dfs[[as.character(year)]] <- prepared_df
 }
 # Combine the data frames into one
-combined_df <- do.call(rbind, list_of_dfs)
+combined_df2 <- do.call(rbind, list_of_dfs)
 
-heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
 print(heatmap)
  
 ```

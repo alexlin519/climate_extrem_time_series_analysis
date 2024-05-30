@@ -185,9 +185,12 @@ create_heatmap_filter_hw <- function(df, heat_wave_length, start_date, end_date)
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
           plot.title = element_text(size = 14, face = "bold"),
           axis.title = element_text(size = 12)) +
-    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])+
+    scale_y_continuous(breaks = seq(min(data_melted_temp$Year), max(data_melted_temp$Year), by = 5))  # Add more breaks on y-axis
+  
   
   print(heatmap_plot)
+  return(data_melted_temp)
 }
 
 
@@ -235,7 +238,10 @@ create_heatmap_diff_filter_hw <- function(df, heat_wave_length, start_date, end_
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
           plot.title = element_text(size = 14, face = "bold"),
           axis.title = element_text(size = 12)) +
-    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])+
+    scale_y_continuous(breaks = seq(min(data_melted_temp$Year), max(data_melted_temp$Year), by = 5))  # Add more breaks on y-axis
+  
   
   print(heatmap_plot)
+  return(data_melted_temp)
 }
