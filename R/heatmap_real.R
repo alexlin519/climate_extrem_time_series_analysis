@@ -28,7 +28,8 @@ prepare_heatmap_plot_data <- function(raw_df,baseline_col, target_year, temp_col
     filter(format(LOCAL_DATE, "%Y") == as.character(target_year)) %>%
     group_by(Month, Day) %>%
     summarize(
-      Max_Temp_Year = ifelse(all(is.na(get(temp_col))), NA, max(get(temp_col), na.rm = TRUE))
+      Max_Temp_Year = ifelse(all(is.na(get(temp_col))), NA, max(get(temp_col), na.rm = TRUE)),
+      .groups = "drop"  # This will suppress the message
     ) %>%
     ungroup()
   

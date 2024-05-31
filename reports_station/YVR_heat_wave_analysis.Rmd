@@ -20,37 +20,29 @@ step <- 40
 ```
 
 
-
-
-
-## overview
-```{r, echo=FALSE}
-summary_stats
-missing_values
-```
 ## check wrangling data
 ```{r, echo=FALSE,results = 'hide'}
 # Print a specific row's rolling window
-df_wrangling$rolling_window[[1]] # First row
-df_wrangling$rolling_window[[5]]  # sample row
-df_wrangling$rolling_window[[10]] # sample row
-df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+# df_wrangling$rolling_window[[1]] # First row
+# df_wrangling$rolling_window[[5]]  # sample row
+# df_wrangling$rolling_window[[10]] # sample row
+# df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
 ```
 check temp dist for in a random day from all year value
 ```{r, echo=FALSE,results = 'show'}
 # Check the result
 #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[1]] # First row
 #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[5]]  # sample row
-df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
-#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
-length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
+# df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
+# #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
+# length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
 ```
 
 
 get 90th from the all year for all day value
 ```{r, echo=FALSE,results = 'show'}
 # Print the result
-df_percentiles$Percentile_90
+#df_percentiles$Percentile_90
 
 station_name <- "YVR"
 df_percentiles <- df_percentiles %>%
@@ -70,8 +62,8 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ## plot given year temp dist vs baseline 90th
 ```{r, echo=FALSE,message=FALSE}
-df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
-plot_percentiles_vs_year(df_plot_year_begin,1938)
+#df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
+#\plot_percentiles_vs_year(df_plot_year_begin,1938)
 
 
 ```
@@ -79,9 +71,9 @@ plot_percentiles_vs_year(df_plot_year_begin,1938)
 ```{r, echo=FALSE}
 
 # Example usage:
-df_plot_year <- prepare_plot_data("Percentile_90", 2014, "MAX_TEMPERATURE")
+df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
 # Example usage:
-plot_percentiles_vs_year(df_plot_year,2014)
+plot_percentiles_vs_year(df_plot_year,2021)
 ```
 
 ```{r, echo=FALSE,message=FALSE}
@@ -103,7 +95,7 @@ plot_all_years <- function(start_year, end_year) {
 # Example usage:
 #Assuming the range of years is from 2000 to 2024 and the specific year to highlight is 2014
 
-print(plot_all_years_with_baseline(start_year,end_year,2000))
+#print(plot_all_years_with_baseline(start_year,end_year,2000))
 
 
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
@@ -111,7 +103,7 @@ print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 
 ```{r, echo=FALSE,message=FALSE}
 # Example usage:
-print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
+#print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
 ```
 
 ## Analyze the hw
@@ -138,12 +130,12 @@ years <- seq(start_year, end_year, by = step)
 
 # Loop over the sequence of years
 for (year_single in years) {
-  df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
-  summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
-  plots <- plot_case_summary(summaries, year_single)
+  #df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
+  #summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
+  #plots <- plot_case_summary(summaries, year_single)
   
-  print(plots$month_plot)
-  print(plots$hw_length_plot)
+  #print(plots$month_plot)
+  #print(plots$hw_length_plot)
 }
 
 ```
@@ -156,7 +148,7 @@ summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
 
 # Print the generated plots
 #print(plots$total_plot)
-summary_df_hw_day
+#summary_df_hw_day
 
 ```
 
@@ -165,7 +157,7 @@ summary_df_hw_day
 summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
 
 # Print the generated plots
-summary_df_hw_day
+#summary_df_hw_day
 ```
 
 ## plot for heat map
@@ -261,105 +253,106 @@ df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, star
 
 ```
 
+## seperate view of the heatmap
 ```{r, echo=FALSE,message=FALSE}
-list_of_dfs <- list()
+# list_of_dfs <- list()
+# 
+# for (year in 1941:1960) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# 
+# list_of_dfs <- list()
+# for (year in 1960:1980) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# list_of_dfs <- list()
+# for (year in 1980:2000) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
 
-for (year in 1941:1960) {
-  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-  
-  # Add the prepared data frame to the list
-  list_of_dfs[[as.character(year)]] <- prepared_df
-}
-# Combine the data frames into one
-combined_df2 <- do.call(rbind, list_of_dfs)
 
-heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-print(heatmap)
-
-
-list_of_dfs <- list()
-for (year in 1960:1980) {
-  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-  
-  # Add the prepared data frame to the list
-  list_of_dfs[[as.character(year)]] <- prepared_df
-}
-# Combine the data frames into one
-combined_df2 <- do.call(rbind, list_of_dfs)
-
-heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-print(heatmap)
-
-list_of_dfs <- list()
-for (year in 1980:2000) {
-  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-  
-  # Add the prepared data frame to the list
-  list_of_dfs[[as.character(year)]] <- prepared_df
-}
-# Combine the data frames into one
-combined_df2 <- do.call(rbind, list_of_dfs)
-
-heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-print(heatmap)
-
-
-
-list_of_dfs <- list()
-for (year in 2000:2024) {
-  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-  
-  # Add the prepared data frame to the list
-  list_of_dfs[[as.character(year)]] <- prepared_df
-}
-# Combine the data frames into one
-combined_df2 <- do.call(rbind, list_of_dfs)
-
-heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-print(heatmap)
+# 
+# list_of_dfs <- list()
+# for (year in 2000:2024) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
  
 ```
 
 
-## examine specific year
+## examine specific year (grep line vs 90 vs specific year)
 ```{r, echo=FALSE,message=FALSE}
 # Define the specific years you want to process
-years_to_process <- c(1947,1958,1970, 2009, 2021)
-
-# Initialize an empty list to store data frames for each year
-list_of_dfs <- list()
-  
-for (year in years_to_process) {
-  # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-  prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-  
-  # Add the prepared data frame to the list
-  list_of_dfs[[as.character(year)]] <- prepared_df
-}
-# Combine the data frames into one
-combined_df2 <- do.call(rbind, list_of_dfs)
-
-heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-print(heatmap)
-
-for (year in years_to_process) {
-  print(plot_all_years_highlight_specific_year(start_year,end_year,year))
-}
+# years_to_process <- c(1947,1958,1970, 2009, 2021)
+# 
+# # Initialize an empty list to store data frames for each year
+# list_of_dfs <- list()
+#   
+# for (year in years_to_process) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# for (year in years_to_process) {
+#   print(plot_all_years_highlight_specific_year(start_year,end_year,year))
+# }
 ```
-
+## according bar
 ```{r, echo=FALSE,message=FALSE}
-# Loop over the sequence of years
-years_to_process <- c(1947,1958,1970, 2009, 2021)
-for (year_single in years_to_process) {
-  df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
-  summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
-  plots <- plot_case_summary(summaries, year_single)
-  
-  print(plots$month_plot)
-  print(plots$hw_length_plot)
-}
+# # Loop over the sequence of years
+# years_to_process <- c(1947,1958,1970, 2009, 2021)
+# for (year_single in years_to_process) {
+#   df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
+#   summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
+#   plots <- plot_case_summary(summaries, year_single)
+#   
+#   print(plots$month_plot)
+#   print(plots$hw_length_plot)
+#}
 ```
