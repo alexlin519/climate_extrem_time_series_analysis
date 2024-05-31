@@ -5,14 +5,12 @@ library(reshape2)
 library(dplyr)
 library(zoo)
 
-prepare_heatmap_plot_data <- function(raw_df,baseline_col, target_year, temp_col = "MAX_TEMPERATURE") {
+prepare_heatmap_plot_data <- function(raw_df,baseline_col, target_year, temp_col = "MAX_TEMPERATURE",input_90percentiles= NULL) {
   # Check if df and df_percentiles are data frames
-  if (!exists("df") || !is.data.frame(df)) {
-    stop("The object 'df' does not exist or is not a data frame.")
-  }
   
-  if (!exists("df_percentiles") || !is.data.frame(df_percentiles)) {
-    stop("The object 'df_percentiles' does not exist or is not a data frame.")
+  if (!is.null(input_90percentiles)) {
+    df_percentiles <- input_90percentiles
+    #print('using df_percentiles df')
   }
   
   # Add Month and Day columns

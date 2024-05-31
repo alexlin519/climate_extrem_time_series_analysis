@@ -7,9 +7,20 @@ library(tidyr)
 
 ## functions for prepareing data for plotting 
 
+# Use the provided dataframe or default to 'df'
+  
 # Define the function to prepare the data
 #return df_for_plot_year
-prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE") {
+prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE", inputdf_all_day = NULL, input_90percentiles= NULL) {
+  if (!is.null(inputdf_all_day)) {
+    df <- inputdf_all_day
+      #print('using input df')
+  }
+  if (!is.null(input_90percentiles)) {
+    df_percentiles <- input_90percentiles
+    #print('using input df')
+  }
+    
   # Add Month and Day columns
   df_for_plot <- df %>%
     mutate(LOCAL_DATE = as.Date(LOCAL_DATE, format = "%Y-%m-%d"),
