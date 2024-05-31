@@ -16,11 +16,11 @@ setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
 # Define file paths
 file_paths <- c("../data/Prince_George 1942 Climate data daily.csv",
                 "../data/Prince_George Climate data daily (1).csv",
-                "../data/Prince_George Climate data daily (2).csv",
-                "../data/Prince_George Climate data daily.csv")
+                "../data/Prince_Geo_2009_to_2024.csv",
+                "../data/Prince_Geo_1997_to_2009.csv")
 
 # Define the columns needed
-needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", 
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME",
                     "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
 
 # Function to read and select necessary columns
@@ -36,7 +36,10 @@ df_pg <- map_dfr(file_paths, read_and_select)
 head(df_pg)
 tail(df_pg)
 
-
+# Check if STATION_NAME is unique
+unique_stations <- df_pg %>%
+  distinct(STATION_NAME)
+unique_stations
 
 # 1. Summary Statistics
 summary_stats <- summary(df_pg)

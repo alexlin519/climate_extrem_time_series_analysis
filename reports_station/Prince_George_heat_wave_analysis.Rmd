@@ -3,7 +3,7 @@ title: "week3 PRINCE GEORGE heat wave analysis"
 output: html_document
 date: "2024-05-20"
 ---
-# Data
+# Data {.collapsible}
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/read_data_Prince_George.R")  ## read data
@@ -324,8 +324,8 @@ print(heatmap)
 ## examine specific year
 ```{r, echo=FALSE,message=FALSE}
 # Define the specific years you want to process
-years_to_process <- c(1944,1950,1958,1969,1977,1983, 2005,2021)
-
+#years_to_process <- c(1944,1950,1958,1969,1977,1983, 2005,2021)
+years_to_process <- c(2021)
 # Initialize an empty list to store data frames for each year
 list_of_dfs <- list()
   
@@ -348,9 +348,9 @@ for (year in years_to_process) {
 ```
 
 ```{r, echo=FALSE,message=FALSE}
-for (year in 2013:2015) {
-  print(plot_all_years_highlight_specific_year(start_year,end_year,year))
-}
+#for (year in 2013:2015) {
+#  print(plot_all_years_highlight_specific_year(start_year,end_year,year))
+#}
 ```
 
 ```{r, echo=FALSE,message=FALSE}
