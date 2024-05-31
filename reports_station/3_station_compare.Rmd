@@ -6,7 +6,7 @@ date: "2024-05-23"
 
 ```{r, echo=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/station compare/read data.R")  ## read data
+source("../R/station compare/read_data.R")  ## read data
 source("../R/station compare/plot_90th.R")  ## clean data for 90th line plot 
 source("../R/station compare/scatter_2_station.R") ## plot for 2 station compare for all the station 
 
@@ -55,9 +55,9 @@ df_heatmap_all <- map_dfr(file_paths, read_and_select)
 ## data clean {.collapsible}
 ```{r, echo=FALSE,message=FALSE}
 # Display the first few rows of the combined data
-head(df_heatmap_all)
-
-tail(df_heatmap_all)
+# head(df_heatmap_all)
+# 
+# tail(df_heatmap_all)
 
 library(dplyr)
 library(lubridate)
@@ -77,8 +77,8 @@ filtered_heatmap_all <- filtered_heatmap_all %>%
   select(-Date)
 
 # Display the filtered data
-head(filtered_heatmap_all)
-tail(filtered_heatmap_all)
+# head(filtered_heatmap_all)
+# tail(filtered_heatmap_all)
 filtered_heatmap_all <- filtered_heatmap_all %>% filter(!is.na(Max_Temp_Year))
 
 
@@ -94,7 +94,7 @@ negative_temps <- filtered_heatmap_all %>%
   filter(Max_Temp_Year < 0)
 
 # Display the rows with negative temperatures
-negative_temps
+#negative_temps
 
 
 dfdebug <- df_heatmap_all %>%
@@ -110,7 +110,7 @@ sorted_df <- duplicate_temps %>%
   arrange(Year, DayOfYear, Max_Temp_Year, Station)
 
 # Display the results
-print(sorted_df)
+#print(sorted_df)
 
 
 # Load necessary library
@@ -122,7 +122,7 @@ df_count_sorted_df <- sorted_df %>%
   summarise(Count = n())
 
 # View the result
-print(df_count_sorted_df)
+#print(df_count_sorted_df)
 
 ```
 
@@ -171,7 +171,7 @@ print(df_count_sorted_df)
 ```{r, echo=FALSE,message=FALSE}
 
 dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
-dftop20
+#dftop20
 ```
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
@@ -213,7 +213,7 @@ df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Hea
 # Check for and remove any remaining NA values in the station column
 df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
   filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_3d)
+line_segment_plot(df_filtered_line_seg_3d, station_only = c("YVR", "Prince_George","Kamloops"))
   
 ```
 
@@ -227,6 +227,67 @@ df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Hea
 # Check for and remove any remaining NA values in the station column
 df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
   filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_5d)
+line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops"))
+
+```
+
+
+
+
+
+## line segment 2 data yvr
+```{r, echo=FALSE,message=FALSE}
+
+df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Heatwave",]
+#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+
+# Check for and remove any remaining NA values in the station column
+df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
+  filter(!is.na(station))
+line_segment_plot(df_filtered_line_seg_3d,station_only = c("YVR", "YVR_era5"))
+  
+```
+
+## line segment 5 day yvr compare
+```{r, echo=FALSE,message=FALSE}
+
+df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Heatwave",]
+#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+
+# Check for and remove any remaining NA values in the station column
+df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
+  filter(!is.na(station))
+line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "YVR_era5"))
+
+```
+
+
+
+
+
+## line segment 3 day
+```{r, echo=FALSE,message=FALSE}
+
+df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Heatwave",]
+#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+
+# Check for and remove any remaining NA values in the station column
+df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
+  filter(!is.na(station))
+line_segment_plot(df_filtered_line_seg_3d, station_only = c("YVR_era5", "Prince_George","Kamloops"))
+  
+```
+
+
+## line segment 5 day
+```{r, echo=FALSE,message=FALSE}
+
+df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Heatwave",]
+#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+
+# Check for and remove any remaining NA values in the station column
+df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
+  filter(!is.na(station))
+line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR_era5", "Prince_George","Kamloops"))
 
 ```

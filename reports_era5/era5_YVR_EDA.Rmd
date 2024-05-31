@@ -39,7 +39,7 @@ get 90th from the all year for all day value
 #Print the result
 #df_percentiles$Percentile_90
 
-station_name <- "YVR"
+station_name <- "YVR_era5"
 era5_yvr_90percentiles <- era5_yvr_90percentiles %>%
   mutate(Station = station_name)
 
@@ -220,7 +220,7 @@ for (year_single in years) {
 
 ```{r, echo=FALSE,message=FALSE}
 #combined_df
-combined_df$Station <- "YVR"
+combined_df$Station <- "YVR_era5"
 selected_columns <- combined_df %>%
   select(Year,DayOfYear,Max_Temp_Year,Percentile_90,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
@@ -253,7 +253,7 @@ df_5_yvr <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_d
 # Rename the column
 colnames(df_3_yvr)[colnames(df_3_yvr) == "Color"] <- "daily_max_temp"
 # Add the new column
-df_3_yvr$station <- "YVR"
+df_3_yvr$station <- "YVR_era5"
 # Save the updated dataframe to a file
 write.csv(df_3_yvr, "../output/era5_YVR_heatmap_3_dayHW.csv", row.names = FALSE)
 
@@ -262,7 +262,7 @@ write.csv(df_3_yvr, "../output/era5_YVR_heatmap_3_dayHW.csv", row.names = FALSE)
 # Rename the column
 colnames(df_5_yvr)[colnames(df_5_yvr) == "Color"] <- "daily_max_temp"
 # Add the new column
-df_5_yvr$station <- "YVR"
+df_5_yvr$station <- "YVR_era5"
 # Save the updated dataframe to a file
 write.csv(df_5_yvr, "../output/era5_YVR_heatmap_5_dayHW.csv", row.names = FALSE)
 

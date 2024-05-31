@@ -7,7 +7,8 @@ library(tidyr)
 # Define file paths
 file_paths <- c("../output/YVR_heatmap_3_dayHW.csv",
                 "../output/Kamloops_heatmap_3_dayHW.csv",
-                "../output/Prince_George_heatmap_3_dayHW.csv")
+                "../output/Prince_George_heatmap_3_dayHW.csv",
+                "../output/era5_YVR_heatmap_3_dayHW.csv")
 # Function to read and select necessary columns
 read_and_select <- function(file_path) {
   read.csv(file_path) 
