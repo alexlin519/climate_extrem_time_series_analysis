@@ -54,7 +54,7 @@ process_all_years_and_generate_plots <- function(start_year, end_year) {
     filter(Case_Length >= 3)
   filtered_plot <- generate_plot(filtered_case_summaries_count, 
                                  "Total Sum of HW by Year (HW last >= 3 days)")
-  
+  print(filtered_plot)
   #return(list(total_plot = total_plot, filtered_plot = filtered_plot))
-  return( filtered_plot)
+  return( filtered_case_summaries_count)
 }

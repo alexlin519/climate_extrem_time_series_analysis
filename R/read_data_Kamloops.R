@@ -20,7 +20,7 @@ file_paths <- c("../data/KAMLOOPS Daily Climate Data copy.csv",
                 "../data/KAMLOOPS 2024 Daily Climate Data.csv")
 
 # Define the columns needed
-needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", 
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", "STATION_NAME",
                     "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
 
 # Function to read and select necessary columns
@@ -35,6 +35,11 @@ df <- map_dfr(file_paths, read_and_select)
 # Display the first few rows of the combined data
 head(df)
 tail(df)
+
+
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+unique_stations
 
 
 
