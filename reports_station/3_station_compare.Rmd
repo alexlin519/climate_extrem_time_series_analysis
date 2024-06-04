@@ -4,6 +4,18 @@ output: html_document
 date: "2024-05-23"
 ---
 
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
+
+
 ```{r, echo=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/station compare/read_data.R")  ## read data
@@ -16,13 +28,26 @@ source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
 
 ```
 
-<details>
-  <summary>Click to see Plot 1</summary>
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>ALL diff station 90th compare </b>
+</h3>
+<div style="display:none;">
 ```{r, echo=FALSE,message=FALSE}
 three_stations_90th
 ```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>compare 90th percentile of original YVR and YVR with base period 1961-1990</b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE}
+two_stations_90th_yvr_30
+```
 
-## read data  {.collapsible}
+## read data 
 ```{r, echo=FALSE,message=FALSE}
 # Define file paths
 file_paths <- c("../output/Kamloops_heatmap_data.csv",       # Adding this file
@@ -51,9 +76,14 @@ df_heatmap_all <- map_dfr(file_paths, read_and_select)
 
 
 
-    
-## data clean {.collapsible}
-```{r, echo=FALSE,message=FALSE}
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>data clean results</b>
+</h3>
+<div style="display:none;">    
+
+```{r, echo=FALSE}
 # Display the first few rows of the combined data
 # head(df_heatmap_all)
 # 
@@ -77,10 +107,8 @@ filtered_heatmap_all <- filtered_heatmap_all %>%
   select(-Date)
 
 # Display the filtered data
-# head(filtered_heatmap_all)
-# tail(filtered_heatmap_all)
-filtered_heatmap_all <- filtered_heatmap_all %>% filter(!is.na(Max_Temp_Year))
 
+filtered_heatmap_all <- filtered_heatmap_all %>% filter(!is.na(Max_Temp_Year))
 
 
 
@@ -126,8 +154,19 @@ df_count_sorted_df <- sorted_df %>%
 
 ```
 
-# plot  {.collapsible}
-## scatter
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>PLOT</b>
+</h1>
+<div style="display:none;">    
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>scatter plot between 2 stations</b>
+</h3>
+<div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE}
 # library(ggplot2)
 # library(dplyr)
@@ -173,6 +212,13 @@ df_count_sorted_df <- sorted_df %>%
 dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
 #dftop20
 ```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Display the results</b>
+</h4>
+<div style="display:none;"> 
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
 results <- analyze_extrem_scatter(dftop20)
@@ -203,17 +249,20 @@ print(results$unique_yearmonth_counts)
 
 
 ```
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>line segment plot</b>
+</h1>
+<div style="display:none;"> 
 
 ## line segment 3 day
 ```{r, echo=FALSE,message=FALSE}
 
-df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Heatwave",]
-#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
 
-# Check for and remove any remaining NA values in the station column
-df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
-  filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_3d, station_only = c("YVR", "Prince_George","Kamloops"))
+
+
+line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops"))
   
 ```
 

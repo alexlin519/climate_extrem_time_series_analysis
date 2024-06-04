@@ -672,3 +672,26 @@ ggplot(df, aes(x = DayOfYear, y = Year)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
+
+
+
+
+
+
+
+# Install necessary packages if not already installed
+if (!requireNamespace("utils", quietly = TRUE)) {
+  install.packages("utils")
+}
+
+# Load the required package
+library(utils)
+
+# Specify the path to your zip file
+txt_file <- "../data/yvr_dates_heatwave.txt"
+df <- read.table(txt_file, header = TRUE, sep = "\t")  # Adjust the separator if needed
+print(head(df))
+txt_file <- "../data/q90-yvr.csv"
+df <- read.table(txt_file, header = TRUE, sep = "\t")  # Adjust the separator if needed
+df <- df[ -1,]
+print(head(df))

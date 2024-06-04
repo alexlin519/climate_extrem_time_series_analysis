@@ -4,11 +4,15 @@ library(ggrepel)
 
 line_segment_plot <- function(df_filtered_line_seg, station_only = NULL) {
   
-  # Filter the dataframe based on the station_filter parameter
-  if (!is.null(station_only)) {
-    df_filtered_line_seg <- df_filtered_line_seg %>%
-      filter(station %in% station_only)
-  }
+  df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave) == "Heatwave",]
+  #df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+  
+  
+  # Filter the dataframe based on the desired criteria and select necessary columns
+  df_filtered_plot <- df_filtered_line_seg %>%
+    filter(!is.na(station)) %>%
+    filter(station %in% station_only) %>%
+    select(DayOfYear, Year, station)  # Select only the necessary columns
 
   
   # Ensure the Year column has finite values for calculating breaks
@@ -24,8 +28,9 @@ line_segment_plot <- function(df_filtered_line_seg, station_only = NULL) {
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5),
           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 4)])
-  #  +scale_y_continuous(breaks = #seq(min(df_filtered_line_seg$Year),
-  #max(df_filtered_line_seg$Year), by = 3))  # Add more breaks on y-axis
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 4)])+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))+
+  scale_y_continuous(breaks = seq(min(df_filtered_line_seg$Year),
+  max(df_filtered_line_seg$Year), by = 3))  # Add more breaks on y-axis
   print(lseg_plot)
 }
