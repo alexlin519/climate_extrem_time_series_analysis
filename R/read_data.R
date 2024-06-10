@@ -35,7 +35,9 @@ df <- map_dfr(file_paths, read_and_select)
 # Display the first few rows of the combined data
 head(df)
 
-
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+print(unique_stations)
 
 # 1. Summary Statistics
 summary_stats <- summary(df)

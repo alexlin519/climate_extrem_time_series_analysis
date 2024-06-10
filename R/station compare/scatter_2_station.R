@@ -1,10 +1,15 @@
 library(ggplot2)
 library(dplyr)
 library(ggrepel)
+#install.packages("viridis")
+library(viridis)
+base_colors <- c('#FF0000', '#008000', '#0000FF', '#FF00FF', '#FFA500', '#FFD700', '#D2691E',
+                 '#D2B48C', '#808000', '#FFFF00', '#40E0D0', '#00BFFF', '#1E90FF', '#8A2BE2', '#FF1493',
+                 '#A52A2A', '#7FFF00', '#8B008B', '#FF69B4','#A9A9A9', '#696969') 
 
 generate_extreme_temp_scatter_plots <- function(filtered_heatmap_all, extreme_range) {
-  # List of unique stations
-  stations <- unique(filtered_heatmap_all$Station)
+  # List of unique stations excluding 'YVR_era5'
+  stations <- setdiff(unique(filtered_heatmap_all$Station), 'YVR_era5')
   
   # List to store the dataframes of the labels to be displayed
   label_dataframes <- list()
@@ -37,10 +42,13 @@ generate_extreme_temp_scatter_plots <- function(filtered_heatmap_all, extreme_ra
       # Create scatter plot with text annotations and color for top extremes
       plot <- ggplot(df_merged, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2)) +
         geom_point() +
-        geom_point(data = top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2, color = label), size = 3) +
+        geom_point(data = top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2, color = label), size = 1.5) +
         # geom_text_repel(data = top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2, label = label, color = label), 
         #                 nudge_x = 0.5, nudge_y = 0.5, show.legend = FALSE) +
-        scale_color_manual(values = label_colors) +
+        #scale_color_manual(values = label_colors) +
+        #scale_color_viridis(discrete = TRUE, option = "plasma") + 
+        scale_color_manual(values = base_colors) +
+        geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", size = 1) +  # Add 45-degree line
         labs(
           title = paste("Scatter Plot of Max Temperature:", station1, "vs", station2),
           x = paste("Max Temperature (", station1, ")", sep = ""),
@@ -58,7 +66,75 @@ generate_extreme_temp_scatter_plots <- function(filtered_heatmap_all, extreme_ra
 
 
 
-
+generate_scatter_plots_for_yvr_diff_data <- function(filtered_heatmap_all, extreme_range) {
+  
+  filtered_stations <- filtered_heatmap_all %>%
+    filter(Station %in% c('YVR_era5', 'YVR'))
+  
+  # List of the selected stations
+  stations <- unique(filtered_stations$Station)
+  
+  # List to store the dataframes of the labels to be displayed
+  label_dataframes <- list()
+  
+  # Generate scatter plots for each pair of stations
+  for (i in 1:(length(stations)-1)) {
+    for (j in (i+1):length(stations)) {
+      station1 <- stations[i]
+      station2 <- stations[j]
+      
+      # Filter data for the two stations
+      df_station1 <- filtered_heatmap_all %>% filter(Station == station1)
+      df_station2 <- filtered_heatmap_all %>% filter(Station == station2)
+      
+      # Merge data on Date
+      df_merged <- merge(df_station1, df_station2, by = c("Year", "DayOfYear"), suffixes = c("_1", "_2"))
+      
+      # Identify the range of extreme points based on the highest temperatures
+      top_extremes <- df_merged %>%
+        arrange(desc(Max_Temp_Year_1 + Max_Temp_Year_2)) %>%
+        slice(extreme_range) %>%
+        mutate(label = paste(Year, DayOfYear, sep = "-"))
+      
+      # Add the dataframe to the list
+      label_dataframes[[paste(station1, station2, sep = "_vs_")]] <- top_extremes
+      
+      # Create a color palette for the labels
+      label_colors <- setNames(scales::hue_pal()(nrow(top_extremes)), top_extremes$label)
+      
+      
+      ######### Fit a linear model
+      fit <- lm(Max_Temp_Year_2 ~ Max_Temp_Year_1, data = df_merged)
+      
+      ########## Generate 95% prediction intervals
+      pred <- predict(fit, newdata = df_merged, interval = "prediction", level = 0.95)
+      df_merged <- df_merged %>%
+        mutate(pred_lwr = pred[, "lwr"], pred_upr = pred[, "upr"])
+      
+      # Create scatter plot with text annotations and color for top extremes
+      plot <- ggplot(df_merged, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2)) +
+        geom_point() +
+        geom_point(data = top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2, color = label), size = 1.5) +
+        # geom_text_repel(data = top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2, label = label, color = label), 
+        #                 nudge_x = 0.5, nudge_y = 0.5, show.legend = FALSE) +
+        #scale_color_manual(values = label_colors) +
+        #scale_color_viridis(discrete = TRUE, option = "plasma") + 
+        scale_color_manual(values = base_colors) +
+        geom_line(aes(y = pred_lwr), linetype = "dotted", color = "blue", size = 0.5) +  # Lower prediction interval
+        geom_line(aes(y = pred_upr), linetype = "dotted", color = "blue", size = 0.5) +  # Upper prediction interval
+        geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", size = 1) +  # Add 45-degree line
+        labs(
+          title = paste("Scatter Plot of Max Temperature:", station1, "vs", station2),
+          x = paste("Max Temperature (", station1, ")", sep = ""),
+          y = paste("Max Temperature (", station2, ")", sep = "")
+        ) +
+        theme_minimal()
+      
+      # Print the plot
+      print(plot)
+    }
+  }
+}
 
 # Assuming label_dataframes is the list of dataframes returned from the function
 analyze_extrem_scatter <- function(label_dataframes) {

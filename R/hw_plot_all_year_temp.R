@@ -42,10 +42,11 @@ plot_all_years_highlight_specific_year <- function(start_year, end_year, specifi
   
   for (year in start_year:end_year) {
     df_plot_year <- prepare_plot_data("Percentile_90", year, "MAX_TEMPERATURE")
+    #print(df_plot_year)
     df_plot_year$Year <- year
     all_years_data <- bind_rows(all_years_data, df_plot_year)
   }
-  
+  #print(all_years_data)
   ggplot(all_years_data, aes(x = DayOfYear)) +
     geom_line(data = filter(all_years_data, Year != specific_year), 
               aes(y = MAX_TEMP_YEAR, group = Year), 

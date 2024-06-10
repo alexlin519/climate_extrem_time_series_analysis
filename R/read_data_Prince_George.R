@@ -39,7 +39,7 @@ tail(df_pg)
 # Check if STATION_NAME is unique
 unique_stations <- df_pg %>%
   distinct(STATION_NAME)
-unique_stations
+print(unique_stations)
 
 # 1. Summary Statistics
 summary_stats <- summary(df_pg)
@@ -49,3 +49,4 @@ summary_stats <- summary(df_pg)
 missing_values <- sapply(df_pg, function(x) sum(is.na(x)))
 #missing_values
 #tail(df, 2)  # This shows the last 2 rows
+

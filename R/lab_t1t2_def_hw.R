@@ -672,3 +672,241 @@ ggplot(df, aes(x = DayOfYear, y = Year)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
+
+
+
+
+
+
+
+# Install necessary packages if not already installed
+if (!requireNamespace("utils", quietly = TRUE)) {
+  install.packages("utils")
+}
+
+# Load the required package
+library(utils)
+
+# Specify the path to your zip file
+txt_file <- "../data/dates_heatwave.csv"
+df_30yvr_hw_3day <- read.csv(txt_file, header = TRUE, sep = ",")  # Using sep = "" to handle any amount of whitespace
+print(head(df_30yvr_hw_3day))
+
+# Create a new dataframe with Year and DayOfYear columns
+library(dplyr)
+library(tidyr)
+
+# Convert the begin and end columns to Date type
+df_30yvr_hw_3day <- df_30yvr_hw_3day %>%
+  mutate(begin = as.Date(begin),
+         end = as.Date(end))
+
+# Generate a sequence of dates for each row and expand the dataframe
+df_expanded <- df_30yvr_hw_3day %>%
+  rowwise() %>%
+  mutate(dates = list(seq(begin, end, by = "day"))) %>%
+  unnest(dates)
+
+# Create the new dataframe with Year and DayOfYear columns
+
+# Create the new dataframe with Year, DayOfYear, and Station columns
+df_30yvr_hw_3day_new <- df_expanded %>%
+  mutate(Year = as.numeric(format(dates, "%Y")),
+         DayOfYear = format(dates, "%m-%d"),
+         station = "YVR_30y_based") %>%
+  select(Year, DayOfYear, station)
+# Print the new dataframe to check the result
+
+
+
+
+
+
+
+txt_file <- "../data/q90-yvr.csv"
+df <- read.table(txt_file, header = TRUE, sep = ",")  # Adjust the separator if needed
+df <- df[, -1, drop=FALSE]
+# Rename columns to match the desired format
+colnames(df) <- c("Percentile_90", "Month", "Day")
+
+# Add a new column "Station" with a constant value
+df$Station <- "YVR_30y_based"
+
+# Create a "Date" column from "Month" and "Day"
+df$Date <- as.Date(paste("2000", df$Month, df$Day, sep = "-"), format = "%Y-%m-%d")
+
+# Reorder columns to match the desired structure
+df <- df[, c("Month", "Day", "Percentile_90", "Station", "Date")]
+
+# Print the first few rows of the modified dataframe to confirm
+print(head(df))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+library(ggplot2)
+library(dplyr)
+
+# Example data (replace with your actual data)
+set.seed(123)
+df_merged <- data.frame(
+  Year = sample(2000:2020, 100, replace = TRUE),
+  DayOfYear = sample(1:365, 100, replace = TRUE),
+  Max_Temp_Year_1 = runif(100, min = 20, max = 40),
+  Max_Temp_Year_2 = runif(100, min = 20, max = 40)
+)
+
+# Define extreme_range dynamically
+extreme_range <- 1:90  # This could be any range
+
+# Extract the last value from extreme_range
+last_value <- extreme_range[length(extreme_range)]
+
+# Select top extremes
+top_extremes <- df_merged %>%
+  arrange(desc(Max_Temp_Year_1 + Max_Temp_Year_2)) %>%
+  slice(extreme_range) %>%
+  mutate(label = paste(Year, DayOfYear, sep = "-"))
+
+######### Fit a linear model
+fit <- lm(Max_Temp_Year_2 ~ Max_Temp_Year_1, data = top_extremes)
+
+########## Generate 95% prediction intervals
+pred <- predict(fit, newdata = top_extremes, interval = "prediction", level = 0.95)
+
+# Add prediction intervals to the data frame
+top_extremes <- top_extremes %>%
+  mutate(pred_lwr = pred[, "lwr"], pred_upr = pred[, "upr"])
+
+# Plot with custom colors, star shapes, and smaller points
+ggplot(top_extremes, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2)) +
+  geom_point(aes(color = label, shape = label), size = 3) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red", size = 1) +  # Add 45-degree line
+  geom_line(aes(y = pred_lwr), linetype = "dotted", color = "blue", size = 0.5) +  # Lower prediction interval
+  geom_line(aes(y = pred_upr), linetype = "dotted", color = "blue", size = 0.5) +  # Upper prediction interval
+  labs(title = paste("Top Extremes (Last Value from extreme_range:", last_value, ")"),
+       x = "Max Temp Year 1",
+       y = "Max Temp Year 2",
+       color = "Label",
+       shape = "Label") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+
+
+
+
+
+
+
+# Define the base colors
+base_colors <- c('#FF0000', '#008000', '#0000FF', '#FF00FF', '#FFA500', 
+                 '#FFD700', '#D2691E', '#D2B48C', '#808000', '#FFFF00', 
+                 '#40E0D0', '#00BFFF', '#1E90FF', '#8A2BE2', '#FF1493',
+                 '#A52A2A', '#7FFF00', '#8B008B', '#FF69B4','#A9A9A9', 
+                 '#696969','green') 
+
+# Adjust transparency (alpha = 0.5 for 50% transparency)
+transparent_colors <- adjustcolor(base_colors, alpha.f = 0.5)
+
+# Pick 4 colors
+selected_colors <- transparent_colors[c(1, 5, 13, 22)]
+
+# Define the base colors
+selected_colors <- c('#FF0000', '#00FF00', '#0000FF', '#00FFFF')
+
+# Adjust transparency (alpha = 0.5 for 50% transparency)
+selected_colors <- adjustcolor(selected_colors, alpha.f = 0.4)
+
+# Function to plot rectangles
+plot_rectangles <- function(colors, overlaps, title) {
+  plot(1, type="n", xlim=c(0, 10), ylim=c(0, 10), xlab="", ylab="", main=title)
+  positions <- list(c(1, 1), c(3, 3), c(5, 5), c(7, 7))
+  for (i in 1:length(colors)) {
+    rect(positions[[i]][1], positions[[i]][2], positions[[i]][1]+2, positions[[i]][2]+2, col=colors[i], border=NA)
+  }
+  for (overlap in overlaps) {
+    rect(positions[[overlap[1]]][1], positions[[overlap[1]]][2], 
+         positions[[overlap[2]]][1]+2, positions[[overlap[2]]][2]+2, col=colors[overlap[2]], border=NA)
+  }
+}
+
+# Create separate plots for each overlap case
+# No overlap
+plot_rectangles(selected_colors, list(), "No Overlap")
+
+# Single overlaps
+combinations <- combn(1:4, 2)
+for (i in 1:ncol(combinations)) {
+  plot_rectangles(selected_colors, list(combinations[,i]), paste("Overlap", combinations[,i][1], "and", combinations[,i][2]))
+}
+
+# Double overlaps
+combinations <- combn(1:4, 3)
+for (i in 1:ncol(combinations)) {
+  plot_rectangles(selected_colors, list(combinations[,i][1:2], combinations[,i][2:3]), 
+                  paste("Overlap", combinations[,i][1], combinations[,i][2], "and", combinations[,i][3]))
+}
+
+# Triple overlap
+plot_rectangles(selected_colors, list(c(1,2), c(2,3), c(3,4)), "Triple Overlap")
+
+# All overlap
+plot_rectangles(selected_colors, list(c(1,2), c(2,3), c(3,4), c(1,4)), "All Overlap")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Install necessary libraries if not already installed
+if (!require("readxl")) install.packages("readxl", dependencies = TRUE)
+if (!require("ggplot2")) install.packages("ggplot2", dependencies = TRUE)
+if (!require("dplyr")) install.packages("dplyr", dependencies = TRUE)
+
+# Load libraries
+
+library(ggplot2)
+library(dplyr)
+
+
