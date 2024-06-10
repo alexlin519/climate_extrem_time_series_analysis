@@ -6,12 +6,13 @@ library(purrr)
 library(tidyr)
 
 ## functions for prepareing data for plotting 
-
+#setwd("/Users/alexlin/summer_stat/climate_extrem_RA/reports_station")
 # Use the provided dataframe or default to 'df'
   
 # Define the function to prepare the data
 #return df_for_plot_year
 prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE", inputdf_all_day = NULL, input_90percentiles= NULL) {
+  # Ensure the directory exists
   if (!is.null(inputdf_all_day)) {
     df <- inputdf_all_day
       #print('using input df')
@@ -33,7 +34,8 @@ prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE", 
     filter(format(LOCAL_DATE, "%Y") == as.character(year)) %>%
     group_by(Month, Day) %>%
     summarize(
-      MAX_TEMP_YEAR = max(get(temp_col))
+      MAX_TEMP_YEAR = max(get(temp_col)),
+      .groups = 'drop'  # Ensures no unintended grouping in the output
     ) %>%
     ungroup()
   df_baseline <- df_percentiles
@@ -60,6 +62,7 @@ prepare_plot_data <- function(baseline_col, year, temp_col = "MAX_TEMPERATURE", 
 
 # Define the function to plot the data
 plot_percentiles_vs_year <- function(df_plot_year,year) {
+  
   ggplot(df_plot_year, aes(x = DayOfYear)) +
     geom_line(aes(y = Percentile_90, color = "90th Percentile")) +
     geom_line(aes(y = MAX_TEMP_YEAR, color = "Daily Max Temp")) +

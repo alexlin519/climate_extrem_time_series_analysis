@@ -16,10 +16,10 @@ three_stations_90th <- ggplot(df_station, aes(x = Date, y = Percentile_90, color
   scale_x_date(date_labels = "%b %d", date_breaks = "1 month") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_color_manual(values = c("Kamloops" = "red", "Prince_George" = "green",
-                                "YVR" = "blue","YVR_era5" = 'purple',"YVR_30y_based" = 'orange')) +
+                                "YVR" = "blue","Kelowna" = 'purple')) +
  scale_linetype_manual(values = c("Kamloops" =
-                                    "longdash", "Prince_George" = "longdash","YVR_era5" = "solid",
-                                  "YVR" = "solid","YVR_30y_based" = "solid"))
+                                    "solid", "Prince_George" = "solid","Kelowna" = "solid",
+                                  "YVR" = "solid"))
 
 
 

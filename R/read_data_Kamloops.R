@@ -39,7 +39,7 @@ tail(df)
 
 unique_stations <- df %>%
   distinct(STATION_NAME)
-unique_stations
+print(unique_stations)
 
 
 
@@ -51,3 +51,4 @@ summary_stats <- summary(df)
 missing_values <- sapply(df, function(x) sum(is.na(x)))
 #missing_values
 #tail(df, 2)  # This shows the last 2 rows
+
