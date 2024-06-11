@@ -35,6 +35,7 @@ check temp dist for in a random day from all year value
 # df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
 # #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
 # length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
+unique_stations
 ```
 
 

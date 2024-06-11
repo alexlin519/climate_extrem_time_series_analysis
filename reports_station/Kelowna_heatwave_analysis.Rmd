@@ -14,7 +14,7 @@ function toggleCollapsible(section) {
 }
 </script>
 
-# Data
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/read_data_Kelowna.R")  ## read data
@@ -52,6 +52,7 @@ step <- 40
 # df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
 # #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
 # length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
+unique_stations
 ```
 
 
@@ -92,18 +93,20 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 
 
-```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.path="Kelowna_heatwave_analysis_files/"}
+```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.path="Kelowna_heatwave_analysis_files/",fig.cap="Plot caption",fig.show='hold'}
 df_plot_year_begin <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
-plot_percentiles_vs_year(df_plot_year_begin,1941)
 
+plot_percentiles_vs_year(df_plot_year_begin,1941)
+#
 
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
 
 # Example usage:
 df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
 # Example usage:
+
 plot_percentiles_vs_year(df_plot_year,2021)
 ```
 
@@ -115,7 +118,7 @@ plot_percentiles_vs_year(df_plot_year,2021)
 </h3>
 <div style="display:none;"> 
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Main function to loop through multiple years
 plot_all_years <- function(start_year, end_year) {
   for (year in start_year:end_year) {
@@ -130,7 +133,7 @@ plot_all_years <- function(start_year, end_year) {
 
 
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Example usage:
 #Assuming the range of years is from 2000 to 2024 and the specific year to highlight is 2014
 
@@ -140,33 +143,39 @@ plot_all_years <- function(start_year, end_year) {
 print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
 ```
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Example usage:
 #print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
 
 ```   
 
-## Analyze the hw
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Analyze the hw </b>
+</h1>
+<div style="display:none;">  
 
-## hw dist for certain 1 year
 
-prepare for the data
-```{r, echo=FALSE,message=FALSE}
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>prepare for the data </b>
+</h4>
+<div style="display:none;">  
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 year_analysis_hw <- 2019
 df_for_hw <- prepare_plot_data("Percentile_90", year_analysis_hw, "MAX_TEMPERATURE")
 process_data_for_hw(df_for_hw)
 
 ```
 
-</div>
-<h3 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b> plot hw analysis for all year </b>
-</h3>
-<div style="display:none;"> 
 
 
-```{r, echo=FALSE,message=FALSE}
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Analysis for each year
 # Define the start, end, and step for the sequence
 
@@ -186,10 +195,16 @@ for (year_single in years) {
 
 ```
 
-## plot overall count of hw through years
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot overall count of hw through years </b>
+</h3>
+<div style="display:none;"> 
 
 ```{r, echo=FALSE,message=FALSE}
 # Process all years and generate plots
+
 summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
 
 # Print the generated plots
@@ -200,13 +215,19 @@ summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
 
 ```{r, echo=FALSE,,message=FALSE}
 # Process all years and generate plots
+
 summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
 # Print the generated plots
 #summary_df_hw_day
 ```
 
-## plot for heat map
 
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot for heat map</b>
+</h3>
+<div style="display:none;">  
 
 ```{r, echo=FALSE,message=FALSE}
 # Assuming you have data frames named df_2021, df_2022, ..., df_2025
@@ -241,6 +262,7 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 ```
 
 ```{r, echo=FALSE,message=FALSE}
+
 heatmap <- create_heatmap(combined_df, "01-01","12-31")
 print(heatmap)
  
@@ -248,6 +270,7 @@ print(heatmap)
 
 
 ```{r, echo=FALSE,message=FALSE}
+
 heatmap <- create_heatmap(combined_df, "04-01","10-31")
 print(heatmap)
  
@@ -256,7 +279,9 @@ print(heatmap)
 
 
 ```{r, echo=FALSE,message=FALSE}
+
 df_3_Kelowna <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+
 df_5_Kelowna <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
 
 ```
@@ -287,13 +312,16 @@ write.csv(df_5_Kelowna, "../output/Kelowna_heatmap_5_dayHW.csv", row.names = FAL
 
 
 ```{r, echo=FALSE,message=FALSE}
+
 heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
 print(heatmap)
  
 ```
 
 ```{r, echo=FALSE,message=FALSE}
+
 df_3_Kelowna <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+
 df_5_Kelowna <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
 
 ```
