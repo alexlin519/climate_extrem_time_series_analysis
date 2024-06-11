@@ -77,8 +77,11 @@ read_and_select <- function(file_path) {
 # Read and combine all data sets
 combined_data <- map_dfr(file_paths, read_and_select)
 
-# Drop the 'source' column
-#combined_data <- combined_data %>% select(-source)
+
+# Check if STATION_NAME is unique
+unique_stations <- combined_data %>%
+  distinct(STATION_NAME)
+print(unique_stations)
 
 # Change all station names to 'KELOWNA'
 combined_data$STATION_NAME <- "KELOWNA"
