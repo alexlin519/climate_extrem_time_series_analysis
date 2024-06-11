@@ -18,7 +18,9 @@ file_paths <- c("../output/Kamloops_percentiles.csv",
                 "../output/YVR_percentiles.csv",
                 "../output/PriGeog_percentiles.csv",
                 "../output/YVR_era5_90percentiles.csv",
-                "../output/Kelowna_percentiles.csv")
+                "../output/Kelowna_percentiles.csv",
+                "../output/Abbotsford_percentiles.csv",
+                "../output/Penticton_percentiles.csv")
 # Function to read and select necessary columns
 read_and_select <- function(file_path) {
   read.csv(file_path) 

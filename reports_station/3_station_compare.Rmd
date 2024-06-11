@@ -42,7 +42,7 @@ source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
 ```{r, echo=FALSE,message=FALSE}
 
 three_stations_90th
-
+three_stations_90th_filter
 ```
 </div>
 <h3 onclick="toggleCollapsible(this);">
@@ -67,7 +67,9 @@ file_paths <- c("../output/Kamloops_heatmap_data.csv",       # Adding this file
                 "../output/Prince_George_heatmap_data.csv",  # Adding this file
                 "../output/YVR_heatmap_data.csv",
                 "../output/Kelowna_heatmap_data.csv",
-                "../output/era5_YVR_heatmap_data.csv")             # Adding this file
+                "../output/era5_YVR_heatmap_data.csv",
+                "../output/Abbotsford_heatmap_data.csv",
+                "../output/Penticton_heatmap_data.csv")             # Adding this file
 
 # Define the columns needed
 
