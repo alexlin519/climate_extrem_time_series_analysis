@@ -27,6 +27,18 @@ source("../R/station compare/read_data_5day_hw.R")  ## read data
 source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
 
 ```
+
+
+```{r, echo=FALSE,message=FALSE}
+
+
+
+
+line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
+#+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+  
+```
+
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b>Part 1 90th percentile</b>
@@ -57,7 +69,7 @@ two_stations_90th_yvr_30
 </div>
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b>part 2 scatter plot</b>
+<b>Part 2 scatter plot</b>
 </h1>
 <div style="display:none;">
 
@@ -299,17 +311,24 @@ dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:
 <b>3.1 line segment for 4 temp station, 3 day HW</b>
 </h3>
 <div style="display:none;"> 
+
+
 YVR:           1937-2024
+
 Prince_George: 1942-2024
+
 Kamloops:      1951-2024
+
 Kelowna:       1899-2024
+
 #### line segment 3 day
 ```{r, echo=FALSE,message=FALSE}
 
 
 
 
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
+#+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
   
 ```
 

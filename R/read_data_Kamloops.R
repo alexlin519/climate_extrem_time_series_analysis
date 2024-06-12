@@ -11,7 +11,7 @@ library(tidyr)
 getwd()
 
 # If necessary, set the working directory to the 'r' folder
-setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
+setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
 
 # Define file paths
 file_paths <- c("../data/KAMLOOPS Daily Climate Data copy.csv",
