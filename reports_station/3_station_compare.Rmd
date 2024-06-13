@@ -29,16 +29,6 @@ source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
 ```
 
 
-```{r, echo=FALSE,message=FALSE}
-
-
-
-
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
-#+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
-  
-```
-
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b>Part 1 90th percentile</b>

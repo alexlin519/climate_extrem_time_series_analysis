@@ -103,8 +103,6 @@ line_segment_plot <- function(df_filtered_line_seg, station_only = NULL) {
   
   
   # Define the colors for specific stations
-  station_colors <- c("YVR" = "#CE5EF7", "Kamloops" = "green", "YVR_30y_based" = 'red',
-                      "Prince_George" = "blue", 'Kelowna' = "orange")
   
   # Define the year ranges for each plot
   year_ranges <- list(1940:1959, 1960:1979, 1980:1999, 2000:2024)
@@ -148,7 +146,8 @@ line_segment_plot <- function(df_filtered_line_seg, station_only = NULL) {
     # Create a unique identifier for each combination of station and year
     df_year_range <- df_year_range %>%
       mutate(Year = as.factor(Year),
-             StationYear = factor(paste(Year, station, sep = "_"), levels = unique(paste(Year, station, sep = "_"))))
+             StationYear = factor(paste(Year, station, sep = "_"), 
+                                  levels = unique(paste(Year, station, sep = "_"))[order(Year, station)]))  # Order StationYear alphabetically within each year
     
     plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
       geom_tile(aes(width = 0.999, height = 0.999), alpha = 0.75) +  # Adjust transparency and size of rectangles
@@ -178,7 +177,10 @@ line_segment_plot <- function(df_filtered_line_seg, station_only = NULL) {
 
 
 
-df_1266<- line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna",""))
+
+
+
+df_1266<- line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
 
 library(ggplot2)
 library(dplyr)
@@ -194,30 +196,45 @@ generate_temperature_plots <- function(df, year_ranges, station_colors) {
     df_year_range <- df_year_range %>%
       mutate(Year = as.factor(Year),
              StationYear = paste(Year,station , sep = "_"),
-             YearFactor = factor(Year, levels = unique(Year)),
-             Group = as.numeric(factor(Year)) %/% 4 %% 2) %>%  # Add a group for background coloring
+             YearFactor = factor(Year, levels = unique(Year)))%>%  
       arrange(Year, station)
+    
+    hline_data <- df_year_range %>%
+      group_by(Year) %>%
+      filter(row_number() == 1) %>%
+      mutate(y_position = as.numeric(factor(StationYear, levels = unique(df_year_range$StationYear)))-0.5)
+    
+    
+    
+    
     # Create the plot
     plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
-      geom_tile(aes(width = 0.9, height = 0.9), alpha = 0.75) +
+      geom_tile(aes(width = 0.9999, height = 0.9999), alpha = 0.75) +
+      
+      geom_hline(data = hline_data,size = 0.5, aes(yintercept = as.numeric(y_position)), color = "black", linetype = "solid") +
+      #geom_hline(yintercept = which((seq_along(df_year_range$Year) - 1) %% length(station_colors) == 0) -0.4, color = "black", size = 0.2) +
       labs(title = paste("!!!!", min(year_range), "to", max(year_range)),
            x = "Day Of Year",
            y = "Year") +
       scale_fill_manual(values = station_colors) +
       theme_minimal() +
+      #geom_text(data = hline_data, aes(x = 1, y = y_position + 0.5, label = Year), color = "blue", vjust = -0.5) +
       theme(plot.title = element_text(hjust = 0.5),
-            axis.text.y = element_text(size = 6.5, margin = margin(r = -2.5)),
-            axis.text.x = element_text(size = 6, angle = 45, hjust = 1, margin = margin(t = -13))) +
+            axis.text.y = element_text(size = 8, hjust = 1.5,vjust = -1.8, margin = margin(t = 0, r = 5, b = 0, l = 0)),
+            axis.text.x = element_text(size = 6, angle = 45, vjust = 1.6, 
+                                       hjust = 1, margin = margin(t = 5, r = 0, b = 0, l = 0)))+
     scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)]) +
-    scale_y_discrete(labels = function(x) {
-      years <- sub("_.*", "", x)
-      idx <- seq_along(years)
-      ifelse((idx - 1) %% length(station_colors) == 0, years, "")
-    })  # Show only the year part on the y-axis every 4th label
+      scale_y_discrete(labels = function(x) {
+        years <- sub("_.*", "", x)
+        unique_years <- !duplicated(years)
+        labels <- ifelse(unique_years, years, "")
+        labels
+      }) # Show only the year part on the y-axis every 4th label
       
     # Print the plot
     print(plot)
   }
+  return(hline_data)
 }
 # Example usage
 
@@ -229,12 +246,30 @@ create_year_ranges <- function(start_year, end_year, num_splits) {
   lapply(year_splits, function(x) seq(min(x), max(x)))
 }
 # Example usage
-year_ranges <- create_year_ranges(1940, 2024, 4)
+year_ranges <- create_year_ranges(1940, 2024, 5)
 
-station_colors <- c("blue", "green", "red", "#FF00FF","#FFD700","#1E90FF")  # Define your station colors
+
+# Define the colors for specific stations
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+# station_colors <- c("#1E90FF","#FFD700", "#FF00FF",
+#                     "red",  "green","blue")  # Define your station colors
+
 length(station_colors)
+
 # Call the function with your data
-generate_temperature_plots(df_1266, year_ranges, station_colors)
+hline_data <- generate_temperature_plots(df_1266, year_ranges, station_colors)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
