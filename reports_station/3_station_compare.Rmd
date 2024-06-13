@@ -311,15 +311,24 @@ Kamloops:      1951-2024
 
 Kelowna:       1899-2024
 
+
+
 #### line segment 3 day
 ```{r, echo=FALSE,message=FALSE}
 
 
 
 
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
+#line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
 #+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
   
+# Define the colors for specific stations
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+
+df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+year_ranges <- create_year_ranges(1940, 2024, 5)
+hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 ```
 
 
@@ -342,7 +351,14 @@ df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Hea
 # Check for and remove any remaining NA values in the station column
 df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
   filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+#line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ #geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+
+df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+year_ranges <- create_year_ranges(1940, 2024, 5)
+hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 
 ```
 
@@ -359,10 +375,15 @@ line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_Georg
 ```{r, echo=FALSE,message=FALSE}
 
 
+station_colors <- c( "YVR" = "blue",
+                    'YVR_30y_based' = 'green')
+
+#line_segment_plot(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))+ geom_hline(aes(yintercept = #as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
 
 
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
-  
+df_station_yvr_comp <- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "YVR_30y_based"))
+year_ranges <- create_year_ranges(1937, 2024, 4)
+hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, station_colors)
 ```
 
 
