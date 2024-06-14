@@ -1,0 +1,25 @@
+---
+title: "My Document"
+author: "Your Name"
+date: "2024-06-14"
+output: html_document
+bibliography: references.bib
+#csl: apa.csl  # optional, for specifying citation style
+---
+
+# Introduction
+
+This is an introduction to my document.
+
+# Literature Review
+
+In their study on heat waves, Meehl and Tebaldi found significant trends [@t1t2].
+
+Another study discusses measurement techniques for heat waves [@3def].
+
+# Conclusion
+
+This is the conclusion section.
+
+
+# References
