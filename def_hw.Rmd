@@ -1,25 +1,114 @@
 ---
-title: "My Document"
-author: "Your Name"
-date: "2024-06-14"
+title: "Weekly Report -- Week 6"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: html_document
 bibliography: references.bib
-#csl: apa.csl  # optional, for specifying citation style
 ---
 
-# Introduction
+------------------------------------------------------------------------
 
-This is an introduction to my document.
+# Summary
 
-# Literature Review
+## 1. Added Two Stations: Abbotsford and Penticton
 
-In their study on heat waves, Meehl and Tebaldi found significant trends [@t1t2].
+**Details:**
 
-Another study discusses measurement techniques for heat waves [@3def].
+-   90th Percentile Line Plot added the Abbotsford and Penticton station.
+-   Successfully integrated data for two new stations into the existing dataset.
+-   Ensured the data is consistent and accurate.
 
-# Conclusion
+## 2. Improved Line Segment
 
-This is the conclusion section.
+**Details:**
 
+-   Enhanced the line segment graph for better clarity and readability.
+-   Applied stylistic improvements such as black lines for better visualization.
+
+## 3. Literature Review
+
+### new definition of heatwave: 2 thresholds (T1 and T2) and avg temp
+
+According to [@t1t2]
+
+-   definition:
+
+    -   A heat wave was then defined as the longest period of consecutive days satisfying the following three conditions:
+
+    (i) The daily maximum temperature must be above T1 for at least 3 days
+    (ii) the average daily maximum temperature must be above T1 for the entire period
+    (iii) the daily maximum temperature must be above T2 for every day of the entire period .
+
+    -   Threshold 1 (T1) was defined as the 97.5th percentile of the distribution of maximum temperatures in the observations and in the simulated present-day climate (seasonal climatology at the given location), and T2 was defined as the 81st percentile. ds s ( R. Huth et al., Clim. Change 46, 29 (2000))
+
+-   advantages:
+
+    -   allowing analyses of heat wave **duration** and **frequency**.
+
+-   association with atmospheric circulation patterns:
+
+    -   Heat waves are generally associated with specific atmospheric circulation patterns represented by semistationary **500-hPa positive height anomalies** that dynamically produce subsidence, clear skies, light winds, warm-air advection, and prolonged hot conditions at the surface. (M. A. Palecki et al., Bull. Am. Meteorol. Soc. 82, 1353 (2001) K. E. Kunkel et al. Bull. Am. Meteorol. Soc. 77, 1507 (1996) )
+
+### new definition of heatwave: Excess Heat Factor (EHF)
+
+According to [@3def]
+
+-   Definition:
+
+    -   EHI(accl.) describes the anomaly over a 3-day window against the preceding 30 days
+
+    -   EHI(sig.) describes the anomaly of the same window against an extreme threshold.
+
+    -   it has been used to study the impacts of extreme heat events on human health and mortality
+
+    -   From a purely climatological standpoint, the EHF index is the most appealing:
+
+        -   Consider both Tmax and Tmin
+
+        -   Conditions leading up to a given day (i.e., the previous two days) are also considered, which can therefore amplify or dampen heat wave amplitude
+
+        -   Determine the anomaly against recent conditions by comparing mean of the preceding month.
+
+        -   Identification of the similarity between intense regional heat waves and the meteorological phenomena that may drive them.(Pezza et al. 2012)
+
+-   Other definition application
+
+    -   Those in farming and **agriculture** may be more interested in Tmin-based heat waves, which can affect the growth and planting time of some crops (e.g., Peng et al. 2004; Liu et al. 2006; Lanning et al. 2011).
+
+    -   Those in the **engineering industry** may only be interested in periods of consecutive extreme Tmax days, which may impact the integrity of human structures such as buildings, power, and transport networks (Colombo et al. 1999; Pezza et al. 2012).
+
+    -   **Health experts**, however, may require a combination of periods of Tmin and Tmax and anomalies that consider relative conditions, as the capability for nighttime relief and adaptation can have a profound impact on excess **mortality and morbidity** (Karl and Knight 1997; Meehl and Tebaldi 2004; Hansen et al. 2008; PwC 2011).
+
+```{=html}
+<!-- -->
+```
+-   APPENDIX 1: Heat Wave Indices Determined Unsuitable by this Study (page 30/46)
+
+    -   This indicates that using a **single absolute threshold** for a region where multiple climate regimes exist (such as Australia) cannot adequately represent heat wave occurrence across all such climates.
+
+    -   This inference can also extend to other large regional or continental studies, such as over Europe, Asia, and the Americas where a broad range of climates exist
+
+    -   Absolute thresholds are sometimes necessary from **an impacts perspective** (e.g., concerning plant physiology or human health), but from a climatological perspective, they may only be suitable when studying **heat waves in a small region or at a point source** (e.g., where an observation station is located) when a single climate regime exists.
+
+## 4. Tried New Data Frame for Heatwaves (HW)
+
+**Details:**
+
+-   Experimented with a new data frame structure for defining heatwaves.
+-   In progress in refining the heatwave detection algorithm for avg temp.
+
+------------------------------------------------------------------------
+
+## Next steps
+
+-   Next steps include finalizing the T1T2 heatwave definition and other heatwave definition.
+
+-   compare the results of the new definition of heatwave with the existing data frame, focus on if they capture same heatwave events.
+
+-   looking for 1941 heatwave data around the current temp stations.
+
+-   
+
+    ------------------------------------------------------------------------
 
 # References

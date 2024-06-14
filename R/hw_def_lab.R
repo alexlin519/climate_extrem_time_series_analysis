@@ -144,8 +144,11 @@ df_lab_avg$index <- 1:nrow(df_lab_avg)
 ggplot(df_lab_avg, aes(x = date, y = max_temp)) +
   geom_line() +
   geom_point(aes(color = higher_t2)) +
+  #geom_point(aes(color = t1_capture)) +
+  #geom_point(aes(color = avg_above_t1)) +
+  
   #geom_text(aes(label = index), vjust = -1, size = 3) +
-  #geom_text(aes(label = t1_capture), vjust = -1, size = 3) +
+  geom_text(aes(label = t1_capture), vjust = -1, size = 3) +
   geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
   geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
   labs(title = "avg",

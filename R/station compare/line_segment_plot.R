@@ -57,15 +57,15 @@ line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL)
   #####
   df_filtered_plot <- bind_rows(df_filtered_plot, df_30yvr_hw_3day_new)
   print(" head df_filtered_plot")
-  print(head(df_filtered_plot))
+  #print(head(df_filtered_plot))
   print("df_filtered_plot")
-  print((df_filtered_plot))
+  #print((df_filtered_plot))
   
   # Filter the dataframe based on the desired criteria
   df_filtered_plot <- df_filtered_plot %>%
     filter(!is.na(station)) %>%
     filter(station %in% station_only)
-  head(df_filtered_plot)
+  #head(df_filtered_plot)
   
   
   # Define the year ranges for each plot
