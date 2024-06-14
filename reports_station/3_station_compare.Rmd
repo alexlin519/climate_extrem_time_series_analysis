@@ -2,8 +2,12 @@
 title: "3 station compare"
 output: html_document
 date: "2024-05-23"
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
+```{=html}
 <script>
 function toggleCollapsible(section) {
   var content = section.nextElementSibling;
@@ -14,8 +18,7 @@ function toggleCollapsible(section) {
   }
 }
 </script>
-
-
+```
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/station compare/read_data.R")  ## read data
@@ -27,47 +30,68 @@ source("../R/station compare/read_data_5day_hw.R")  ## read data
 source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
 
 ```
+
 <h1 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>Part 1 90th percentile</b>
+
 </h1>
-<div style="display:none;">
-</div>
+
+::: {style="display:none;"}
+:::
 
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b> 1.1 ALL station 90th compare</b>
+
 </h3>
-<div style="display:none;">
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 
 three_stations_90th
-
+three_stations_90th_filter
 ```
-</div>
+:::
+
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>1.2 different YVR data</b>
+
 </h3>
-<div style="display:none;"> 
+
+::: {style="display:none;"}
 ## compare 90th percentile of original YVR and YVR with base period 1961-1990
+
 ```{r, echo=FALSE,message=FALSE}
 two_stations_90th_yvr_30
 ```
-</div>
-<h1 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b>part 2 scatter plot</b>
-</h1>
-<div style="display:none;">
+:::
 
+<h1 onclick="toggleCollapsible(this);">
+
+<!--TEXT SHOWS: -->
+
+<b>Part 2 scatter plot</b>
+
+</h1>
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # Define file paths
 file_paths <- c("../output/Kamloops_heatmap_data.csv",       # Adding this file
                 "../output/Prince_George_heatmap_data.csv",  # Adding this file
                 "../output/YVR_heatmap_data.csv",
                 "../output/Kelowna_heatmap_data.csv",
-                "../output/era5_YVR_heatmap_data.csv")             # Adding this file
+                "../output/era5_YVR_heatmap_data.csv",
+                "../output/Abbotsford_heatmap_data.csv",
+                "../output/Penticton_heatmap_data.csv")             # Adding this file
 
 # Define the columns needed
 
@@ -86,10 +110,6 @@ df_heatmap_all <- map_dfr(file_paths, read_and_select)
 
 
 ```
-
-
-
-
 
 ```{r, echo=FALSE}
 # Display the first few rows of the combined data
@@ -121,8 +141,6 @@ filtered_heatmap_all <- filtered_heatmap_all %>% filter(!is.na(Max_Temp_Year))
 
 
 ```
-
-
 
 ```{r, echo=FALSE,message=FALSE}
 # Filter the data frame to include only rows with negative Max_Temp_Year values
@@ -161,14 +179,17 @@ df_count_sorted_df <- sorted_df %>%
 #print(df_count_sorted_df)
 
 ```
+:::
 
-
-</div>
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>2.1 TOP 20 scatter plot between 2 stations</b>
+
 </h3>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # library(ggplot2)
 # library(dplyr)
@@ -208,19 +229,21 @@ df_count_sorted_df <- sorted_df %>%
 
 ```
 
-
-
 ```{r, echo=FALSE,message=FALSE}
 dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
 #dftop20
 ```
+:::
 
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>Display the color point in bar</b>
+
 </h4>
-<div style="display:none;"> 
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
 results <- analyze_extrem_scatter(dftop20)
@@ -232,26 +255,34 @@ print(results$unique_yearmonth_counts)
 
 
 ```
-</div>
-<h3 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b>2.2 TOP 20-35 scatter plot between 2 stations</b>
-</h3>
-<div style="display:none;">  
+:::
 
+<h3 onclick="toggleCollapsible(this);">
+
+<!--TEXT SHOWS: -->
+
+<b>2.2 TOP 20-35 scatter plot between 2 stations</b>
+
+</h3>
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 
 df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
 
 
 ```
+:::
 
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>Display the color point in bar</b>
+
 </h4>
-<div style="display:none;"> 
+
+::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
 results <- analyze_extrem_scatter(df_top20_35)
@@ -263,66 +294,102 @@ print(results$unique_yearmonth_counts)
 
 
 ```
+:::
 
-
-
-</div>
 <h3 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b> 2.3 correlation between scatter plot of YVR_era5 vs YVR temp station.</b>
-</h3>
-<div style="display:none;"> 
 
-Fit a Linear Model
-Generate 95% Prediction Intervals as reference lines
+<!--TEXT SHOWS: -->
+
+<b> 2.3 correlation between scatter plot of YVR_era5 vs YVR temp
+station.</b>
+
+</h3>
+
+::: {style="display:none;"}
+Fit a Linear Model Generate 95% Prediction Intervals as reference lines
+
 ```{r, echo=FALSE,message=FALSE}
 
 dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:19)
 #dftop20
 ```
+:::
 
-
-
-</div>
 <h1 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>Part 3: line segment plot</b>
+
 </h1>
-<div style="display:none;"> 
 
+::: {style="display:none;"}
+:::
 
-</div>
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
-<b>3.1 line segment for 4 temp station, 3 day HW</b>
+
+<b>3.1 line segment for 6 temp station, 3 day HW</b>
+
 </h3>
-<div style="display:none;"> 
-YVR:           1937-2024
+
+::: {style="display:none;"}
+YVR: 1937-2024
+
 Prince_George: 1942-2024
-Kamloops:      1951-2024
-Kelowna:       1899-2024
+
+Kamloops: 1951-2024
+
+Kelowna: 1899-2024
+
+Abbotsford: 1944-2024
+
+Penticton: 1941-2024
+
 #### line segment 3 day
+
 ```{r, echo=FALSE,message=FALSE}
 
 
 
 
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+#line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
+#+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
   
+# Define the colors for specific stations
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+
+df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+year_ranges <- create_year_ranges(1951, 2024, 5)
+hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 ```
+:::
 
-
-</div>
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
-<b>3.2 line segment for 4 temp station, 5 day HW</b>
+
+<b>3.2 line segment for 6 temp station, 5 day HW</b>
+
 </h3>
-<div style="display:none;"> 
-YVR:           1937-2024
+
+::: {style="display:none;"}
+YVR: 1937-2024
+
 Prince_George: 1942-2024
-Kamloops:      1951-2024
-Kelowna:       1899-2024
+
+Kamloops: 1951-2024
+
+Kelowna: 1899-2024
+
+Abbotsford: 1944-2024
+
+Penticton: 1941-2024
+
 #### line segment 5 day
+
 ```{r, echo=FALSE,message=FALSE}
 
 df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Heatwave",]
@@ -331,67 +398,95 @@ df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Hea
 # Check for and remove any remaining NA values in the station column
 df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
   filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+#line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ #geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+
+df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+year_ranges <- create_year_ranges(1951, 2024, 5)
+hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 
 ```
+:::
 
-
-
-
-</div>
 <h3 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>3.3 line segment 2 yvr compare, for HW over 3 days </b>
+
 </h3>
-<div style="display:none;"> 
+
+<div style="display:none;">
 
 ```{r, echo=FALSE,message=FALSE}
 
 
+station_colors <- c( "YVR" = "blue",
+                    'YVR_30y_based' = 'green')
+
+#line_segment_plot(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))+ geom_hline(aes(yintercept = #as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
 
 
-line_segment_plot(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
-  
+df_station_yvr_comp <- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))
+year_ranges <- create_year_ranges(1937, 2024, 4)
+hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, station_colors)
 ```
 
+<!-- </div> -->
 
+<!-- <h3 onclick="toggleCollapsible(this);"> -->
 
+<!-- <!--TEXT SHOWS: -->
 
-</div>
-<h3 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b> 3.4 3 temp stations vs YVR_30_year_based, for HW last 3 day</b>
-</h3>
-<div style="display:none;"> 
+--\>
+<!-- <b> 3.4 3 temp stations vs YVR_30_year_based, for HW last 3 day</b> -->
+<!-- </h3> --> <!-- <div style="display:none;">  -->
 
+<!-- YVR:           1937-2024 -->
 
+<!-- Prince_George: 1942-2024 -->
+
+<!-- Kamloops:      1951-2024 -->
+
+<!-- Kelowna:       1899-2024 -->
+
+<!-- Abbotsford:    1944-2024 -->
+
+<!-- Penticton:     1941-2024 -->
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Heatwave",]
-#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
-
-# Define the path to save the CSV file
-save_path <- "../output/3day_hw_week5.csv"
-
-## Save the selected columns as a CSV file
-write.csv(df_filtered_line_seg_3d, file = save_path, row.names = FALSE)
-
-
-# Check for and remove any remaining NA values in the station column
-df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
-  filter(!is.na(station))
-line_segment_plot(df_filtered_line_seg_3d, station_only = c("YVR_30y_based", "Prince_George","Kamloops","Kelowna"))+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
+# df_filtered_line_seg_3d <- df_line_seg_3day[ (df_line_seg_3day$Heatwave) == "Heatwave",]
+# #df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+# 
+# # Define the path to save the CSV file
+# save_path <- "../output/3day_hw_week5.csv"
+# 
+# ## Save the selected columns as a CSV file
+# write.csv(df_filtered_line_seg_3d, file = save_path, row.names = FALSE)
+# 
+# 
+# # Check for and remove any remaining NA values in the station column
+# df_filtered_line_seg_3d <- df_filtered_line_seg_3d %>%
+#   filter(!is.na(station))
+# 
+# df_station_yvr_comp <- line_segment_data_prepare(df_filtered_line_seg_3d, station_only = c( "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","YVR_30y_based"))
+# year_ranges <- create_year_ranges(1951, 2024, 4)
+# hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, station_colors)
 
 ```
 
+<!-- </div> -->
 
-</div>
-<h1 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b>Part 4: Excel table summary for temp diff</b>
-</h1>
-<div style="display:none;"> 
+<!-- <h1 onclick="toggleCollapsible(this);"> -->
+
+<!-- <!--TEXT SHOWS: -->
+
+--\> <!-- <b>Part 4: Excel table summary for temp diff</b> -->
+<!-- </h1> --> <!-- <div style="display:none;">  -->
+
 ```{r, echo=FALSE,message=FALSE}
 # ## line segment 5 day
 # df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Heatwave",]
@@ -456,7 +551,7 @@ temp_diff_threshold <- 5
 
 # Create plots for each sheet
 for (sheet in sheets) {
-  create_plots(sheet, temp_diff_threshold)
+  #create_plots(sheet, temp_diff_threshold)
 }
 
 ```

@@ -11,7 +11,7 @@ library(tidyr)
 getwd()
 
 # If necessary, set the working directory to the 'r' folder
-setwd("/Users/alexlin/summer_stat/climate_extrem_RA/R")
+setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
 
 # Define file paths
 file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
@@ -20,7 +20,7 @@ file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
                 "../data/YVR climate daily 2013 to 2024 copy.csv")
 
 # Define the columns needed
-needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", 
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME", 
                     "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
 
 # Function to read and select necessary columns

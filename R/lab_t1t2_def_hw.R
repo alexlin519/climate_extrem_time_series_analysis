@@ -1,20 +1,21 @@
-#plot date version
-ggplot(df_lab, aes(x = date, y = max_temp)) +
-  geom_line() +
-  geom_point(aes(color = heat_wave)) +
-  geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
-  geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
-  labs(title = "Ensuring Valid Heat Waves",
-       x = "Date",
-       y = "Maximum Temperature (°C)",
-       color = "Heat Wave") +
-  scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
-  theme_minimal()
-
+# #plot date version
+# ggplot(df_lab, aes(x = date, y = max_temp)) +
+#   geom_line() +
+#   geom_point(aes(color = heat_wave)) +
+#   geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
+#   geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
+#   labs(title = "Ensuring Valid Heat Waves",
+#        x = "Date",
+#        y = "Maximum Temperature (°C)",
+#        color = "Heat Wave") +
+#   scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
+#   theme_minimal()
+library(ggplot2)
 # Create a sample data frame with specific fake data to cover all scenarios
-dates <- seq.Date(from = as.Date("2024-01-01"), by = "day", length.out = 99)
+dates <- seq.Date(from = as.Date("2024-01-01"), by = "day", length.out = 101)
 max_temp <- c(
-  36,37,38,35,40,36,                   #normal heat wave 0
+  36,37,24,                            #normal 2 day peak but no heat wave 
+  35,40,36,                            #normal heat wave 0
   25, 26, 24, 25, 26, 27, 25, 26, 25,  # Normal temperatures
   35, 36, 37, 35, 36, 38,              # Heat wave 1 (6 days, all above T1)
   32, 33, 31, 34, 32, 31, 33,          # Mixed temperatures above T2, avg above T1 (7 days)
@@ -25,91 +26,109 @@ max_temp <- c(
   35, 36, 37,                          # Continuation of heat wave (3 days)
   25, 26, 25, 26, 27, 26, 25, 26, 25,  # Normal temperatures
   25, 26, 27, 28, 29, 27, 28, 30, 35,  # Normal temperatures
-  31, 32, 30, 24, 40, 32, 31, 32, 30,  # Mixed temperatures
-  28, 29, 27, 26, 25, 28, 29, 30, 29,  # Below T2
-  25, 26, 25, 26, 25, 27, 26, 25, 26,  # Normal temperatures
-  25, 26, 25, 26, 25, 27, 26, 25, 26   # Normal temperatures
+  31, 32, 30, 24, 
+  40, 37, 38, 30, 30,  # Mixed temperatures index 68- 72
+  28.5, 29, 27, 26, 25, 28, 29, 30, 29,  # Below T2
+  25, 26, 25, 32, # Normal temperatures index -85
+  34, 33.5, 34, 32, 28.1, 28.1, # avg below T1, have to drop the last 3
+  25, 26, 25, 26, 25, 27, 26, 25, 26,30   # Normal temperatures
 )
 
 df_lab <- data.frame(date = dates, max_temp = max_temp)
 
 # View the first few rows of the data frame
-head(df_lab, 20)
+#head(df_lab, 20)
 
 
 
 
 
-step2
+#step2
+
+# 
+# # Provided T1 and T2 values
+# T1 <- 33
+# T2 <- 28
+# 
+# # Initialize the heat_wave column: days above T2 as TRUE, others as FALSE
+# df_lab$heat_wave <- df_lab$max_temp > T2
+# 
+# # Identify and mark single days above T2 but below T1 as FALSE
+# for (i in 1:nrow(df_lab)) {
+#   if (df_lab$heat_wave[i] == TRUE && 
+#       (i == 1 || df_lab$heat_wave[i-1] == FALSE) && 
+#       (i == nrow(df_lab) || df_lab$heat_wave[i+1] == FALSE)) {
+#     df_lab$heat_wave[i] <- FALSE
+#   }
+# }
+# 
+# # Visualize the result
+# library(ggplot2)
+# 
+# ggplot(df_lab, aes(x = date, y = max_temp)) +
+#   geom_line() +
+#   geom_point(aes(color = heat_wave)) +
+#   geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
+#   geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
+#   labs(title = "Step 2: Marking Single Days Above T2 but Below T1",
+#        x = "Date",
+#        y = "Maximum Temperature (°C)",
+#        color = "Heat Wave") +
+#   scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
+#   theme_minimal()
+# 
+# 
 
 
-# Provided T1 and T2 values
-T1 <- 33
-T2 <- 28
-
-# Initialize the heat_wave column: days above T2 as TRUE, others as FALSE
-df_lab$heat_wave <- df_lab$max_temp > T2
-
-# Identify and mark single days above T2 but below T1 as FALSE
-for (i in 1:nrow(df_lab)) {
-  if (df_lab$heat_wave[i] == TRUE && 
-      (i == 1 || df_lab$heat_wave[i-1] == FALSE) && 
-      (i == nrow(df_lab) || df_lab$heat_wave[i+1] == FALSE)) {
-    df_lab$heat_wave[i] <- FALSE
-  }
-}
-
-# Visualize the result
-library(ggplot2)
-
-ggplot(df_lab, aes(x = date, y = max_temp)) +
-  geom_line() +
-  geom_point(aes(color = heat_wave)) +
-  geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
-  geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
-  labs(title = "Step 2: Marking Single Days Above T2 but Below T1",
-       x = "Date",
-       y = "Maximum Temperature (°C)",
-       color = "Heat Wave") +
-  scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
-  theme_minimal()
 
 
 
-
-
-
-
-step 3
+#step 3
 # Provided T1 and T2 values
 T1 <- 33
 T2 <- 28
 # Create a column to indicate if the day is part of a heat wave
-df_lab$heat_wave <- df_lab$max_temp > T2
+df_lab$higher_t2 <- df_lab$max_temp > T2
 # Initialize tracking variables
 # Initialize tracking variables
 current_heat_wave <- c()
-any_above_T1 <- FALSE
+any_above_T1_count <- 0
+any_above_T1 <- TRUE
 
-# Updated loop for handling consecutive days
+df_lab_avg <- df_lab
+
+# loop for handling consecutive days
 for (i in 1:nrow(df_lab)) {
-  if (df_lab$heat_wave[i] == TRUE) {
-    current_heat_wave <- c(current_heat_wave, df_lab$date[i])
+  #if (i == 78) browser()  # Set a breakpoint for the first iteration
+  if (df_lab$higher_t2[i] == TRUE) {
+    current_heat_wave <- c(current_heat_wave, i)
     if (df_lab$max_temp[i] > T1) {
+      #print('above T1')
       any_above_T1 <- TRUE
+      any_above_T1_count <- any_above_T1_count + 1
     }
-  } else {
-    if (length(current_heat_wave) >= 3 && !any_above_T1) {
-      df_lab$heat_wave[df_lab$date %in% current_heat_wave] <- FALSE
+  } 
+  else {
+    ###
+    ###
+    #either total hw is less than 3 and 
+    # [any_above_T1_count is less than 3 or ] 
+    ###
+    ###
+    if ((length(current_heat_wave) < 3 && any_above_T1_count <3) | !any_above_T1 ) {
+      #print(i)
+      #print(any_above_T1_count)
+      df_lab$higher_t2[current_heat_wave] <- FALSE
     }
     current_heat_wave <- c()
-    any_above_T1 <- FALSE
+    any_above_T1_count <- 0
+    any_above_T1 <- FALSE # Reset the flag
   }
 }
 
 # Check the last period if the loop ended during a heat wave
-if (length(current_heat_wave) >= 3 && !any_above_T1) {
-  df_lab$heat_wave[df_lab$date %in% current_heat_wave] <- FALSE
+if (length(current_heat_wave) < 3 && any_above_T1_count <3) {
+  df_lab$higher_t2[df_lab$date %in% current_heat_wave] <- FALSE
 }
 
 # Add the index column for visualization
@@ -117,7 +136,7 @@ df_lab$index <- 1:nrow(df_lab)
 
 ggplot(df_lab, aes(x = date, y = max_temp)) +
   geom_line() +
-  geom_point(aes(color = heat_wave)) +
+  geom_point(aes(color = higher_t2)) +
   geom_text(aes(label = index), vjust = -1, size = 3) +
   geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
   geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
@@ -128,7 +147,97 @@ ggplot(df_lab, aes(x = date, y = max_temp)) +
   scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
   theme_minimal()
 
-df_lab <- subset(df_lab, select = -heat_wave)
+df_lab <- subset(df_lab, select = -higher_t2)
+
+print('end')
+
+
+
+
+###
+###
+###
+###
+###
+###
+# avg temp
+###
+###
+###
+###
+###
+###
+###
+###
+
+
+# Sample data frame
+
+# Initialize variables
+current_heat_wave <- c()
+any_above_T1_count <- 0
+
+df_lab_avg <- df_lab
+# Initialize a list to store temperatures for each window
+window_temps_list <- list()
+window_length <- 3  # change to set the window length
+# Loop for handling consecutive days
+for (i in 1:nrow(df_lab_avg)) {
+  
+  # Define the window range for each iteration
+  window_start <- max(1, i - window_length)  # start 6 days before the current day
+  window_end <- min(nrow(df_lab_avg), i + window_length)  # end 3 days after the current day
+  window_indices <- window_start:window_end
+  
+  # Get the temperatures within the window
+  window_temps <- df_lab_avg$max_temp[window_indices]
+  window_temps_list[[i]] <- window_temps  # Store the temperatures in the list
+  print(window_temps)
+  cat("Iteration:", i, "Current Temp:", df_lab_avg$max_temp[i], "Window Temps:", window_temps, "\n")
+  
+  
+  
+  if (df_lab_avg$higher_t2[i] == TRUE) {
+    current_heat_wave <- c(current_heat_wave, i)
+    if (df_lab_avg$max_temp[i] > T1) {
+      any_above_T1 <- TRUE
+      any_above_T1_count <- any_above_T1_count + 1
+    }
+  } else {
+    if ((length(current_heat_wave) < 3 && any_above_T1_count < 3) | !any_above_T1) {
+      if (!is.null(first_above_T1) && !is.null(last_above_T1)) {
+        window_start <- max(1, first_above_T1 - 6)  # change to calculate window start
+        window_end <- min(nrow(df_lab_avg), last_above_T1 + 5)  # change to calculate window end
+        df_lab_avg$higher_t2[window_start:window_end] <- FALSE
+      }
+    }
+    current_heat_wave <- c()
+    any_above_T1_count <- 0
+    any_above_T1 <- FALSE
+    first_above_T1 <- NULL  # change to reset first day above T1
+    last_above_T1 <- NULL   # change to reset last day above T1
+  }
+}
+
+# Add the same window period check for the last period if the loop ended during a heat wave
+if (length(current_heat_wave) < 3 && any_above_T1_count < 3) {
+  df_lab$higher_t2[current_heat_wave] <- FALSE
+}
+
+# Add the index column for visualization
+df_lab_avg$index <- 1:nrow(df_lab_avg)
+ggplot(df_lab_avg, aes(x = date, y = max_temp)) +
+  geom_line() +
+  geom_point(aes(color = higher_t2)) +
+  geom_text(aes(label = index), vjust = -1, size = 3) +
+  geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
+  labs(title = "avg",
+       x = "Date",
+       y = "Maximum Temperature (°C)",
+       color = "Heat Wave") +
+  scale_color_manual(values = c("TRUE" = "red", "FALSE" = "black")) +
+  theme_minimal()
 
 
 
@@ -146,35 +255,84 @@ df_lab <- subset(df_lab, select = -heat_wave)
 
 
 
-# Create a sample data frame with specific fake data to cover all scenarios
-dates <- seq.Date(from = as.Date("2024-01-01"), by = "day", length.out = 99)
-max_temp <- c(
-  36,37,38,35,40,36,                   #normal heat wave 0
-  25, 26, 24, 25, 26, 27, 25, 26, 25,  # Normal temperatures
-  35, 36, 37, 35, 36, 38,              # Heat wave 1 (6 days, all above T1)
-  32, 33, 31, 34, 32, 31, 33,          # Mixed temperatures above T2, avg above T1 (7 days)
-  25, 26, 25, 26,                      # Normal temperatures
-  28, 29, 30, 29,                      # Below T1 but above T2, not part of a heat wave (4 days)
-  35, 36, 37,                          # Start of heat wave (3 days)
-  30, 31, 32,                          # Below T1 but above T2, still part of the heat wave (3 days)
-  35, 36, 37,                          # Continuation of heat wave (3 days)
-  25, 26, 25, 26, 27, 26, 25, 26, 25,  # Normal temperatures
-  25, 26, 27, 28, 29, 27, 28, 30, 35,  # Normal temperatures
-  31, 32, 30, 24, 40, 32, 31, 32, 30,  # Mixed temperatures
-  28, 29, 27, 26, 25, 28, 29, 30, 29,  # Below T2
-  25, 26, 25, 26, 25, 27, 26, 25, 26,  # Normal temperatures
-  25, 26, 25, 26, 25, 27, 26, 25, 26   # Normal temperatures
+
+
+### version 6
+###
+###
+###
+
+
+
+# Load necessary library
+library(dplyr)
+
+# Function to calculate thresholds
+calculate_thresholds <- function(temperatures) {
+  T1 <- quantile(temperatures, 0.975)
+  T2 <- quantile(temperatures, 0.81)
+  return(list(T1 = T1, T2 = T2))
+}
+
+T1 <- 33
+T2 <- 28
+# Function to detect heatwave
+# Function to detect heatwave
+detect_heatwave <- function(temperatures) {
+  thresholds <- calculate_thresholds(temperatures)
+  
+  n <- length(temperatures)
+  heatwave_periods <- rep(FALSE, n)
+  
+  start <- 1
+  while (start <= n) {
+    # Check for a potential heatwave starting at 'start'
+    if (temperatures[start] > T1) {
+      period_length <- 1
+      while ((start + period_length - 1 <= n) &&
+             (temperatures[start + period_length - 1] > T1)) {
+        period_length <- period_length + 1
+      }
+      
+      # Check if the identified period meets the heatwave criteria
+      if (period_length >= 3 && mean(temperatures[start:(start + period_length - 2)]) > T1 &&
+          all(temperatures[start:(start + period_length - 2)] > T2)) {
+        heatwave_periods[start:(start + period_length - 2)] <- TRUE
+      }
+      
+      start <- start + period_length - 1
+    } else {
+      start <- start + 1
+    }
+  }
+  
+  return(heatwave_periods)
+}
+# Example usage
+#temperature_data <- c(30, 32, 33, 35, 40, 42, 43, 44, 39, 37, 36, 34, 33, 31)
+heatwave_periods <- detect_heatwave(max_temp)
+
+#Create a data frame for plotting
+temperature_df <- data.frame(
+  Day = 1:length(max_temp),
+  Temperature = max_temp,
+  Heatwave = heatwave_periods
 )
+# Add a column to mark heatwave or not as a factor for plotting
+temperature_df$Heatwave <- factor(temperature_df$Heatwave, levels = c(FALSE, TRUE), labels = c("No Heatwave", "Heatwave"))
 
-df_lab <- data.frame(date = dates, max_temp = max_temp)
-
-
-
-
-
-
-
-
+# Plot the data
+ggplot(temperature_df, aes(x = Day, y = Temperature)) +
+  geom_line(color = "black") +
+  geom_point(aes(color = Heatwave), size = 2) +
+  scale_color_manual(values = c("black", "red")) +
+  geom_hline(yintercept = T1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = T2, linetype = "dashed", color = "blue") +
+  labs(title = "Temperature Data with Heatwave Periods",
+       x = "Day",
+       y = "Temperature",
+       color = "Heatwave") +
+  theme_minimal()
 
 
 
@@ -346,7 +504,6 @@ library(scales)
     scale_x_continuous(breaks = seq(1, 365, by = 5))
   print('5')
   return(heatmap_plot)
-}
 
 # Example usage:
 create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = 91, end_date = 273) # Example date range for April 1st to September 30th
@@ -896,17 +1053,251 @@ plot_rectangles(selected_colors, list(c(1,2), c(2,3), c(3,4), c(1,4)), "All Over
 
 
 
-
-
-
-# Install necessary libraries if not already installed
-if (!require("readxl")) install.packages("readxl", dependencies = TRUE)
-if (!require("ggplot2")) install.packages("ggplot2", dependencies = TRUE)
-if (!require("dplyr")) install.packages("dplyr", dependencies = TRUE)
-
-# Load libraries
-
-library(ggplot2)
+# Load necessary libraries
 library(dplyr)
+library(ggplot2)
+
+# Function to generate test data
+generate_test_data <- function() {
+  set.seed(123)  # For reproducibility
+  years <- rep(2006:2010, each = 60)
+  stations <- rep(c("Abbotsford", "Kamloops", "Prince_George", "YVR", "Kelowna", "Penticton"), each = 50)
+  days <- sample(sprintf("%02d-%02d", sample(1:12, 300, replace = TRUE), sample(1:28, 300, replace = TRUE)), 300)
+  
+  test_data <- data.frame(
+    DayOfYear = days,
+    Year = years[1:300],
+    station = stations[1:300]
+  )
+  return(test_data)
+}
+
+# Generate test data
+df_1266 <- generate_test_data()
+
+# Function to create year ranges
+create_year_ranges <- function(start_year, end_year, num_splits) {
+  years <- seq(start_year, end_year)
+  split_size <- ceiling(length(years) / num_splits)
+  year_splits <- split(years, ceiling(seq_along(years) / split_size))
+  lapply(year_splits, function(x) seq(min(x), max(x)))
+}
+
+# Function to generate the plots
+generate_temperature_plots <- function(df, year_ranges, station_colors) {
+  for (year_range in year_ranges) {
+    df_year_range <- df %>% filter(Year %in% year_range)
+    df_year_range <- df_year_range %>%
+      mutate(Year = as.factor(Year),
+             StationYear = paste(Year, station, sep = "_"),
+             YearFactor = factor(Year, levels = unique(Year)),
+             Group = as.numeric(factor(Year)) %/% 4 %% 2) %>%
+      arrange(Year, station)
+    
+    plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
+      geom_tile(aes(width = 0.9, height = 0.9), alpha = 0.75) +
+      geom_hline(yintercept = which((seq_along(df_year_range$Year) - 1) %% length(station_colors) == 0) - 0.4, color = "black", size = 0.2) +
+      labs(title = paste("Temperature Plot", min(year_range), "to", max(year_range)),
+           x = "Day Of Year",
+           y = "Year") +
+      scale_fill_manual(values = station_colors) +
+      theme_minimal() +
+      theme(plot.title = element_text(hjust = 0.5),
+            axis.text.y = element_text(size = 6.5, margin = margin(r = -2.5)),
+            axis.text.x = element_text(size = 6, angle = 45, hjust = 1, margin = margin(t = -13))) +
+      scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)]) +
+      scale_y_discrete(labels = function(x) {
+        years <- sub("_.*", "", x)
+        idx <- seq_along(years)
+        ifelse((idx - 1) %% length(station_colors) == 0, years, "")
+      })
+    
+    print(plot)
+  }
+  return(df_year_range)
+}
+
+# Define year ranges
+year_ranges <- create_year_ranges(2006, 2010, 1)
+
+# Define station colors
+station_colors <- c("Kamloops" = "red", "Abbotsford" = "grey", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', "Penticton" = '#FF00FF')
+
+# Generate and validate the plot
+df_year_range <- generate_temperature_plots(df_1266, year_ranges, station_colors)
+
+# Check the structure and top 20 rows of the generated data frame
+head(df_year_range, 20)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Function to generate the plots
+generate_temperature_plots_2 <- function(df, year_ranges, station_colors) {
+  for (year_range in year_ranges) {
+    df_year_range <- df %>% filter(Year %in% year_range)
+    df_year_range <- df_year_range %>%
+      mutate(Year = as.factor(Year),
+             StationYear = paste(Year, station, sep = "_"),
+             YearFactor = factor(Year, levels = unique(Year)),
+             Group = as.numeric(factor(Year)) %/% 4 %% 2) %>%
+      arrange(Year, station)
+    
+    # Determine the y-intercepts for unique years
+    y_intercepts <- which(!duplicated(df_year_range$Year))
+    print(y_intercepts)
+    plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
+      geom_tile(aes(width = 0.9, height = 0.9), alpha = 0.75) +
+      #geom_hline(y_intercepts, color = "black", size = 0.2) +
+      labs(title = paste("Temperature Plot", min(year_range), "to", max(year_range)),
+           x = "Day Of Year",
+           y = "Year") +
+      scale_fill_manual(values = station_colors) +
+      theme_minimal() +
+      theme(plot.title = element_text(hjust = 0.5),
+            axis.text.y = element_text(size = 6.5, margin = margin(r = -2.5)),
+            axis.text.x = element_text(size = 6, angle = 45, hjust = 1, margin = margin(t = -13))) +
+      scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)]) +
+      scale_y_discrete(labels = function(x) {
+        years <- sub("_.*", "", x)
+        unique_years <- !duplicated(years)
+        labels <- ifelse(unique_years, years, "")
+        labels
+      })+
+      # Add horizontal lines manually
+      for (y_intercept in y_intercepts) {
+        plot <- plot + geom_hline(yintercept = y_intercept, color = "black", size = 3)
+      }
+    
+    print(plot)
+  }
+  return(df_year_range)
+}
+
+# Example usage
+# Define year ranges
+year_ranges <- create_year_ranges(2006, 2010, 1)
+
+# Define station colors
+station_colors <- c("Kamloops" = "red", "Abbotsford" = "grey", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', "Penticton" = '#FF00FF')
+
+# Generate and validate the plot
+df_year_range <- generate_temperature_plots_2(df_1266, year_ranges, station_colors)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Function to generate the plots
+generate_temperature_plots <- function(df, year_ranges, station_colors) {
+  for (year_range in year_ranges) {
+    df_year_range <- df %>% filter(Year %in% year_range)
+    df_year_range <- df_year_range %>%
+      mutate(Year = as.factor(Year),
+             StationYear = paste(Year, station, sep = "_"),
+             YearFactor = factor(Year, levels = unique(Year)),
+             Group = as.numeric(factor(Year)) %/% 4 %% 2) %>%
+      arrange(Year, station)
+    
+    # Determine the y-intercepts for unique years
+    y_intercepts <- which(!duplicated(df_year_range$Year))
+    print(y_intercepts)  # Print y_intercepts for debugging
+    
+    # Create the base plot
+    plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
+      geom_tile(aes(width = 0.9, height = 0.9), alpha = 0.75) +
+      labs(title = paste("Temperature Plot", min(year_range), "to", max(year_range)),
+           x = "Day Of Year",
+           y = "Year") +
+      scale_fill_manual(values = station_colors) +
+      theme_minimal() +
+      geom_text(data = hline_data, aes(x = 1, y = y_position + 0.5, label = Year), color = "blue", vjust = -0.5) +
+      theme(plot.title = element_text(hjust = 0.5),
+            axis.text.y = element_text(size = 6.5, margin = margin(r = -2.5)),
+            axis.text.x = element_text(size = 6, angle = 45, hjust = 1, margin = margin(t = -13))) +
+      scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)]) +
+      scale_y_discrete(labels = function(x) {
+        years <- sub("_.*", "", x)
+        unique_years <- !duplicated(years)
+        labels <- ifelse(unique_years, years, "")
+        labels
+      })
+    
+    # Add horizontal lines manually
+    for (y_intercept in y_intercepts) {
+      plot <- plot + geom_hline(yintercept = y_intercept - 0.5, color = "black", size = 0.5)
+    }
+    
+    print(plot)
+  }
+  return(df_year_range)
+}
+
+# Example usage
+# Generate test data
+generate_test_data <- function() {
+  set.seed(123)  # For reproducibility
+  years <- rep(2006:2010, each = 60)
+  stations <- rep(c("Abbotsford", "Kamloops", "Prince_George", "YVR", "Kelowna", "Penticton"), each = 50)
+  days <- sample(sprintf("%02d-%02d", sample(1:12, 300, replace = TRUE), sample(1:28, 300, replace = TRUE)), 300)
+  
+  test_data <- data.frame(
+    DayOfYear = days,
+    Year = years[1:300],
+    station = stations[1:300]
+  )
+  return(test_data)
+}
+
+df_1266 <- generate_test_data()
+
+# Define year ranges
+year_ranges <- create_year_ranges(2006, 2010, 1)
+
+# Define station colors
+station_colors <- c("Kamloops" = "red", "Abbotsford" = "#D2B48C", "Prince_George" = "green", "YVR" = "blue",
+                    "Kelowna" = '#FFD700', "Penticton" = '#FF00FF')
+
+# Generate and validate the plot
+df_year_range <- generate_temperature_plots(df_1266, year_ranges, station_colors)
 
 
