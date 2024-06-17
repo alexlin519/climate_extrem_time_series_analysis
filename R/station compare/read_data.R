@@ -20,7 +20,8 @@ file_paths <- c("../output/Kamloops_percentiles.csv",
                 "../output/YVR_era5_90percentiles.csv",
                 "../output/Kelowna_percentiles.csv",
                 "../output/Abbotsford_percentiles.csv",
-                "../output/Penticton_percentiles.csv")
+                "../output/Penticton_percentiles.csv",
+                "../output/FortNelson_percentiles.csv")
 # Function to read and select necessary columns
 read_and_select <- function(file_path) {
   read.csv(file_path) 
@@ -28,7 +29,6 @@ read_and_select <- function(file_path) {
 
 # Read and combine all datasets
 df_station <- map_dfr(file_paths, read_and_select)
-
 
 # 
 # summary(df_station %>% filter(Station == "Kamloops"))
@@ -55,3 +55,6 @@ df_station <- rbind(YVR_30y_based, df_station)
 # Display the first few rows of the combined data
 head(df_station)
 
+
+# Check the unique values of the "Station" column
+unique(df_station$Station)

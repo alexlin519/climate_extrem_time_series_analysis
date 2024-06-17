@@ -13,7 +13,7 @@ df_station <- df_station %>%
 
 # Define the colors for specific stations
 station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
-                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
+                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', "FortNelson"='#8A2BE2','Abbotsford' = '#696969')
 
 # Filter the data to include only stations that have a defined color
 df_station <- df_station %>% filter(Station %in% names(station_colors))
@@ -39,9 +39,8 @@ three_stations_90th <- ggplot(df_station, aes(x = Date, y = Percentile_90, color
 
 
 # Define the colors for specific stations
-station_colors_filter <- c("Kamloops" = "red",
-                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
-
+station_colors_filter <- c("Prince_George" = "green", "YVR" = "blue",
+                             "FortNelson"='#8A2BE2','Abbotsford' = '#696969')
 # Filter the data to include only stations that have a defined color
 filter_df_station <- df_station %>% filter(Station %in% names(station_colors_filter))
 

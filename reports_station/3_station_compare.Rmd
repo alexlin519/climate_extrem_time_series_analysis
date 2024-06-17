@@ -7,6 +7,7 @@ editor_options:
     wrap: 72
 ---
 
+
 ```{=html}
 <script>
 function toggleCollapsible(section) {
@@ -19,12 +20,13 @@ function toggleCollapsible(section) {
 }
 </script>
 ```
-```{r, echo=FALSE,message=FALSE, warning=FALSE}
+
+
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/station compare/read_data.R")  ## read data
 source("../R/station compare/plot_90th.R")  ## clean data for 90th line plot 
 source("../R/station compare/scatter_2_station.R") ## plot for 2 station compare for all the station 
-
 source("../R/station compare/read_data_3day_hw.R")  ## read data
 source("../R/station compare/read_data_5day_hw.R")  ## read data
 source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
@@ -91,7 +93,8 @@ file_paths <- c("../output/Kamloops_heatmap_data.csv",       # Adding this file
                 "../output/Kelowna_heatmap_data.csv",
                 "../output/era5_YVR_heatmap_data.csv",
                 "../output/Abbotsford_heatmap_data.csv",
-                "../output/Penticton_heatmap_data.csv")             # Adding this file
+                "../output/Penticton_heatmap_data.csv",
+                "../output/FortNelson_heatmap_data.csv")             # Adding this file
 
 # Define the columns needed
 
@@ -107,7 +110,7 @@ read_and_select <- function(file_path) {
 
 # Read and combine all datasets
 df_heatmap_all <- map_dfr(file_paths, read_and_select)
-
+unique(df_heatmap_all$Station)
 
 ```
 
@@ -231,7 +234,15 @@ df_count_sorted_df <- sorted_df %>%
 
 ```{r, echo=FALSE,message=FALSE}
 dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
-#dftop20
+print_plot(dftop20,"FortNelson","Prince_George")
+print_plot(dftop20,"FortNelson","YVR")
+print_plot(dftop20,"FortNelson","Abbotsford")
+# print_plot(dftop20,"Abbotsford","Penticton")
+# print_plot(dftop20, "Kamloops", "Prince_George")
+# print_plot(dftop20, "Prince_George", "Kamloops")
+
+
+
 ```
 :::
 
@@ -246,11 +257,11 @@ dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
 ::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
-results <- analyze_extrem_scatter(dftop20)
+#results <- analyze_extrem_scatter(dftop20)
 
 # Display the results
-print(results$unique_year_counts)
-print(results$unique_yearmonth_counts)
+#print(results$unique_year_counts)
+#print(results$unique_yearmonth_counts)
 
 
 
@@ -269,7 +280,9 @@ print(results$unique_yearmonth_counts)
 ```{r, echo=FALSE,message=FALSE}
 
 df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
-
+print_plot(df_top20_35,"FortNelson","Prince_George")
+print_plot(df_top20_35,"FortNelson","YVR")
+print_plot(df_top20_35,"FortNelson","Abbotsford")
 
 ```
 :::
@@ -285,11 +298,11 @@ df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
 ::: {style="display:none;"}
 ```{r, echo=FALSE,message=FALSE}
 # Assuming label_dataframes is already defined
-results <- analyze_extrem_scatter(df_top20_35)
+#results <- analyze_extrem_scatter(df_top20_35)
 
 # Display the results
-print(results$unique_year_counts)
-print(results$unique_yearmonth_counts)
+# print(results$unique_year_counts)
+# print(results$unique_yearmonth_counts)
 
 
 
@@ -346,6 +359,9 @@ Kelowna: 1899-2024
 Abbotsford: 1944-2024
 
 Penticton: 1941-2024
+
+FortNelson: 1937-2024
+
 
 #### line segment 3 day
 
@@ -555,3 +571,5 @@ for (sheet in sheets) {
 }
 
 ```
+
+
