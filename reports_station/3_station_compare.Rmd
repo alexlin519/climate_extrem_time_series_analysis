@@ -343,7 +343,7 @@ dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:
 
 <!--TEXT SHOWS: -->
 
-<b>3.1 line segment for 6 temp station, 3 day HW</b>
+<b>3.1 line segment for 7 temp station, 3 day HW</b>
 
 </h3>
 
@@ -372,12 +372,13 @@ FortNelson: 1937-2024
 
 #line_segment_plot(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))
 #+ geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
-  
+
+print(unique(df_line_seg_3day$station))
 # Define the colors for specific stations
-station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
+station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue", 'FortNelson'='#D2B48C',
                     "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
 
-df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
 year_ranges <- create_year_ranges(1951, 2024, 5)
 hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 ```
@@ -387,7 +388,7 @@ hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station
 
 <!--TEXT SHOWS: -->
 
-<b>3.2 line segment for 6 temp station, 5 day HW</b>
+<b>3.2 line segment for 7 temp station, 5 day HW</b>
 
 </h3>
 
@@ -404,6 +405,9 @@ Abbotsford: 1944-2024
 
 Penticton: 1941-2024
 
+FortNelson: 1937-2024
+
+
 #### line segment 5 day
 
 ```{r, echo=FALSE,message=FALSE}
@@ -416,10 +420,8 @@ df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
   filter(!is.na(station))
 #line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ #geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
 
-station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue",
-                    "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
 
-df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton"))
+df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
 year_ranges <- create_year_ranges(1951, 2024, 5)
 hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
 
