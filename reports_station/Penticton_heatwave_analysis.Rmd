@@ -72,7 +72,7 @@ selected_columns <- df_percentiles %>%
 save_path <- paste0("../output/", station_name, "_percentiles.csv")
 
 ## Save the selected columns as a CSV file
-write.csv(selected_columns, file = save_path, row.names = FALSE)
+# write.csv(selected_columns, file = save_path, row.names = FALSE)
 ```
 
 
