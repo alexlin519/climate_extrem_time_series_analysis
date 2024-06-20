@@ -49,7 +49,8 @@ compute_avg_difference_90th <- function(file_path_temp_precip, file_path_stat,st
   diff <- data.frame(diffw90 = diffw90, year = year, month = month, yrmon = 100 * year + month)
   
 
-  
+  #nexc is the number of days with maxtemp exceeding the 90th percentile
+  #avgexc is the average exceedance of the 90th percentile
   byMonth <- as_tibble(diff) %>%
     dplyr::group_by(yrmon) %>%
     dplyr::summarise(nexc = sum(diffw90 > 0), avgexc = sum(diffw90) / max(1, sum(diffw90 > 0)))
@@ -74,12 +75,6 @@ compute_avg_difference_90th <- function(file_path_temp_precip, file_path_stat,st
   return(list(avg_exc_by_month = full_file_path, diff_over_90th = full_file_path2))
   
 }
-# 
-# # Usage
-# results <- compute_avg_difference_90th("yvr-temp-precip.RData", "yvrstat.RData")
-# avg_exc_by_month <- results$avg_exc_by_month
-# diff_over_90th <- results$diff_over_90th
-# 
 # 
 # 
 # 

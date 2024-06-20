@@ -40,8 +40,10 @@ extract_dry_periods <- function(input_path_temp_precip,station_name,
     mintemp[i] <- (min1 + min2) / 2
   }
   
-  iomit <- 1:59  # data cleaning: first 60 rows has missing precipation
-  yvr2 <- yvr[-iomit,]
+  #iomit <- 1:59  # data cleaning: first 60 rows has missing precipation
+  #yvr2 <- yvr[-iomit,]
+  # Drop rows with missing precipitation data
+  yvr2 <- yvr[!is.na(yvr$totprec), ]
   precip <- yvr2$totprec
   
   precip[is.na(precip)] <- 0

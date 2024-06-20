@@ -94,3 +94,9 @@ missing_values <- sapply(combined_data, function(x) sum(is.na(x)))
 missing_values
 #tail(df, 2)  # This shows the last 2 rows
 
+
+station_name<- "Kelowna"
+save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
+## Save the selected columns as a CSV file
+write.csv(df, file = save_path, row.names = FALSE)
+

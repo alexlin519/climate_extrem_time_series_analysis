@@ -135,6 +135,7 @@ process_heat_exceedances <- function(temp_precip_path, stat_path, station_name) 
 # ii = (yr%%4==0 & dayofyear>60)
 # # handling leap days in every 4th year (including year 2000)
 # dayofyear2[ileap] = 59
+# dayofyear2
 # dayofyear2[ii] = dayofyear2[ii]-1
 # 
 # iexceed = (maxtemp>yvr_q90[dayofyear2]) 
