@@ -42,12 +42,13 @@ df_wrangling <- df_wrangling %>%
 
 # Group by Month and Day, and concatenate the rolling_window lists
 df_grouped <- df_wrangling %>%
+  filter(year(LOCAL_DATE) >= 1960 & year(LOCAL_DATE) <= 1990) %>%
   group_by(Month, Day) %>%
   summarize(ROLLING_WINDOW_ALL_YEAR_VALUES = list(reduce(rolling_window, c)), .groups = 'drop')
 
 
 ### get 90th from the 165 all year same day value
-
+# # # # 
 # Calculate the 90th percentile for each day
 df_percentiles <- df_grouped %>%
   mutate(

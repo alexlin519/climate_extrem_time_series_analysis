@@ -13,7 +13,8 @@ generate_extreme_temp_scatter_plots <- function(filtered_heatmap_all, extreme_ra
   
   # List to store the dataframes of the labels to be displayed
   label_dataframes <- list()
-  
+  # List to store the ggplot objects
+  plot_list <- list()
   # Generate scatter plots for each pair of stations
   for (i in 1:(length(stations)-1)) {
     for (j in (i+1):length(stations)) {
@@ -56,12 +57,15 @@ generate_extreme_temp_scatter_plots <- function(filtered_heatmap_all, extreme_ra
         ) +
         theme_minimal()
       
-      # Print the plot
-      print(plot)
+      # Add the plot to the list
+      plot_list[[paste(station1, station2, sep = "_vs_")]] <- plot
+      
     }
   }
   # Return the list of dataframes
-  return(label_dataframes)
+  #return(label_dataframes)
+  # Return the list of plots and label dataframes
+  return(list(plots = plot_list, labels = label_dataframes))  
 }
 
 
@@ -76,6 +80,7 @@ generate_scatter_plots_for_yvr_diff_data <- function(filtered_heatmap_all, extre
   
   # List to store the dataframes of the labels to be displayed
   label_dataframes <- list()
+  
   
   # Generate scatter plots for each pair of stations
   for (i in 1:(length(stations)-1)) {
@@ -134,6 +139,7 @@ generate_scatter_plots_for_yvr_diff_data <- function(filtered_heatmap_all, extre
       print(plot)
     }
   }
+  
 }
 
 # Assuming label_dataframes is the list of dataframes returned from the function
@@ -210,3 +216,18 @@ analyze_extrem_scatter <- function(label_dataframes) {
 
 # Example usage:
 # results <- analyze_extrem_scatter(label_dataframes)
+
+
+print_plot <- function(results, station1, station2) {
+  plot_name <- paste(sort(c(station1, station2)), collapse = "_vs_")
+  plot_name2 <- paste(rev(sort(c(station1, station2))), collapse = "_vs_")
+  
+  if (!is.null(results$plots[[plot_name]])) {
+    print(results$plots[[plot_name]])
+    
+  } else if (!is.null(results$plots[[plot_name2]])) {
+    print(results$plots[[plot_name2]])}
+    else {
+    cat("Plot for", station1, "vs", station2, "not found in the list.\n")
+  }
+}

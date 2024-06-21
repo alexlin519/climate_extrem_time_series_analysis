@@ -141,7 +141,8 @@ generate_plot <- function(df_year_range, hline_data, year_range, station_colors)
          x = "Day Of Year",
          y = "Year") +
     scale_fill_manual(
-      breaks = c("YVR", "Prince_George", "Penticton", "Kelowna", "Kamloops", "Abbotsford", "YVR_30y_based"),
+      #breaks = c("YVR", "Prince_George", "Penticton", "Kelowna", "Kamloops", "Abbotsford", "YVR_30y_based"),
+      breaks <- names(station_colors),
       values = station_colors
     ) +
     theme_minimal() +

@@ -79,9 +79,8 @@ According to [@3def]
 
     -   **Health experts**, however, may require a combination of periods of Tmin and Tmax and anomalies that consider relative conditions, as the capability for nighttime relief and adaptation can have a profound impact on excess **mortality and morbidity** (Karl and Knight 1997; Meehl and Tebaldi 2004; Hansen et al. 2008; PwC 2011).
 
-```{=html}
 <!-- -->
-```
+
 -   APPENDIX 1: Heat Wave Indices Determined Unsuitable by this Study (page 30/46)
 
     -   This indicates that using a **single absolute threshold** for a region where multiple climate regimes exist (such as Australia) cannot adequately represent heat wave occurrence across all such climates.
