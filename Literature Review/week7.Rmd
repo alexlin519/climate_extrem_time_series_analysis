@@ -1,0 +1,112 @@
+---
+title: "Weekly Report -- Week 7"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: html_document
+bibliography: references.bib
+---
+
+------------------------------------------------------------------------
+
+# Summary
+
+## 1. Added 1 Stations: Fort Nelson
+
+1.  **Scatter Plot Improvement**
+    -   **Description:** Improved scatter plot to only include certain stations given.
+2.  **Line Segment for Fort Nelson**
+    -   **Description:** Add the line segment for Fort Nelson.
+
+## 2. Dry Day Data
+
+1.  **Modularizing Functionality for Dry Day**
+
+    -   **Description:** Modularized all functionality for dry day analysis, including reading data, calculating dry days, and plotting the results for any given station.
+
+    . Started correlation analysis between stations in terms of dry days by month. 2.**Reading Kelowna data**
+
+    -   **Description:** Read Kelowna data and plotted the dry days by month for Kelowna and YVR.
+
+2.  **Cross-Correlation Plot**
+
+    -   **Description:** perform cross-correlation analysis.
+
+## 3. Literature Review
+
+### new definition of heatwave: Excess Heat Factor (EHF)
+
+According to [@3def]
+
+-   Definition:
+
+    -   EHI(accl.) describes the anomaly over a 3-day window against the preceding 30 days
+
+    -   EHI(sig.) describes the anomaly of the same window against an extreme threshold.
+
+    -   **it has been used to study the impacts of extreme heat events on human health and mortality**
+
+### Pwc: protecting human health and safety during severe and extreme heat events, a national framework.
+
+1.  **Heatwave and Health impacts** (page 8)
+
+2.  **Death rate**
+
+    -   Why
+
+        -   dta availability; death rate can related to locations
+
+        -   "We recognise that mortality is only one of many possible adverse impacts of heat events. We also recognise that heat events are likely to induce significant morbidity impacts, and mortality is not necessarily the best proxy of these impacts. Nonetheless, we have chosen to focus on mortality as an indicator of heat events **because of data availability**. More specifically, the Australian Bureau of Statistics has collected daily statistics **on mortality for** **different locations**, and has done so using a consistent . We required daily information for the purposes of comparison with the climate records. Similar data do not exist with reference to morbidity"
+
+        -   "Our severe heat event model analyses the impact of heat events on population health by using excess mortality as an indicator of population health risk. **This is an approach used by a number of studies** examining the impact of heat on a population, owing to the lack of available data containing figures on heat-related deaths, and the difficulties in attributing heat as a cause of death."
+
+    -   Method (page 75)
+
+        -   calculating excess deaths by comparing observed deaths to an assumed average daily death rate:
+
+        -   The average number of deaths was determined by analysing ABS data on daily deaths by location alongside figures for the historic population of each location
+
+        -   determining a seasonal daily average mortality rate each year for the summer months impacted by heat events.
+
+        -   How heatwave affects death: the excess deaths in the weeks **following the extreme heat events**, and did not observe an obvious corresponding **decrease** in excess deaths during the subsequent weeks after a heatwave that would be expected if the excess deaths were purely a result of harvesting
+
+        -   location: analysed data on actual deaths occurring in each location, by pairing it with the EHF values for each location provided by the BOM to consider days that formed part of a heat event
+
+        -   Adjust the death rate based on other event
+
+        -   Consider different group of people (page 81)
+
+    -   Results:
+
+        -   Summary of heat event and impact on population (page 27 table)
+
+## 4. FAOSTAT data
+
+**Variable:**
+
+-   Yield: means the harvested production per ha for the area under cultivation.
+
+-   Production: Harvested production including **on-holding losses and wastage**, quantities consumed directly on the farm and marketed quantities, indicated in units of basic product weight.
+
+-   Area harvested: refer to the area under cultivation.It means the area that corresponds to the **total sown area**, but after the harvest it excludes ruined areas (e.g. due to natural disasters). If the same land parcel is used twice in the same year, the area of this parcel can be counted twice. Production means the harvested production.
+
+**Details:**
+
+-   Only region of Canada, not Province level.
+-   Only yearly data, not monthly.
+-   Have a lot of crop type, including cereals and non-cereals.
+-   The harvest of most crops is generally limited to a few months and even, in certain cases, to a few weeks. Production of these crops is reported by the various countries in different ways: by calendar year, agricultural year, marketing year, etc. Whatever the statistical period used by the countries for presentation of area and production data, these data are allocated commodity by commodity to the **calendar year in which the entire harvest or the bulk of it took place**. Obviously, a crop that is harvested at the end of the calendar year will be utilized mostly during the year following the calendar year under which the production figures are reported.
+-   Food Loss
+
+------------------------------------------------------------------------
+
+## Next steps
+
+-   Next steps include finalizing the T1T2 heatwave definition and other heatwave definition.
+
+-   looking for 1941 heatwave data around the current temp stations.
+
+-   paper about "require a combination of periods of Tmin and Tmax and anomalies that consider relative conditions, as the capability for nighttime relief and adaptation can have a profound impact on excess **mortality and morbidity** (Karl and Knight 1997; Meehl and Tebaldi 2004; Hansen et al. 2008; PwC 2011)."
+
+------------------------------------------------------------------------
+
+# References
