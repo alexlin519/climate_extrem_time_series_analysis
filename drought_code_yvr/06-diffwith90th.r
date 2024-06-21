@@ -10,7 +10,7 @@ compute_avg_difference_90th <- function(file_path_temp_precip, file_path_stat,st
   
   imx <- missing_maxtem
   
-  maxtmp <- yvr$maxtemp
+  maxtmp <- df$maxtemp
   maxtemp <- maxtmp
   
   # Impute missing values with two neighbors
@@ -28,8 +28,8 @@ compute_avg_difference_90th <- function(file_path_temp_precip, file_path_stat,st
   
   # Process day of the year
 
-  dayofyear <- dayOfYear(timeDate(yvr$yyyymmdd))
-  yr <- yvr$year
+  dayofyear <- dayOfYear(timeDate(df$yyyymmdd))
+  yr <- df$year
   dayofyear2 <- dayofyear
   
   # Handling leap days
@@ -39,12 +39,12 @@ compute_avg_difference_90th <- function(file_path_temp_precip, file_path_stat,st
   dayofyear2[ii] <- dayofyear2[ii] - 1
   
   # Calculate the difference with the 90th percentile from 1961-1990
-  diffw90 <- maxtemp - yvr_q90[dayofyear2]
+  diffw90 <- maxtemp - q90[dayofyear2]
   diffw90 <- pmax(0, diffw90)
   
 
-  year <- lubridate::year(yvr$yyyymmdd)
-  month <- lubridate::month(yvr$yyyymmdd)
+  year <- lubridate::year(df$yyyymmdd)
+  month <- lubridate::month(df$yyyymmdd)
   
   diff <- data.frame(diffw90 = diffw90, year = year, month = month, yrmon = 100 * year + month)
   

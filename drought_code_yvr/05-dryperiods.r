@@ -14,7 +14,7 @@ extract_dry_periods <- function(input_path_temp_precip,station_name,
   # Impute missing daily max and min
   
   # Impute missing temperatures
-  maxtmp <- yvr$maxtemp
+  maxtmp <- df$maxtemp
   maxtemp <- maxtmp
   imax = missing_maxtem
   for (i in imax) {
@@ -27,7 +27,7 @@ extract_dry_periods <- function(input_path_temp_precip,station_name,
     maxtemp[i] <- (max1 + max2) / 2
   }
   
-  mintmp <- yvr$mintemp
+  mintmp <- df$mintemp
   mintemp <- mintmp
   imin = missing_mintem
   for (i in imin) {
@@ -40,16 +40,12 @@ extract_dry_periods <- function(input_path_temp_precip,station_name,
     mintemp[i] <- (min1 + min2) / 2
   }
   
-  #iomit <- 1:59  # data cleaning: first 60 rows has missing precipation
-  #yvr2 <- yvr[-iomit,]
-  # Drop rows with missing precipitation data
-  yvr2 <- yvr[!is.na(yvr$totprec), ]
-  precip <- yvr2$totprec
+
+  df_dropna <- df[!is.na(df$totprec), ]
+  precip <- df_dropna$totprec
   
   precip[is.na(precip)] <- 0
   
-  mintemp <- mintemp[-iomit]
-  maxtemp <- maxtemp[-iomit]
   
   n <- length(precip)
   smin <- 0
@@ -101,7 +97,7 @@ extract_dry_periods <- function(input_path_temp_precip,station_name,
     tempmax_no <- c(tempmax_no, smax / kcount)
   }
   
-  yyyymmdd <- yvr2$yyyymmdd
+  yyyymmdd <- df_dropna$yyyymmdd
   periods_no <- data.frame(
     ibegin = begin_no, iend = end_no,
     length = end_no - begin_no + 1,

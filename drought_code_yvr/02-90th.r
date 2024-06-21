@@ -4,9 +4,9 @@ library(timeDate)
 process_base_years <- function(input_path,station_name) {
   # Load data
   load(input_path)
-  
+  df_Rdata <- df
   # Filter base years
-  baseyears0 <- subset(yvr, year >= 1960 & year <= 1991)
+  baseyears0 <- subset(df_Rdata, year >= 1960 & year <= 1991)
   baseyears <- baseyears0[360:11330, ]
   
   # Get 90th percentiles from rows: 8 to 10963

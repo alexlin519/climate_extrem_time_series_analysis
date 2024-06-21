@@ -4,13 +4,10 @@ compute_cumulative_precip <- function(file_path_temp_precip, station_name) {
   # Load the required dataset
   load(file_path_temp_precip)
   
-  # Remove the first 59 days
-  # iomit <- 1:59
-  # yvr2 <- yvr[-iomit,]
-  yvr2 <- yvr[!is.na(yvr$totprec), ]
+  df_dropna <- df[!is.na(df$totprec), ]
   
   # Handle precipitation data
-  precip <- yvr2$totprec
+  precip <- df_dropna$totprec
   precip[is.na(precip)] <- 0
   
   # Accumulate next 3 days and 5-days
@@ -29,13 +26,13 @@ compute_cumulative_precip <- function(file_path_temp_precip, station_name) {
   cum_5day[(n-3):n] <- cum_5day[n-4]
   
   # Add calculated fields to the dataframe
-  yvr2$yrmon <- 100 * yvr2$year + yvr2$month
-  yvr2$cum_3day <- cum_3day
-  yvr2$cum_5day <- cum_5day
+  df_dropna$yrmon <- 100 * df_dropna$year + df_dropna$month
+  df_dropna$cum_3day <- cum_3day
+  df_dropna$cum_5day <- cum_5day
   
   # Summarize by month
 
-  byMonth <- as_tibble(yvr2) %>%
+  byMonth <- as_tibble(df_dropna) %>%
     dplyr::group_by(yrmon) %>%
     dplyr::summarise(max_3day = max(cum_3day), max_5day = max(cum_5day))
   

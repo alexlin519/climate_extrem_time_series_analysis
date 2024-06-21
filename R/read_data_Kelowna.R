@@ -65,8 +65,9 @@ file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
                 "../data/kelow/kelow_2009-2024.csv")
 
 # Define the columns needed
-needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME",
-                    "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME", 
+                    "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY"
+                    ,"LOCAL_YEAR", "LOCAL_MONTH", "MEAN_TEMPERATURE")
 
 # Function to read and select necessary columns
 read_and_select <- function(file_path) {
@@ -98,5 +99,5 @@ missing_values
 station_name<- "Kelowna"
 save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
 ## Save the selected columns as a CSV file
-write.csv(df, file = save_path, row.names = FALSE)
+write.csv(combined_data, file = save_path, row.names = FALSE)
 

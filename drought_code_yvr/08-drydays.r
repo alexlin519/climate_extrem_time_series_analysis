@@ -2,37 +2,35 @@ impute_temps <- function(file_path_temp_precip) {
   # Load the data
   load(file_path_temp_precip)
   
-  imax <- which(is.na(yvr$maxtemp))
-  imin <- which(is.na(yvr$mintemp))
+  imax <- which(is.na(df$maxtemp))
+  imin <- which(is.na(df$mintemp))
   
   for(i in imax) {
     i1 <- i-1
-    while(is.na(yvr$maxtemp[i1])) { i1 <- i1-1 }
-    max1 <- yvr$maxtemp[i1]
+    while(is.na(df$maxtemp[i1])) { i1 <- i1-1 }
+    max1 <- df$maxtemp[i1]
     i2 <- i+1
-    while(is.na(yvr$maxtemp[i2])) { i2 <- i2+1 }
-    max2 <- yvr$maxtemp[i2]
-    yvr$maxtemp[i] <- (max1 + max2) / 2
+    while(is.na(df$maxtemp[i2])) { i2 <- i2+1 }
+    max2 <- df$maxtemp[i2]
+    df$maxtemp[i] <- (max1 + max2) / 2
   }
   
   for(i in imin) {
     i1 <- i-1
-    while(is.na(yvr$mintemp[i1])) { i1 <- i1-1 }
-    min1 <- yvr$mintemp[i1]
+    while(is.na(df$mintemp[i1])) { i1 <- i1-1 }
+    min1 <- df$mintemp[i1]
     i2 <- i+1
-    while(is.na(yvr$mintemp[i2])) { i2 <- i2+1 }
-    min2 <- yvr$mintemp[i2]
-    yvr$mintemp[i] <- (min1 + min2) / 2
+    while(is.na(df$mintemp[i2])) { i2 <- i2+1 }
+    min2 <- df$mintemp[i2]
+    df$mintemp[i] <- (min1 + min2) / 2
   }
-  data_imputed <- yvr
+  data_imputed <- df
   return(data_imputed)
 }
 
 calculate_max_consec <- function(data_imputed,station_name) {
-  # iomit <- 1:59
-  # yvr2 <- data_imputed[-iomit,]
-  yvr2 <- yvr[!is.na(yvr$totprec), ]
-  precip <- yvr2$totprec
+  df_dropna <- data_imputed[!is.na(data_imputed$totprec), ]
+  precip <- df_dropna$totprec
   #precip[is.na(precip)] <- 0
   i1ormore <- (precip >= 1)
   n <- length(precip)
@@ -44,10 +42,10 @@ calculate_max_consec <- function(data_imputed,station_name) {
     if(i1ormore[i]) { consec[i] <- 0; notdry <- i }
     else { consec[i] <- consec[i+1]+1 }
   }
-  yvr2$consec <- consec
-  yvr2$yrmon <- 100*yvr2$year + yvr2$month
+  df_dropna$consec <- consec
+  df_dropna$yrmon <- 100*df_dropna$year + df_dropna$month
   
-  byMonth2 <- as_tibble(yvr2) %>% 
+  byMonth2 <- as_tibble(df_dropna) %>% 
     dplyr::group_by(yrmon) %>%
     dplyr::summarise(max_consec = max(consec))
   # Define the specific path where you want to save the data (replace with your actual path)

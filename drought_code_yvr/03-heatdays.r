@@ -6,14 +6,14 @@ process_heat_periods <- function(input_path_temp_precip, input_path_stat, statio
   load(input_path_temp_precip)
   load(input_path_stat)
   
-  # imx <- missing_maxtem
-  # icheckmx <- sort(c(imx, imx - 1, imx + 1))
-  # icheckmx <- unique(icheckmx)
+  imx <- missing_maxtem
+  icheckmx <- sort(c(imx, imx - 1, imx + 1))
+  icheckmx <- unique(icheckmx)
   # 
   # write.csv(file = paste0("../drought_code_yvr/data/", station_name, "_missing_maxtemp.csv"), yvr[icheckmx,])
   
   # Impute missing values
-  maxtmp <- yvr$maxtemp
+  maxtmp <- df$maxtemp
   maxtemp <- maxtmp
   for (i in imx) {
     i1 <- i - 1
@@ -27,15 +27,15 @@ process_heat_periods <- function(input_path_temp_precip, input_path_stat, statio
   }
   
   # Find cases of exceeding 90th percentile of the dayofyear
-  dayofyear <- dayOfYear(timeDate(yvr$yyyymmdd))
-  yr <- yvr$year
+  dayofyear <- dayOfYear(timeDate(df$yyyymmdd))
+  yr <- df$year
   dayofyear2 <- dayofyear
   ileap <- (yr %% 4 == 0 & dayofyear == 60)
   ii <- (yr %% 4 == 0 & dayofyear > 60)
   dayofyear2[ileap] <- 59
   dayofyear2[ii] <- dayofyear2[ii] - 1
   
-  iexceed <- (maxtemp > yvr_q90[dayofyear2])
+  iexceed <- (maxtemp > q90[dayofyear2])
   
   n <- length(iexceed)
   begin_ex <- NULL
@@ -60,8 +60,8 @@ process_heat_periods <- function(input_path_temp_precip, input_path_stat, statio
   periods_heat <- periods_ex[end_ex - begin_ex >= 2,]
   
   dates_heatwave <- data.frame(
-    begin = yvr$yyyymmdd[periods_heat[, 1]],
-    end = yvr$yyyymmdd[periods_heat[, 2]],
+    begin = df$yyyymmdd[periods_heat[, 1]],
+    end = df$yyyymmdd[periods_heat[, 2]],
     starttemp = maxtemp[periods_heat[, 1]],
     endtemp = maxtemp[periods_heat[, 2]]
   )
@@ -76,10 +76,10 @@ process_heat_periods <- function(input_path_temp_precip, input_path_stat, statio
     t(ymd)
   }
   
-  oneyear <- yvr$yyyymmdd[1:365]
+  oneyear <- df$yyyymmdd[1:365]
   ymd <- extrdatenum(oneyear)
   
-  q90_df <- data.frame(q90 = yvr_q90, month = ymd[, 2], day = ymd[, 3])
+  q90_df <- data.frame(q90, month = ymd[, 2], day = ymd[, 3])
   q90_csv_path <- paste0("../drought_code_yvr/data/", station_name, "_q90.csv")
   write.csv(file = q90_csv_path, q90_df)
   
