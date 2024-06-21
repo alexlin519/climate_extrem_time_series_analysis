@@ -237,6 +237,9 @@ dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
 print_plot(dftop20,"FortNelson","Prince_George")
 print_plot(dftop20,"FortNelson","YVR")
 print_plot(dftop20,"FortNelson","Abbotsford")
+print_plot(dftop20,"FortNelson","Penticton")
+print_plot(dftop20,"FortNelson","Kamloops")
+print_plot(dftop20,"FortNelson","Kelowna")
 # print_plot(dftop20,"Abbotsford","Penticton")
 # print_plot(dftop20, "Kamloops", "Prince_George")
 # print_plot(dftop20, "Prince_George", "Kamloops")
@@ -352,15 +355,21 @@ YVR: 1937-2024
 
 Prince_George: 1942-2024
 
-Kamloops: 1951-2024
+FortNelson: 1937-2024
 
 Kelowna: 1899-2024
 
 Abbotsford: 1944-2024
 
+
+
+
+
+Kamloops: 1951-2024
+
 Penticton: 1941-2024
 
-FortNelson: 1937-2024
+
 
 
 #### line segment 3 day

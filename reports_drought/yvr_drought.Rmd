@@ -1,0 +1,136 @@
+---
+title: "Dry peroiods analysis"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: html_document
+---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+source("../drought_code_yvr/01-wrangle.r")  ## read data
+source("../drought_code_yvr/02-90th.r")  ## data wrangling
+source("../drought_code_yvr/03-heatdays.r")  ## heat wave analysis
+source("../drought_code_yvr/04-exceedance.r")  ## heat wave analysis 2
+
+source("../drought_code_yvr/05-dryperiods.r") ## dry periods analysis
+
+source("../drought_code_yvr/06-diffwith90th.r") # Average difference with 90th by month,based on 1961-1990
+
+source("../drought_code_yvr/07-5dayprecip.r") ## 5 day precipitation
+
+source("../drought_code_yvr/08-drydays.r") 
+source("../drought_code_yvr/diff_station_dry_cor.r") 
+# start_year <- 1937
+# end_year <- 2024
+```
+
+
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Read data</b>
+</h1>
+<div style="display:none;"> 
+
+</div>
+
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> YVR</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE,results = 'hide'}
+
+# Call the function with the path to your CSV file
+temp_precip_path<- process_data("../output/YVR_raw_filtered_columns.csv","YVR")
+
+percentiles90th_path<- process_base_years(temp_precip_path,"YVR")
+
+
+result_hw <- process_heat_periods(temp_precip_path, percentiles90th_path, "YVR")
+# result_hw$q90_csv_path
+# result_hw$heatwave_csv_path
+
+
+heatwave_csv_path_2 <- process_heat_exceedances(temp_precip_path, percentiles90th_path, "YVR")
+
+```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+
+# Extract dry periods
+periods_dry_path <- extract_dry_periods(temp_precip_path, "YVR")
+
+
+result_diff <- compute_avg_difference_90th(temp_precip_path, percentiles90th_path, "YVR")
+result_diff$avg_exc_by_month
+result_diff$diff_over_90th
+
+max5d_precip_bymonth_path <- compute_cumulative_precip(temp_precip_path, "YVR")
+
+
+```
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+imputed_temp_data <- impute_temps(temp_precip_path)
+consec_precip_bymonth_path <- calculate_max_consec(imputed_temp_data, "YVR")
+```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+plot_consecutive_dry_days(consec_precip_bymonth_path, start_year = 1937, end_year = 2024, step = 10)
+```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Kelowna</b>
+</h3>
+<div style="display:none;"> 
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+
+# Call the function with the path to your CSV file
+temp_precip_path<- process_data("../output/Kelowna_raw_filtered_columns.csv","Kelowna")
+load(temp_precip_path)
+percentiles90th_path<- process_base_years(temp_precip_path,"Kelowna")
+
+imputed_temp_data <- impute_temps(temp_precip_path)
+
+consec_precip_bymonth_path_Kelowna <- calculate_max_consec(imputed_temp_data, "Kelowna")
+```
+
+#### Plot the consecutive dry days for Kelowna, starting from 1938, Kelowna has data from 1899 to 2024.
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+plot_consecutive_dry_days(consec_precip_bymonth_path_Kelowna, start_year = 1938, end_year = 2024, step = 10)
+
+```
+
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Correlation </b>
+</h1>
+<div style="display:none;"> 
+
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#consec_precip_bymonth_path_Kelowna
+plot_ccf_max_consec(consec_precip_bymonth_path_Kelowna,1899,"Kelowna",
+                    consec_precip_bymonth_path,1937,"YVR")
+```
+#### The maximum cross-correlation at lag -0.75 indicates a relatively stronger relationship when Kelowna's data leads YVR's data by 0.75 time units.
+
