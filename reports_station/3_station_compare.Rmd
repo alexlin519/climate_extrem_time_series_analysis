@@ -348,6 +348,7 @@ dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:
 
 <b>3.1 line segment for 7 temp station, 3 day HW</b>
 
+
 </h3>
 
 ::: {style="display:none;"}
