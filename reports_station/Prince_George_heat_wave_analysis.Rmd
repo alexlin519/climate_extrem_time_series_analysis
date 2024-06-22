@@ -14,7 +14,7 @@ source("../R/data_for_hw_plot.R")
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1942
+start_year <- 1940
 end_year <- 2024
 step <- 40
 ```
@@ -42,7 +42,7 @@ unique_stations
 
 
 get 90th from the all year for all day value
-```{r, echo=FALSE,results = 'show'}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Print the result
 #df_percentiles$Percentile_90
 station_name <- "Prince_George"
@@ -63,7 +63,7 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ## plot given year temp dist vs baseline 90th
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 # Example usage:
 df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
@@ -71,7 +71,13 @@ df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
 plot_percentiles_vs_year(df_plot_year,2021)
 ```
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,1941)
+```
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Main function to loop through multiple years
 plot_all_years <- function(start_year, end_year) {
   for (year in start_year:end_year) {
@@ -92,7 +98,7 @@ plot_all_years <- function(start_year, end_year) {
 
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
-
+print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 
