@@ -362,11 +362,7 @@ Kelowna: 1899-2024
 
 Abbotsford: 1935-2024
 
-
-
-
-
-Kamloops: 1951-2024
+Kamloops: 1939-2024
 
 Penticton: 1941-2024
 
@@ -389,8 +385,8 @@ station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue
                     "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
 
 df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
-year_ranges <- create_year_ranges(1951, 2024, 5)
-hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
+year_ranges <- create_year_ranges(1941, 2024, 5)
+hline_data <- generate_temperature_plots("3 days long",df_station_filter, year_ranges, station_colors)
 ```
 :::
 
@@ -407,15 +403,16 @@ YVR: 1937-2024
 
 Prince_George: 1940-2024
 
-Kamloops: 1951-2024
+FortNelson: 1937-2024
 
 Kelowna: 1899-2024
 
 Abbotsford: 1935-2024
 
+Kamloops: 1939-2024
+
 Penticton: 1941-2024
 
-FortNelson: 1937-2024
 
 
 #### line segment 5 day
@@ -432,8 +429,8 @@ df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
 
 
 df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
-year_ranges <- create_year_ranges(1951, 2024, 5)
-hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
+year_ranges <- create_year_ranges(1941, 2024, 5)
+hline_data <- generate_temperature_plots("5 days long",df_station_filter, year_ranges, station_colors)
 
 ```
 :::
@@ -459,7 +456,7 @@ station_colors <- c( "YVR" = "blue",
 
 df_station_yvr_comp <- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))
 year_ranges <- create_year_ranges(1937, 2024, 4)
-hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, station_colors)
+hline_data <- generate_temperature_plots("3 days long",df_station_yvr_comp, year_ranges, station_colors)
 ```
 
 <!-- </div> -->

@@ -133,11 +133,11 @@ wrangle_data <- function(df, year_range) {
 }
 
 # Function to generate the plot
-generate_plot <- function(df_year_range, hline_data, year_range, station_colors) {
+generate_plot <- function(day_title,df_year_range, hline_data, year_range, station_colors) {
   ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
     geom_tile(aes(width = 0.9999, height = 0.9999), alpha = 0.75) +
     geom_hline(data = hline_data, size = 0.5, aes(yintercept = as.numeric(y_position)), color = "black", linetype = "solid") +
-    labs(title = paste("At least 3 day heatwave from", min(year_range), "to", max(year_range)),
+    labs(title = paste("At least ",day_title, " heatwave from", min(year_range), "to", max(year_range)),
          x = "Day Of Year",
          y = "Year") +
     scale_fill_manual(
@@ -160,10 +160,10 @@ generate_plot <- function(df_year_range, hline_data, year_range, station_colors)
 }
 
 # Main function to generate temperature plots
-generate_temperature_plots <- function(df, year_ranges, station_colors) {
+generate_temperature_plots <- function(day_title,df, year_ranges, station_colors) {
   for (year_range in year_ranges) {
     data <- wrangle_data(df, year_range)
-    plot <- generate_plot(data$df_year_range, data$hline_data, year_range, station_colors)
+    plot <- generate_plot(day_title,data$df_year_range, data$hline_data, year_range, station_colors)
     print(plot)
   }
   return(invisible(data$hline_data))
