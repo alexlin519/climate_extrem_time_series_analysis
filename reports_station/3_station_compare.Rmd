@@ -354,13 +354,13 @@ dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:
 ::: {style="display:none;"}
 YVR: 1937-2024
 
-Prince_George: 1942-2024
+Prince_George: 1940-2024
 
 FortNelson: 1937-2024
 
 Kelowna: 1899-2024
 
-Abbotsford: 1944-2024
+Abbotsford: 1935-2024
 
 
 
@@ -405,13 +405,13 @@ hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station
 ::: {style="display:none;"}
 YVR: 1937-2024
 
-Prince_George: 1942-2024
+Prince_George: 1940-2024
 
 Kamloops: 1951-2024
 
 Kelowna: 1899-2024
 
-Abbotsford: 1944-2024
+Abbotsford: 1935-2024
 
 Penticton: 1941-2024
 
@@ -480,7 +480,7 @@ hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, stati
 
 <!-- Kelowna:       1899-2024 -->
 
-<!-- Abbotsford:    1944-2024 -->
+<!-- Abbotsford:    1935-2024 -->
 
 <!-- Penticton:     1941-2024 -->
 

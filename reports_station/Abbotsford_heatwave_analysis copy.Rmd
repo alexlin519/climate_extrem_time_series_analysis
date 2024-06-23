@@ -25,7 +25,7 @@ source("../R/data_for_hw_plot.R")
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1944
+start_year <- 1935
 end_year <- 2024
 
 step <- 40
@@ -138,7 +138,7 @@ plot_all_years <- function(start_year, end_year) {
 
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
-#print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 

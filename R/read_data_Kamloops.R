@@ -17,11 +17,13 @@ setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
 file_paths <- c("../data/KAMLOOPS Daily Climate Data copy.csv",
                 "../data/KAMLOOPS Daily Climate Data (1) copy.csv",
                 "../data/KAMLOOPS Daily climate data (2) copy.csv",
-                "../data/KAMLOOPS 2024 Daily Climate Data.csv")
+                "../data/KAMLOOPS 2024 Daily Climate Data.csv",
+                "../data/KAMLOOPS_Daily_Climate_Data_0.csv")
 
 # Define the columns needed
-needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", "STATION_NAME",
-                    "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY")
+needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME", 
+                    "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY"
+                    ,"LOCAL_YEAR", "LOCAL_MONTH", "MEAN_TEMPERATURE")
 
 # Function to read and select necessary columns
 read_and_select <- function(file_path) {
@@ -52,3 +54,8 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 #missing_values
 #tail(df, 2)  # This shows the last 2 rows
 
+
+station_name<- "Kamloops"
+save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
+## Save the selected columns as a CSV file
+write.csv(df, file = save_path, row.names = FALSE)
