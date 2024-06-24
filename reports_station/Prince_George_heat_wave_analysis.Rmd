@@ -6,6 +6,7 @@ date: "2024-05-20"
 # Data {.collapsible}
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+station_name <- "Prince_George" 
 source("../R/read_data_Prince_George.R")  ## read data
 df <- df_pg 
 source("../R/data_wrangling.R") ## data wrangling
@@ -64,6 +65,13 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 ## plot given year temp dist vs baseline 90th
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,1941)
+```
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 # Example usage:
 df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
@@ -71,12 +79,7 @@ df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
 plot_percentiles_vs_year(df_plot_year,2021)
 ```
 
-```{r, echo=FALSE,message=FALSE, warning=FALSE}
-# Example usage:
-df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
-# Example usage:
-plot_percentiles_vs_year(df_plot_year,1941)
-```
+
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Main function to loop through multiple years
 plot_all_years <- function(start_year, end_year) {

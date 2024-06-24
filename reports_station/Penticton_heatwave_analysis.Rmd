@@ -16,6 +16,7 @@ function toggleCollapsible(section) {
 
 
 ```{r setup, include=FALSE}
+station_name <- "Penticton"
 knitr::opts_chunk$set(echo = TRUE)
 source("../R/read_data_Penticton.R")  ## read data
 df <- df_pt
@@ -81,6 +82,20 @@ save_path <- paste0("../output/", station_name, "_percentiles.csv")
 <b> Plot</b>
 </h1>
 <div style="display:none;"> 
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
+
+
+
 
 </div>
 

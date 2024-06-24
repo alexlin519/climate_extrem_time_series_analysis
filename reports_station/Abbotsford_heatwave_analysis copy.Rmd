@@ -104,9 +104,9 @@ compare_plot
 
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
-# df_plot_year_begin <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+ df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
 # 
-# plot_percentiles_vs_year(df_plot_year_begin,1941)
+plot_percentiles_vs_year(df_plot_year,1941)
 #
 
 ```

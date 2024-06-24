@@ -17,6 +17,7 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+station_name <- "Kelowna"
 source("../R/read_data_Kelowna.R")  ## read data
 df <- combined_data
 source("../R/data_wrangling.R") ## data wrangling
