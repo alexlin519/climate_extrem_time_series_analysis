@@ -8,7 +8,7 @@ base_colors <- c('#FF0000', '#008000', '#0000FF', '#000000', '#FF00FF', '#FFA500
 
 # Create a dummy year (e.g., 2000) for the purpose of plotting Month and Day
 df_station <- df_station %>%
-  mutate(Date = as.Date(paste("2000", Month, Day, sep = "-"), format = "%Y-%m-%d"))
+  mutate(Date = as.Date(paste("2030",Month, Day, sep = "-"), format = "%Y-%m-%d"))
 
 
 # Define the colors for specific stations

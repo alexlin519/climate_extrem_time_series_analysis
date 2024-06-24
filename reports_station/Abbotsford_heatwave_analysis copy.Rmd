@@ -52,7 +52,7 @@ unique_stations
 # df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
 # #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
 # length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
-unique_stations
+
 ```
 
 
@@ -82,8 +82,19 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 </h1>
 <div style="display:none;"> 
 
-</div>
 
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
+
+
+</div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b> plot certain year temp dist vs baseline 90th </b>

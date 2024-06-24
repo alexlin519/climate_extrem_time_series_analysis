@@ -3,7 +3,7 @@ library(lubridate)
 library(zoo)
 library(purrr)
 library(tidyr)
-
+library(ggplot2)
 ### get the 15day window data points
 
 
@@ -46,6 +46,10 @@ df_grouped <- df_wrangling %>%
   group_by(Month, Day) %>%
   summarize(ROLLING_WINDOW_ALL_YEAR_VALUES = list(reduce(rolling_window, c)), .groups = 'drop')
 
+df_grouped_all <- df_wrangling %>%
+  group_by(Month, Day) %>%
+  summarize(ROLLING_WINDOW_ALL_YEAR_VALUES = list(reduce(rolling_window, c)), .groups = 'drop')
+
 
 ### get 90th from the 165 all year same day value
 # # # # 
@@ -55,9 +59,37 @@ df_percentiles <- df_grouped %>%
     Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE))
   )
 
+df_percentiles_all <- df_grouped_all %>%
+  mutate(
+    Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE))
+  )
 
 
 
 
 
+# Add a column to distinguish between the two datasets
+df_percentiles <- df_percentiles %>%
+  mutate(Source = "1960-1990")
 
+df_percentiles_all <- df_percentiles_all %>%
+  mutate(Source = "All Years")
+
+# Combine the two data frames
+df_90_compare <- bind_rows(df_percentiles, df_percentiles_all)
+
+# Convert Month and Day to a Date for plotting (year is arbitrary, using 2000 as a placeholder)
+df_90_compare <- df_90_compare %>%
+  mutate(Date = as.Date(paste("2000", Month, Day, sep = "-")))
+
+# Plot the data
+compare_plot <- ggplot(df_90_compare, aes(x = Date, y = Percentile_90, color = Source)) +
+  geom_line() +
+  labs(title = paste(station_name ,"90th Percentile Temperature Comparison"),
+       x = "Date",
+       y = "90th Percentile Temperature",
+       color = "Data Source") +
+  scale_x_date(date_labels = "%b %d", date_breaks = "1 month") +
+  theme_minimal()
+
+#print(compare_plot)
