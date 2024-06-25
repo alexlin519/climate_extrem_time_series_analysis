@@ -34,3 +34,14 @@ for (item in unique(data_fao$Item)) {
     theme_minimal()
   print(facet_plot)
   }
+
+
+
+filtered_data <- 
+
+# Plotting the Value over Years for each Element by Item
+ggplot(data = data_fao %>% filter(Item %in% c("Apples", "Peaches")), aes(x = Year, y = Value, color = Item)) +
+  geom_line() +
+  facet_wrap(~ Element, scales = "free_y") +
+  labs(title = "Trends Over Time by Element and Item", x = "Year", y = "Value") +
+  theme_minimal()
