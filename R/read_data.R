@@ -31,5 +31,3 @@ process_and_save_data <- function(file_paths, station_name) {
   return(df)
 }
 
-
-
