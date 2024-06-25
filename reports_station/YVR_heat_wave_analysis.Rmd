@@ -3,10 +3,30 @@ title: "week3 YVR heat wave analysis"
 output: html_document
 date: "2024-05-20"
 ---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
+
 # Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+station_name <- "YVR"
+
+# Define file paths
+file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
+                "../data/YVR1108447-daily1964to1991.csv",
+                "../data/YVR1108447-daily1991to2013.csv",
+                "../data/YVR climate daily 2013 to 2024 copy.csv")
+
 source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -19,6 +39,30 @@ end_year <- 2024
 step <- 40
 ```
 
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+print(missing_values)
+```
+</div>
 
 ## check wrangling data
 ```{r, echo=FALSE,results = 'hide'}
