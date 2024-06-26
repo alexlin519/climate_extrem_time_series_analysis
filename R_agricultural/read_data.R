@@ -45,3 +45,4 @@ ggplot(data = data_fao %>% filter(Item %in% c("Apples", "Peaches")), aes(x = Yea
   facet_wrap(~ Element, scales = "free_y") +
   labs(title = "Trends Over Time by Element and Item", x = "Year", y = "Value") +
   theme_minimal()
+

@@ -3,12 +3,27 @@ title: "week3 PRINCE GEORGE heat wave analysis"
 output: html_document
 date: "2024-05-20"
 ---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
 # Data {.collapsible}
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+file_paths <- c("../data/Prince_George 1942 Climate data daily.csv",
+                "../data/Prince_George Climate data daily (1).csv",
+                "../data/Prince_Geo_2009_to_2024.csv",
+                "../data/Prince_Geo_1997_to_2009.csv",
+                "../data/Prince_George_1940-1942.csv")
 station_name <- "Prince_George" 
-source("../R/read_data_Prince_George.R")  ## read data
-df <- df_pg 
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -22,7 +37,29 @@ step <- 40
 
 
 
-## check wrangling data
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
 ```{r, echo=FALSE,results = 'hide'}
 # Print a specific row's rolling window
 # df_wrangling$rolling_window[[1]] # First row
