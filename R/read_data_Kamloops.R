@@ -13,12 +13,7 @@ getwd()
 # If necessary, set the working directory to the 'r' folder
 setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
 
-# Define file paths
-file_paths <- c("../data/KAMLOOPS Daily Climate Data copy.csv",
-                "../data/KAMLOOPS Daily Climate Data (1) copy.csv",
-                "../data/KAMLOOPS Daily climate data (2) copy.csv",
-                "../data/KAMLOOPS 2024 Daily Climate Data.csv",
-                "../data/KAMLOOPS_Daily_Climate_Data_0.csv")
+
 
 # Define the columns needed
 needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION","STATION_NAME", 
