@@ -31,6 +31,38 @@ df_wrangling <- df_wrangling %>%
          Day = format(LOCAL_DATE, "%d")
   )
 
+head(df_wrangling)
+
+
+
+## missing value
+missing_maxtem <- which(is.na(df_wrangling$MAX_TEMPERATURE))
+
+imx = missing_maxtem
+print(length(imx))
+icheckmx = sort(c(imx, imx - 1, imx + 1))
+icheckmx = unique(icheckmx)
+icheckmx
+maxtmp = df_wrangling$MAX_TEMPERATURE
+#Below works if first and last values are not missing
+maxtemp = maxtmp
+for (i in imx) {
+  i1 = i - 1
+  while (is.na(maxtmp[i1])) { i1 = i1 - 1 }
+  mx1 = maxtmp[i1]
+  i2 = i + 1
+  while (is.na(maxtmp[i2])) { i2 = i2 + 1 }
+  mx2 = maxtmp[i2]
+  maxtemp[i] = (mx1 + mx2) / 2
+  #cat(maxtemp[(i - 1):(i + 1)], "\n")
+}
+df_wrangling$MAX_TEMPERATURE <- maxtemp
+
+
+
+
+
+
 
 
 
@@ -80,7 +112,7 @@ df_90_compare <- bind_rows(df_percentiles, df_percentiles_all)
 
 # Convert Month and Day to a Date for plotting (year is arbitrary, using 2000 as a placeholder)
 df_90_compare <- df_90_compare %>%
-  mutate(Date = as.Date(paste("2000", Month, Day, sep = "-")))
+  mutate(Date = as.Date(paste("2088", Month, Day, sep = "-")))
 
 # Plot the data
 compare_plot <- ggplot(df_90_compare, aes(x = Date, y = Percentile_90, color = Source)) +
@@ -93,3 +125,68 @@ compare_plot <- ggplot(df_90_compare, aes(x = Date, y = Percentile_90, color = S
   theme_minimal()
 
 #print(compare_plot)
+
+
+
+
+
+
+
+### new def of ehf
+
+#step 1: merge the 90th percentile for each day to df_wrangling
+# Assuming df_percentiles and df_wrangling are your data frames
+
+# Convert Month and Day to characters if they are factors
+df_percentiles$Month <- as.character(df_percentiles$Month)
+df_percentiles$Day <- as.character(df_percentiles$Day)
+df_wrangling$Month <- as.character(df_wrangling$Month)
+df_wrangling$Day <- as.character(df_wrangling$Day)
+
+# Merge the data frames based on Month and Day
+df_combined_ehf1 <- merge(df_wrangling, df_percentiles[, c("Month", "Day", "Percentile_90")], by = c("Month", "Day"), all.x = TRUE)
+df_combined_ehf1 <- df_combined_ehf1[, c("Month", "Day","LOCAL_DATE","LOCAL_YEAR","STATION_NAME",
+                                         "MAX_TEMPERATURE", "Percentile_90")]
+
+# View the combined data frame
+head(df_combined_ehf1)
+
+
+
+##step 2: calculate the EHF
+
+
+# Load necessary libraries
+
+# Ensure the LOCAL_DATE is in Date format
+df_combined_ehf1$LOCAL_DATE <- as.Date(df_combined_ehf1$LOCAL_DATE)
+
+# Ensure the MAX_TEMPERATURE column is numeric
+df_combined_ehf1$MAX_TEMPERATURE <- as.numeric(df_combined_ehf1$MAX_TEMPERATURE)
+
+# Order the data frame by LOCAL_DATE
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  arrange(LOCAL_DATE)
+
+# Compute the rolling average of MAX_TEMPERATURE for today and the next two days
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(Rolling_3d_Avg_Temp = rollmean(MAX_TEMPERATURE, k = 3, fill = NA, align = "left"))
+df_combined_ehf1$Rolling_3d_Avg_Temp <- format(df_combined_ehf1$Rolling_3d_Avg_Temp, scientific = FALSE)
+
+# Calculate the difference between the rolling average and the Percentile_90
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(EHI_sig = Rolling_3d_Avg_Temp - Percentile_90)
+
+# Compute the 30-day rolling average of MAX_TEMPERATURE
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(Rolling_Avg_30Day = rollmean(MAX_TEMPERATURE, k = 30, fill = NA, align = "right")%>% lag(1))
+
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(EHI_accl = Rolling_3d_Avg_Temp - Rolling_Avg_30Day)
+
+# Add the new column EHF
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(EHF = EHI_sig * pmax(1, EHI_accl))
+# View the updated data frame
+head(df_combined_ehf1)
+

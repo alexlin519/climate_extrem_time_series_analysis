@@ -8,7 +8,7 @@ process_heat_exceedances <- function(temp_precip_path, stat_path, station_name) 
   icheckmx = unique(icheckmx)
   
   maxtmp = df$maxtemp
-  
+  #Below works if first and last values are not missing
   maxtemp = maxtmp
   for (i in imx) {
     i1 = i - 1
