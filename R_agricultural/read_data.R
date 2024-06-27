@@ -2,8 +2,18 @@
 library(tidyverse)
 
 # Read the CSV file
-data_fao <- read_csv("../data/FAOSTAT_data.csv")
-
+file_paths <- c("../data/FAOSTAT_data.csv",
+                "../data/FAOSTAT_data_4more.csv")
+# Define the columns needed
+needed_columns <- c("Element", "Item", "Year", "Unit", "Value", "Flag", "Flag.Description")
+read_and_select <- function(file_path) {
+  read.csv(file_path) %>%
+    select(all_of(needed_columns))
+}
+# Read and combine all datasets
+data_fao <- map_dfr(file_paths, read_and_select)
+head(data_fao)
+unique(data_fao$Item)
 # Check the structure of the dataset
 str(data_fao)
 
@@ -34,15 +44,3 @@ for (item in unique(data_fao$Item)) {
     theme_minimal()
   print(facet_plot)
   }
-
-
-
-filtered_data <- 
-
-# Plotting the Value over Years for each Element by Item
-ggplot(data = data_fao %>% filter(Item %in% c("Apples", "Peaches")), aes(x = Year, y = Value, color = Item)) +
-  geom_line() +
-  facet_wrap(~ Element, scales = "free_y") +
-  labs(title = "Trends Over Time by Element and Item", x = "Year", y = "Value") +
-  theme_minimal()
-
