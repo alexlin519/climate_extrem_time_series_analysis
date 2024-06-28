@@ -1,5 +1,5 @@
 ---
-title: "Kelowna heat wave analysis"
+title: "Abbotsford heat wave analysis"
 output: html_document
 date: "2024-05-20"
 ---
@@ -18,15 +18,14 @@ function toggleCollapsible(section) {
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
-                "../data/kelow/kelow_1899-1962_p3.csv",
-                "../data/kelow/kelow_1899-1962.csv",
-                "../data/kelow/kelow_1961_1969.csv",
-                "../data/kelow/kelow_1968-2005_p2.csv",
-                "../data/kelow/kelow_1968-2005.csv",
-                "../data/kelow/kelow_2005-2010.csv",
-                "../data/kelow/kelow_2009-2024.csv")
-station_name <- "Kelowna"
+# Define file paths
+file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
+                 "../data/Abbotsford/Daily_Climate _Data_0.csv",
+                "../data/Abbotsford/Daily climate data (1).csv",
+                "../data/Abbotsford/Daily climate data (2).csv",
+                "../data/Abbotsford/Daily climate data (3).csv")
+
+station_name <- "Abbotsford"
 source("../R/read_data.R")  ## read data
 df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
@@ -35,13 +34,13 @@ source("../R/data_for_hw_plot.R")
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1899
+start_year <- 1935
 end_year <- 2024
 
 step <- 40
-
-
 ```
+
+
 
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -66,7 +65,6 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 #print(missing_values)
 ```
 </div>
-
 ```{r, echo=FALSE,results = 'hide'}
 #### check wrangling data
 # Print a specific row's rolling window
@@ -74,6 +72,7 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 # df_wrangling$rolling_window[[5]]  # sample row
 # df_wrangling$rolling_window[[10]] # sample row
 # df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+unique_stations
 ```
 
 ```{r, echo=FALSE,results = 'show'}
@@ -84,7 +83,7 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 # df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
 # #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
 # length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
-unique_stations
+
 ```
 
 
@@ -94,7 +93,6 @@ unique_stations
 # Print the result
 #df_percentiles$Percentile_90
 
-station_name <- "Kelowna"
 df_percentiles <- df_percentiles %>%
   mutate(Station = station_name)
 
@@ -102,7 +100,7 @@ df_percentiles <- df_percentiles %>%
 selected_columns <- df_percentiles %>%
   select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
-save_path <- "../output/Kelowna_percentiles.csv"
+save_path <- paste0("../output/", station_name, "_percentiles.csv")
 
 ## Save the selected columns as a CSV file
 write.csv(selected_columns, file = save_path, row.names = FALSE)
@@ -132,8 +130,6 @@ plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
 save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 ```
-
-
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -144,8 +140,8 @@ write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 compare_plot
 ```
 
-</div>
 
+</div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b> plot certain year temp dist vs baseline 90th </b>
@@ -154,10 +150,10 @@ compare_plot
 
 
 
-```{r, echo=FALSE,message=FALSE, warning=FALSE, fig.path="Kelowna_heatwave_analysis_files/",fig.cap="Plot caption",fig.show='hold'}
-df_plot_year_begin <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
-
-plot_percentiles_vs_year(df_plot_year_begin,1941)
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+ df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# 
+plot_percentiles_vs_year(df_plot_year,1941)
 #
 
 ```
@@ -200,8 +196,8 @@ plot_all_years <- function(start_year, end_year) {
 
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
-
 print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
@@ -263,7 +259,7 @@ for (year_single in years) {
 </h3>
 <div style="display:none;"> 
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Process all years and generate plots
 
 summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
@@ -274,7 +270,7 @@ summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
 
 ```
 
-```{r, echo=FALSE,,message=FALSE}
+```{r, echo=FALSE,,message=FALSE, warning=FALSE}
 # Process all years and generate plots
 
 summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
@@ -290,7 +286,7 @@ summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
 </h3>
 <div style="display:none;">  
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Assuming you have data frames named df_2021, df_2022, ..., df_2025
 # Loop through the years to dynamically add each data frame to the list
  list_of_dfs <- list()
@@ -309,20 +305,19 @@ summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
 
 
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 #combined_df
 
 selected_columns <- combined_df %>%
   select(Year,DayOfYear,Max_Temp_Year,Percentile_90,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
-save_path <- "../output/Kelowna_heatmap_data.csv"
-
+save_path <- paste0("../output/", station_name, "_heatmap_data.csv")
 ## Save the selected columns as a CSV file
 write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ```
 
-```{r, echo=FALSE,message=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 heatmap <- create_heatmap(combined_df, "01-01","12-31")
 print(heatmap)
@@ -341,31 +336,33 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_3_Kelowna <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_3_day_heatmap <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
 
-df_5_Kelowna <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_day_heatmap <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
 
 ```
 
 
 
 ```{r, echo=FALSE,message=FALSE}
-#df_3_Kelowna
+#df_3_day_heatmap
 # Rename the column
-colnames(df_3_Kelowna)[colnames(df_3_Kelowna) == "Color"] <- "daily_max_temp"
+colnames(df_3_day_heatmap)[colnames(df_3_day_heatmap) == "Color"] <- "daily_max_temp"
 # Add the new column
-df_3_Kelowna$station <- "Kelowna"
+df_3_day_heatmap$station <- station_name
 # Save the updated dataframe to a file
-write.csv(df_3_Kelowna, "../output/Kelowna_heatmap_3_dayHW.csv", row.names = FALSE)
+save_path <- paste0("../output/", station_name, "_heatmap_3_dayHW.csv")
+write.csv(df_3_day_heatmap, save_path, row.names = FALSE)
 
 
-#df_5_Kelowna
+#df_5_day_heatmap
 # Rename the column
-colnames(df_5_Kelowna)[colnames(df_5_Kelowna) == "Color"] <- "daily_max_temp"
+colnames(df_5_day_heatmap)[colnames(df_5_day_heatmap) == "Color"] <- "daily_max_temp"
 # Add the new column
-df_5_Kelowna$station <- "Kelowna"
+df_5_day_heatmap$station <- station_name
+save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW.csv")
 # Save the updated dataframe to a file
-write.csv(df_5_Kelowna, "../output/Kelowna_heatmap_5_dayHW.csv", row.names = FALSE)
+write.csv(df_5_day_heatmap, save_path, row.names = FALSE)
 
 ```
 
@@ -381,9 +378,9 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_3_Kelowna <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_3_day_heatmap <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
 
-df_5_Kelowna <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_day_heatmap <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
 
 ```
 

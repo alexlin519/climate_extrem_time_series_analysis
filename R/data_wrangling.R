@@ -61,14 +61,14 @@ if (length(missing_maxtem) > 0) {
     i1 = i - 1
     while ( is.na(maxtmp[i1])) { i1 = i1 - 1 }
     # Ensure i1 is within bounds
-    #if (i1 <= 0) next
+    if (i1 <= 0) next
     
     mx1 = maxtmp[i1]
     
     i2 = i + 1
     while ( is.na(maxtmp[i2])) { i2 = i2 + 1 }
     # Ensure i2 is within bounds
-    #if (i2 > length(maxtmp)) next
+    if (i2 > length(maxtmp)) next
     
     mx2 = maxtmp[i2]
     
