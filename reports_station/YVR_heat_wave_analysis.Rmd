@@ -113,21 +113,24 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 </h3>
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
-#shows top 6 value from df_combined_ehf1$EHF
+# filter the date to be April to Aug before slice
 df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
   arrange(desc(EHF)) %>%
   slice_head(n = 30)
 #unique year
 unique(df_ehf_top_6$LOCAL_YEAR)
+
 plot_ehf(df_combined_ehf1,1941)
 plot_ehf(df_combined_ehf1,2021)
 plot_ehf(df_combined_ehf1,2009)
-plot_ehf(df_combined_ehf1,2005)
+plot_ehf(df_combined_ehf1,1942)
 # Example usage
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 2009,station_name)
-plot_ehf_all(df_combined_ehf1, start_year, end_year, 2005,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1942,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1961,station_name)
 
 save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
