@@ -117,7 +117,9 @@ plot_percentiles_vs_year(df_plot_year,1941)
 </h3>
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
 df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
   arrange(desc(EHF)) %>%
   slice_head(n = 30)
 #unique year
