@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Define file paths
 file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
-                 "../data/Abbotsford/Daily_Climate _Data_0.csv",
+                 "../data/Abbotsford/Daily_Climate_Data_0.csv",
                 "../data/Abbotsford/Daily climate data (1).csv",
                 "../data/Abbotsford/Daily climate data (2).csv",
                 "../data/Abbotsford/Daily climate data (3).csv")
