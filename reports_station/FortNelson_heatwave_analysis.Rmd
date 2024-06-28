@@ -17,7 +17,8 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+start_year <- 1937
+end_year <- 2024
 station_name <- "FortNelson"
 # Define file paths
 file_paths <- c("../data/FortNelson/Daily climate data.csv",
@@ -26,14 +27,13 @@ file_paths <- c("../data/FortNelson/Daily climate data.csv",
                 "../data/FortNelson/Daily climate data (3).csv")
 source("../R/read_data.R")  ## read data
 df <- process_and_save_data(file_paths, station_name)
-source("../R/data_wrangling.R") ## data wrangling
+source("../R/data_wrangling.R") ## wrangling data
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1937
-end_year <- 2024
+
 
 step <- 40
 
@@ -60,7 +60,6 @@ summary_stats <- summary(df)
 
 # 2. Missing Values Analysis
 missing_values <- sapply(df, function(x) sum(is.na(x)))
-#print(missing_values)
 ```
 </div>
 
@@ -71,7 +70,7 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 # df_wrangling$rolling_window[[5]]  # sample row
 # df_wrangling$rolling_window[[10]] # sample row
 # df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
-
+df_combined_ehf1
 unique_stations
 ```
 
@@ -112,6 +111,23 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 <b> Plot</b>
 </h1>
 <div style="display:none;"> 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
 
 
 

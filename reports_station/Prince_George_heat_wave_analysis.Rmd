@@ -60,12 +60,13 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 #print(missing_values)
 ```
 </div>
-```{r, echo=FALSE,results = 'hide'}
+```{r, echo=FALSE}
 # Print a specific row's rolling window
 # df_wrangling$rolling_window[[1]] # First row
 # df_wrangling$rolling_window[[5]]  # sample row
 # df_wrangling$rolling_window[[10]] # sample row
 # df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+#df_combined_ehf1
 ```
 check temp dist for in a random day from all year value
 ```{r, echo=FALSE,results = 'show'}
@@ -108,6 +109,26 @@ df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
 # Example usage:
 plot_percentiles_vs_year(df_plot_year,1941)
 ```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+
+
+</div>
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 # Example usage:
