@@ -18,8 +18,8 @@ read_and_select <- function(file_path) {
 
 # Read and combine all datasets
 df_ehf_all <- map_dfr(file_paths, read_and_select)
-print(head(df_ehf_all))
-
+#print(head(df_ehf_all))
+write.csv(df_ehf_all, file = "../output/df_ehf_all.csv", row.names = FALSE)
 
 plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2024) {
   # Filter for the specified month and years >= start_year
@@ -74,42 +74,6 @@ plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2
 
 
 
-# Get unique stations
-unique_stations <- unique(df_ehf_all$Station)
-
-# Create all unique pairs of stations
-station_pairs <- combn(unique_stations, 2, simplify = FALSE)
-
-# Create scatter plots for each station pair
-plots <- lapply(station_pairs, function(pair) {
-  station1 <- pair[1]
-  station2 <- pair[2]
-  
-  # Subset data for the current pair of stations
-  data_pair <- df_ehf_all %>%
-    filter(Station %in% c(station1, station2))
-  
-  # Create scatter plot
-  scatter_plot <- ggplot(data_pair, aes(x = max_EHF, y = max_EHF, color = Station)) +
-    geom_point(position = position_jitter(width = 0.2, height = 0), size = 3) +
-    labs(title = paste("Max EHF Comparison between", station1, "and", station2),
-         x = "Max EHF", y = "Max EHF") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels if needed
-          axis.text.y = element_text(angle = 45, hjust = 1))  # Rotate y-axis labels if needed
-  
-  # Return the plot
-  scatter_plot
-})
-
-scatter_plot
-
-
-
-
-
-
-
 generate_max_EHF_scatter_plots <- function(df_ehf_all) {
   # List of unique stations
   stations <- unique(df_ehf_all$Station)
@@ -127,7 +91,8 @@ generate_max_EHF_scatter_plots <- function(df_ehf_all) {
       df_station1 <- df_ehf_all %>% filter(Station == station1)
       df_station2 <- df_ehf_all %>% filter(Station == station2)
       # Merge data on Date
-      df_merged <- merge(df_station1, df_station2, by = c("Year", "DayOfYear"), suffixes = c("_1", "_2"))
+      df_merged <- merge(df_station1, df_station2, by = c("LOCAL_YEAR", "Month"),
+                         suffixes = c("_1", "_2"))
       
       # Create scatter plot
       plot <- ggplot() +
@@ -137,6 +102,7 @@ generate_max_EHF_scatter_plots <- function(df_ehf_all) {
         labs(title = paste("Max EHF Comparison:", station1, "vs", station2),
              x = paste("Max EHF -", station1), y = paste("Max EHF -", station2)) +
         theme_minimal()
+        
       
       # Add the plot to the list
       plot_list[[paste(station1, station2, sep = "_vs_")]] <- plot
@@ -147,15 +113,10 @@ generate_max_EHF_scatter_plots <- function(df_ehf_all) {
   return(plot_list)
 }
 
-# Example usage with your data frame df_ehf_all
-plots <- generate_max_EHF_scatter_plots(df_ehf_all)
-
-# Print all scatter plots
-plots
 
 
-# Print all scatter plots
-plots
+
+
 
 # 
 # 

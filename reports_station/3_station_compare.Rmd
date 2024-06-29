@@ -589,12 +589,20 @@ for (sheet in sheets) {
 
 <!--TEXT SHOWS: -->
 
-<b>Part 4 Monthly maxEHF compare</b>
+<b>Part 4 Monthly max EHF compare</b>
 
 </h1>
 <div style="display:none;">  
 
 </div>
+<h2 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> 4.1 correlation + time serires</b>
+</h2>
+<div style="display:none;">  
+
+
+
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b>MAY</b>
@@ -641,4 +649,23 @@ ts_plot
 # Example usage for July (Month = 7)
 ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 8)
 ts_plot
+```
+
+</div>
+</div>
+<h2 onclick="toggleCollapsible(this);">
+
+<!--TEXT SHOWS: -->
+
+<b>4.2 scatter plot of monthly EHF among stations</b>
+
+</h2>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE}
+# Example usage with your data frame df_ehf_all
+plot_list <- generate_max_EHF_scatter_plots(df_ehf_all)
+
+# Print all scatter plots
+plot_list
+
 ```
