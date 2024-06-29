@@ -1,7 +1,8 @@
 ---
 title: "3 station compare"
 output: html_document
-date: "2024-05-23"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 editor_options: 
   markdown: 
     wrap: 72
@@ -30,6 +31,9 @@ source("../R/station compare/scatter_2_station.R") ## plot for 2 station compare
 source("../R/station compare/read_data_3day_hw.R")  ## read data
 source("../R/station compare/read_data_5day_hw.R")  ## read data
 source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
+
+
+source("../R/station compare/EHF_summary.R")  ##EHF compare
 
 ```
 
@@ -465,7 +469,6 @@ hline_data <- generate_temperature_plots("3 days long",df_station_yvr_comp, year
 
 <!-- <!--TEXT SHOWS: -->
 
---\>
 <!-- <b> 3.4 3 temp stations vs YVR_30_year_based, for HW last 3 day</b> -->
 <!-- </h3> --> <!-- <div style="display:none;">  -->
 
@@ -509,7 +512,7 @@ hline_data <- generate_temperature_plots("3 days long",df_station_yvr_comp, year
 
 <!-- <!--TEXT SHOWS: -->
 
---\> <!-- <b>Part 4: Excel table summary for temp diff</b> -->
+<!-- <b>Part 4: Excel table summary for temp diff</b> -->
 <!-- </h1> --> <!-- <div style="display:none;">  -->
 
 ```{r, echo=FALSE,message=FALSE}
@@ -581,4 +584,61 @@ for (sheet in sheets) {
 
 ```
 
+</div>
+<h1 onclick="toggleCollapsible(this);">
 
+<!--TEXT SHOWS: -->
+
+<b>Part 4 Monthly maxEHF compare</b>
+
+</h1>
+<div style="display:none;">  
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>MAY</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 5)
+ts_plot
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>JUN</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 6)
+ts_plot
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>JULY</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 7)
+ts_plot
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>AUG</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 8)
+ts_plot
+```

@@ -28,19 +28,24 @@ sum(is.na(data_fao))
 data_fao <- na.omit(data_fao)
 
 
-
 # Plotting the Value over Years for a specific Item, loop for all items
 # change y aixs as unit is different for each Element Value
 for (item in unique(data_fao$Item)) {
   plot <- ggplot(data = data_fao %>% filter(Item == item), aes(x = Year, y = Value, color = Element)) +
     geom_line() +
     labs(title = paste("Trends Over Time for", item), x = "Year", y = "Value")
-  print(plot)
+  #print(plot)
   # Plotting the Value over Years for each Element (e.g., "Apples")
+  options(repr.plot.width = 35, repr.plot.height = 8)  # Adjust width and height
   facet_plot <- ggplot(data = data_fao %>% filter(Item == item), aes(x = Year, y = Value)) +
     geom_line() +
     facet_wrap(~ Element, scales = "free_y") +
     labs(title = paste("Trends Over Time for", item), x = "Year", y = "Value") +
-    theme_minimal()
+    theme_minimal()+
+    scale_x_continuous(breaks = seq(min(data_fao$Year), max(data_fao$Year), by = 2))+
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))  # Rotate x-axis labels
+  # Change 'by' to your preferred interval
+  
   print(facet_plot)
-  }
+}
+

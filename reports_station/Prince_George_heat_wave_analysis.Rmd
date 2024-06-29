@@ -1,7 +1,8 @@
 ---
 title: "week3 PRINCE GEORGE heat wave analysis"
 output: html_document
-date: "2024-05-20"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
 <script>
 function toggleCollapsible(section) {
