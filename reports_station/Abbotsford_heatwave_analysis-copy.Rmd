@@ -1,0 +1,504 @@
+---
+title: "Abbotsford heat wave analysis"
+output: html_document
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# Define file paths
+file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
+                 "../data/Abbotsford/Daily_Climate_Data_0.csv",
+                "../data/Abbotsford/Daily climate data (1).csv",
+                "../data/Abbotsford/Daily climate data (2).csv",
+                "../data/Abbotsford/Daily climate data (3).csv")
+
+station_name <- "Abbotsford"
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
+source("../R/data_wrangling.R") ## data wrangling
+source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
+source("../R/data_for_hw_plot.R")  
+source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
+source("../R/hw_plot_overview.R") 
+source("../R/heatmap_real.R") 
+start_year <- 1935
+end_year <- 2024
+
+step <- 40
+```
+
+
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
+```{r, echo=FALSE,results = 'hide'}
+#### check wrangling data
+# Print a specific row's rolling window
+# df_wrangling$rolling_window[[1]] # First row
+# df_wrangling$rolling_window[[5]]  # sample row
+# df_wrangling$rolling_window[[10]] # sample row
+# df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+unique_stations
+```
+
+```{r, echo=FALSE,results = 'show'}
+#check temp dist for in a random day from all year value
+# Check the result
+#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[1]] # First row
+#df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[5]]  # sample row
+# df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
+# #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
+# length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
+
+```
+
+
+
+
+```{r, echo=FALSE,results = 'show'}
+# Print the result
+#df_percentiles$Percentile_90
+
+df_percentiles <- df_percentiles %>%
+  mutate(Station = station_name)
+
+# Select specific columns to save
+selected_columns <- df_percentiles %>%
+  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+# Define the path to save the CSV file
+save_path <- paste0("../output/", station_name, "_percentiles.csv")
+
+## Save the selected columns as a CSV file
+write.csv(selected_columns, file = save_path, row.names = FALSE)
+```
+
+
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot</b>
+</h1>
+<div style="display:none;"> 
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+
+# filter the date to be April to Aug before slice
+df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
+  arrange(desc(EHF)) %>%
+  slice_head(n = 30)
+#unique year
+unique(df_ehf_top_6$LOCAL_YEAR)
+
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+plot_ehf(df_combined_ehf1,2009)
+plot_ehf(df_combined_ehf1,1942)
+plot_ehf(df_combined_ehf1,1998)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2009,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1942,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1998,station_name)
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot certain year temp dist vs baseline 90th </b>
+</h3>
+<div style="display:none;"> 
+
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+ df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# 
+plot_percentiles_vs_year(df_plot_year,1941)
+#
+
+```
+
+```{r, echo=FALSE, warning=FALSE}
+
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
+# Example usage:
+
+plot_percentiles_vs_year(df_plot_year,2021)
+```
+
+</div>
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot  90th (blue) vs all year temp dist (grey). Based line is all year.</b>
+</h3>
+<div style="display:none;"> 
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Main function to loop through multiple years
+plot_all_years <- function(start_year, end_year) {
+  for (year in start_year:end_year) {
+    df_plot_year <- prepare_plot_data("Percentile_90", year, "MAX_TEMPERATURE")
+    print(plot_percentiles_vs_year(df_plot_year, year))
+  }
+}
+#plot_all_years(2000, 2024)
+
+```
+
+
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Example usage:
+#Assuming the range of years is from 2000 to 2024 and the specific year to highlight is 2014
+
+#print(plot_all_years_with_baseline(start_year,end_year,2000))
+
+print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
+```
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Example usage:
+#print(plot_all_years_highlight_specific_year(start_year,end_year,1940))
+
+```   
+
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Analyze the hw </b>
+</h1>
+<div style="display:none;">  
+
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>prepare for the data </b>
+</h4>
+<div style="display:none;">  
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+year_analysis_hw <- 2019
+df_for_hw <- prepare_plot_data("Percentile_90", year_analysis_hw, "MAX_TEMPERATURE")
+process_data_for_hw(df_for_hw)
+
+```
+
+
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Analysis for each year
+# Define the start, end, and step for the sequence
+
+
+# Generate the sequence of years
+years <- seq(start_year, end_year, by = step)
+
+# Loop over the sequence of years
+for (year_single in years) {
+  #df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
+  #summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
+  #plots <- plot_case_summary(summaries, year_single)
+  
+  #print(plots$month_plot)
+  #print(plots$hw_length_plot)
+}
+
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot overall count of hw through years </b>
+</h3>
+<div style="display:none;"> 
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Process all years and generate plots
+
+summary_df_hw_day <- process_all_years_and_generate_plots(start_year,1980)
+
+# Print the generated plots
+#print(plots$total_plot)
+#summary_df_hw_day
+
+```
+
+```{r, echo=FALSE,,message=FALSE, warning=FALSE}
+# Process all years and generate plots
+
+summary_df_hw_day <- process_all_years_and_generate_plots(1980,end_year)
+# Print the generated plots
+#summary_df_hw_day
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot for heat map</b>
+</h3>
+<div style="display:none;">  
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Assuming you have data frames named df_2021, df_2022, ..., df_2025
+# Loop through the years to dynamically add each data frame to the list
+ list_of_dfs <- list()
+ 
+ for (year in start_year:end_year) {
+   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+   
+   # Add the prepared data frame to the list
+   list_of_dfs[[as.character(year)]] <- prepared_df
+ }
+ # Combine the data frames into one
+ combined_df <- do.call(rbind, list_of_dfs)
+ 
+```
+
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+#combined_df
+
+selected_columns <- combined_df %>%
+  select(Year,DayOfYear,Max_Temp_Year,Percentile_90,Station)  # Adjust column names as needed
+# Define the path to save the CSV file
+save_path <- paste0("../output/", station_name, "_heatmap_data.csv")
+## Save the selected columns as a CSV file
+write.csv(selected_columns, file = save_path, row.names = FALSE)
+
+```
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+
+heatmap <- create_heatmap(combined_df, "01-01","12-31")
+print(heatmap)
+ 
+```
+
+
+```{r, echo=FALSE,message=FALSE}
+
+heatmap <- create_heatmap(combined_df, "04-01","10-31")
+print(heatmap)
+ 
+```
+
+
+
+```{r, echo=FALSE,message=FALSE}
+
+df_3_day_heatmap <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+
+df_5_day_heatmap <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+```
+
+
+
+```{r, echo=FALSE,message=FALSE}
+#df_3_day_heatmap
+# Rename the column
+colnames(df_3_day_heatmap)[colnames(df_3_day_heatmap) == "Color"] <- "daily_max_temp"
+# Add the new column
+df_3_day_heatmap$station <- station_name
+# Save the updated dataframe to a file
+save_path <- paste0("../output/", station_name, "_heatmap_3_dayHW.csv")
+write.csv(df_3_day_heatmap, save_path, row.names = FALSE)
+
+
+#df_5_day_heatmap
+# Rename the column
+colnames(df_5_day_heatmap)[colnames(df_5_day_heatmap) == "Color"] <- "daily_max_temp"
+# Add the new column
+df_5_day_heatmap$station <- station_name
+save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW.csv")
+# Save the updated dataframe to a file
+write.csv(df_5_day_heatmap, save_path, row.names = FALSE)
+
+```
+
+
+
+
+```{r, echo=FALSE,message=FALSE}
+
+heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
+print(heatmap)
+ 
+```
+
+```{r, echo=FALSE,message=FALSE}
+
+df_3_day_heatmap <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+
+df_5_day_heatmap <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+```
+
+## seperate view of the heatmap
+```{r, echo=FALSE,message=FALSE}
+# list_of_dfs <- list()
+# 
+# for (year in 1941:1960) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# 
+# list_of_dfs <- list()
+# for (year in 1960:1980) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# list_of_dfs <- list()
+# for (year in 1980:2000) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+
+
+# 
+# list_of_dfs <- list()
+# for (year in 2000:2024) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+ 
+```
+
+
+## examine specific year (grep line vs 90 vs specific year)
+```{r, echo=FALSE,message=FALSE}
+# Define the specific years you want to process
+# years_to_process <- c(1947,1958,1970, 2009, 2021)
+# 
+# # Initialize an empty list to store data frames for each year
+# list_of_dfs <- list()
+#   
+# for (year in years_to_process) {
+#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
+#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
+#   
+#   # Add the prepared data frame to the list
+#   list_of_dfs[[as.character(year)]] <- prepared_df
+# }
+# # Combine the data frames into one
+# combined_df2 <- do.call(rbind, list_of_dfs)
+# 
+# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
+# print(heatmap)
+# 
+# for (year in years_to_process) {
+#   print(plot_all_years_highlight_specific_year(start_year,end_year,year))
+# }
+```
+## according bar
+```{r, echo=FALSE,message=FALSE}
+# # Loop over the sequence of years
+# years_to_process <- c(1947,1958,1970, 2009, 2021)
+# for (year_single in years_to_process) {
+#   df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
+#   summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
+#   plots <- plot_case_summary(summaries, year_single)
+#   
+#   print(plots$month_plot)
+#   print(plots$hw_length_plot)
+#}
+```

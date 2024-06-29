@@ -17,23 +17,54 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data_Abbotsford.R")  ## read data
-df <- df_ab
+
+# Define file paths
+file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
+                 "../data/Abbotsford/Daily_Climate _Data_0.csv",
+                "../data/Abbotsford/Daily climate data (1).csv",
+                "../data/Abbotsford/Daily climate data (2).csv",
+                "../data/Abbotsford/Daily climate data (3).csv")
+
+station_name <- "Abbotsford"
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1944
+start_year <- 1935
 end_year <- 2024
 
 step <- 40
-station_name <- "Abbotsford"
 ```
 
 
 
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
 ```{r, echo=FALSE,results = 'hide'}
 #### check wrangling data
 # Print a specific row's rolling window
@@ -52,7 +83,7 @@ unique_stations
 # df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]] # sample row
 # #df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[nrow(df_wrangling)]] # Last row
 # length(df_grouped$ROLLING_WINDOW_ALL_YEAR_VALUES[[88]])
-unique_stations
+
 ```
 
 
@@ -82,8 +113,35 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 </h1>
 <div style="display:none;"> 
 
-</div>
 
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
+
+
+</div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b> plot certain year temp dist vs baseline 90th </b>
@@ -93,9 +151,9 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
-# df_plot_year_begin <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+ df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
 # 
-# plot_percentiles_vs_year(df_plot_year_begin,1941)
+plot_percentiles_vs_year(df_plot_year,1941)
 #
 
 ```
@@ -138,7 +196,7 @@ plot_all_years <- function(start_year, end_year) {
 
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
-#print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 

@@ -1,7 +1,8 @@
 ---
 title: "3 station compare"
 output: html_document
-date: "2024-05-23"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 editor_options: 
   markdown: 
     wrap: 72
@@ -30,6 +31,9 @@ source("../R/station compare/scatter_2_station.R") ## plot for 2 station compare
 source("../R/station compare/read_data_3day_hw.R")  ## read data
 source("../R/station compare/read_data_5day_hw.R")  ## read data
 source("../R/station compare/line_segment_plot.R")  ## plot for 3 station
+
+
+source("../R/station compare/EHF_summary.R")  ##EHF compare
 
 ```
 
@@ -348,24 +352,21 @@ dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:
 
 <b>3.1 line segment for 7 temp station, 3 day HW</b>
 
+
 </h3>
 
 ::: {style="display:none;"}
 YVR: 1937-2024
 
-Prince_George: 1942-2024
+Prince_George: 1940-2024
 
 FortNelson: 1937-2024
 
 Kelowna: 1899-2024
 
-Abbotsford: 1944-2024
+Abbotsford: 1935-2024
 
-
-
-
-
-Kamloops: 1951-2024
+Kamloops: 1939-2024
 
 Penticton: 1941-2024
 
@@ -388,8 +389,8 @@ station_colors <- c("Kamloops" = "red", "Prince_George" = "green", "YVR" = "blue
                     "Kelowna" = '#FFD700', 'Penticton' = '#FF00FF', 'Abbotsford' = '#696969')
 
 df_station_filter<- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
-year_ranges <- create_year_ranges(1951, 2024, 5)
-hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
+year_ranges <- create_year_ranges(1941, 2024, 5)
+hline_data <- generate_temperature_plots("3 days long",df_station_filter, year_ranges, station_colors)
 ```
 :::
 
@@ -404,17 +405,18 @@ hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station
 ::: {style="display:none;"}
 YVR: 1937-2024
 
-Prince_George: 1942-2024
+Prince_George: 1940-2024
 
-Kamloops: 1951-2024
+FortNelson: 1937-2024
 
 Kelowna: 1899-2024
 
-Abbotsford: 1944-2024
+Abbotsford: 1935-2024
+
+Kamloops: 1939-2024
 
 Penticton: 1941-2024
 
-FortNelson: 1937-2024
 
 
 #### line segment 5 day
@@ -431,8 +433,8 @@ df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
 
 
 df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
-year_ranges <- create_year_ranges(1951, 2024, 5)
-hline_data <- generate_temperature_plots(df_station_filter, year_ranges, station_colors)
+year_ranges <- create_year_ranges(1941, 2024, 5)
+hline_data <- generate_temperature_plots("5 days long",df_station_filter, year_ranges, station_colors)
 
 ```
 :::
@@ -458,7 +460,7 @@ station_colors <- c( "YVR" = "blue",
 
 df_station_yvr_comp <- line_segment_data_prepare(df_line_seg_3day, station_only = c("YVR", "YVR_30y_based"))
 year_ranges <- create_year_ranges(1937, 2024, 4)
-hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, station_colors)
+hline_data <- generate_temperature_plots("3 days long",df_station_yvr_comp, year_ranges, station_colors)
 ```
 
 <!-- </div> -->
@@ -467,7 +469,6 @@ hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, stati
 
 <!-- <!--TEXT SHOWS: -->
 
---\>
 <!-- <b> 3.4 3 temp stations vs YVR_30_year_based, for HW last 3 day</b> -->
 <!-- </h3> --> <!-- <div style="display:none;">  -->
 
@@ -479,7 +480,7 @@ hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, stati
 
 <!-- Kelowna:       1899-2024 -->
 
-<!-- Abbotsford:    1944-2024 -->
+<!-- Abbotsford:    1935-2024 -->
 
 <!-- Penticton:     1941-2024 -->
 
@@ -511,7 +512,7 @@ hline_data <- generate_temperature_plots(df_station_yvr_comp, year_ranges, stati
 
 <!-- <!--TEXT SHOWS: -->
 
---\> <!-- <b>Part 4: Excel table summary for temp diff</b> -->
+<!-- <b>Part 4: Excel table summary for temp diff</b> -->
 <!-- </h1> --> <!-- <div style="display:none;">  -->
 
 ```{r, echo=FALSE,message=FALSE}
@@ -583,4 +584,88 @@ for (sheet in sheets) {
 
 ```
 
+</div>
+<h1 onclick="toggleCollapsible(this);">
 
+<!--TEXT SHOWS: -->
+
+<b>Part 4 Monthly max EHF compare</b>
+
+</h1>
+<div style="display:none;">  
+
+</div>
+<h2 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> 4.1 correlation + time serires</b>
+</h2>
+<div style="display:none;">  
+
+
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>MAY</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 5)
+ts_plot
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>JUN</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 6)
+ts_plot
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>JULY</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 7)
+ts_plot
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>AUG</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 8)
+ts_plot
+```
+
+</div>
+</div>
+<h2 onclick="toggleCollapsible(this);">
+
+<!--TEXT SHOWS: -->
+
+<b>4.2 scatter plot of monthly EHF among stations</b>
+
+</h2>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE}
+# Example usage with your data frame df_ehf_all
+plot_list <- generate_max_EHF_scatter_plots(df_ehf_all)
+
+# Print all scatter plots
+plot_list
+
+```

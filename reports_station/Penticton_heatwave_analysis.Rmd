@@ -17,8 +17,14 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data_Penticton.R")  ## read data
-df <- df_pt
+
+station_name <- "Penticton"
+file_paths <- c("../data/PENTICTON/Daily climate data.csv",
+                "../data/PENTICTON/Daily climate data (1).csv",
+                "../data/PENTICTON/Daily climate data (2).csv",
+                "../data/PENTICTON/Daily climate data (3).csv")
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -29,10 +35,32 @@ start_year <- 1941
 end_year <- 2024
 
 step <- 40
-station_name <- "Penticton"
 ```
 
 
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
 
 ```{r, echo=FALSE,results = 'hide'}
 #### check wrangling data
@@ -81,6 +109,20 @@ save_path <- paste0("../output/", station_name, "_percentiles.csv")
 <b> Plot</b>
 </h1>
 <div style="display:none;"> 
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
+
+
+
 
 </div>
 

@@ -1,12 +1,33 @@
 ---
 title: "week3 YVR heat wave analysis"
 output: html_document
-date: "2024-05-20"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
+
 # Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+station_name <- "YVR"
+
+# Define file paths
+file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
+                "../data/YVR1108447-daily1964to1991.csv",
+                "../data/YVR1108447-daily1991to2013.csv",
+                "../data/YVR climate daily 2013 to 2024 copy.csv")
+
 source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -19,6 +40,30 @@ end_year <- 2024
 step <- 40
 ```
 
+
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
 
 ## check wrangling data
 ```{r, echo=FALSE,results = 'hide'}
@@ -61,6 +106,36 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 # Plot
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
+df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
+  arrange(desc(EHF)) %>%
+  slice_head(n = 30)
+#unique year
+unique(df_ehf_top_6$LOCAL_YEAR)
+
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+plot_ehf(df_combined_ehf1,2009)
+plot_ehf(df_combined_ehf1,1942)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2009,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1942,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1961,station_name)
+
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
 ## plot given year temp dist vs baseline 90th
 ```{r, echo=FALSE,message=FALSE}
 #df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")

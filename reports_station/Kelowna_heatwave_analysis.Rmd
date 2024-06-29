@@ -1,7 +1,8 @@
 ---
 title: "Kelowna heat wave analysis"
 output: html_document
-date: "2024-05-20"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
 <script>
 function toggleCollapsible(section) {
@@ -17,8 +18,18 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data_Kelowna.R")  ## read data
-df <- combined_data
+
+file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
+                "../data/kelow/kelow_1899-1962_p3.csv",
+                "../data/kelow/kelow_1899-1962.csv",
+                "../data/kelow/kelow_1961_1969.csv",
+                "../data/kelow/kelow_1968-2005_p2.csv",
+                "../data/kelow/kelow_1968-2005.csv",
+                "../data/kelow/kelow_2005-2010.csv",
+                "../data/kelow/kelow_2009-2024.csv")
+station_name <- "Kelowna"
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -33,7 +44,29 @@ step <- 40
 
 ```
 
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
 
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
 
 ```{r, echo=FALSE,results = 'hide'}
 #### check wrangling data
@@ -82,6 +115,47 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 <b> Plot</b>
 </h1>
 <div style="display:none;"> 
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
+df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
+  arrange(desc(EHF)) %>%
+  slice_head(n = 30)
+#unique year
+unique(df_ehf_top_6$LOCAL_YEAR)
+
+
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+plot_ehf(df_combined_ehf1,1993)
+plot_ehf(df_combined_ehf1,2006)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1993,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2006,station_name)
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+```
 
 </div>
 

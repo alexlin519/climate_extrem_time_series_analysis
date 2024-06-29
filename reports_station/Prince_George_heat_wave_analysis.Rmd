@@ -1,33 +1,73 @@
 ---
 title: "week3 PRINCE GEORGE heat wave analysis"
 output: html_document
-date: "2024-05-20"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 ---
+<script>
+function toggleCollapsible(section) {
+  var content = section.nextElementSibling;
+  if (content.style.display === "none") {
+    content.style.display = "block";
+  } else {
+    content.style.display = "none";
+  }
+}
+</script>
 # Data {.collapsible}
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-source("../R/read_data_Prince_George.R")  ## read data
-df <- df_pg 
+file_paths <- c("../data/Prince_George 1942 Climate data daily.csv",
+                "../data/Prince_George Climate data daily (1).csv",
+                "../data/Prince_Geo_2009_to_2024.csv",
+                "../data/Prince_Geo_1997_to_2009.csv",
+                "../data/Prince_George_1940-1942.csv")
+station_name <- "Prince_George" 
+source("../R/read_data.R")  ## read data
+df <- process_and_save_data(file_paths, station_name)
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
-start_year <- 1942
+start_year <- 1940
 end_year <- 2024
 step <- 40
 ```
 
 
 
-## check wrangling data
-```{r, echo=FALSE,results = 'hide'}
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>basic EDA</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Display the first few rows of the combined data
+#print(head(df))
+
+# Display unique station names
+unique_stations <- df %>%
+  distinct(STATION_NAME)
+#print(unique_stations)
+
+# 1. Summary Statistics
+summary_stats <- summary(df)
+#print(summary_stats)
+
+# 2. Missing Values Analysis
+missing_values <- sapply(df, function(x) sum(is.na(x)))
+#print(missing_values)
+```
+</div>
+```{r, echo=FALSE}
 # Print a specific row's rolling window
 # df_wrangling$rolling_window[[1]] # First row
 # df_wrangling$rolling_window[[5]]  # sample row
 # df_wrangling$rolling_window[[10]] # sample row
 # df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+#df_combined_ehf1
 ```
 check temp dist for in a random day from all year value
 ```{r, echo=FALSE,results = 'show'}
@@ -42,7 +82,7 @@ unique_stations
 
 
 get 90th from the all year for all day value
-```{r, echo=FALSE,results = 'show'}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Print the result
 #df_percentiles$Percentile_90
 station_name <- "Prince_George"
@@ -63,7 +103,47 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ## plot given year temp dist vs baseline 90th
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+compare_plot
+# Example usage:
+df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,1941)
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> EHF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
+df_ehf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) >= 4 & month(LOCAL_DATE) <= 8) %>%
+  arrange(desc(EHF)) %>%
+  slice_head(n = 30)
+#unique year
+unique(df_ehf_top_6$LOCAL_YEAR)
+
+
+plot_ehf(df_combined_ehf1,1941)
+plot_ehf(df_combined_ehf1,2021)
+plot_ehf(df_combined_ehf1,1983)
+plot_ehf(df_combined_ehf1,1977)
+# Example usage
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1983,station_name)
+plot_ehf_all(df_combined_ehf1, start_year, end_year, 1977,station_name)
+
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+
+
+</div>
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 # Example usage:
 df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
@@ -71,7 +151,8 @@ df_plot_year <- prepare_plot_data("Percentile_90", 2021, "MAX_TEMPERATURE")
 plot_percentiles_vs_year(df_plot_year,2021)
 ```
 
-```{r, echo=FALSE,message=FALSE}
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
 # Main function to loop through multiple years
 plot_all_years <- function(start_year, end_year) {
   for (year in start_year:end_year) {
@@ -92,7 +173,7 @@ plot_all_years <- function(start_year, end_year) {
 
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
-
+print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
 print(plot_all_years_highlight_specific_year(start_year,end_year,2021))
 ```
 

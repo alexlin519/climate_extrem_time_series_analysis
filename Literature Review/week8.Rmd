@@ -1,0 +1,55 @@
+---
+title: "Weekly Report -- Week 8"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: html_document
+bibliography: references.bib
+---
+
+------------------------------------------------------------------------
+
+# Summary
+
+## 1. Added near temp station contains 1941 to dataset for all 7 stations.
+
+-   YVR: 1937-2024
+
+    Prince_George: 1940-2024
+
+    FortNelson: 1937-2024
+
+    Kelowna: 1899-2024
+
+    Abbotsford: 1935-2024
+
+    Kamloops: 1939-2024
+
+    Penticton: 1941-2024
+
+-   Compare 90th difference between 30 year based percentile vs all year percentile
+
+## 2. FAOSTAT Data
+
+1.  **Different crops time series**
+
+    -   some data is estimated value, but most is Official figure
+    -   Area harvested refer to the area under cultivation, with unit ha
+    -   Production means production, with unit ton
+    -   Yield means the harvested production per ha for the area under cultivation, with unit 100 g/ha
+
+2.  **Map in Canada for proportion in the field**
+
+## 3. Excess Heat Factor (EHF)
+
+1.  for each station, plot all year EHF
+2.  monthly max of EHF and compare between different station
+
+## Next steps
+
+-   heatmap compare between old def of hw and EHF
+
+-   relation between FAOSTAT and heatwave
+
+------------------------------------------------------------------------
+
+# References
