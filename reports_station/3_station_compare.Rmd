@@ -655,6 +655,7 @@ ts_plot
 </div>
 <h2 onclick="toggleCollapsible(this);">
 
+
 <!--TEXT SHOWS: -->
 
 <b>4.2 scatter plot of monthly EHF among stations</b>
