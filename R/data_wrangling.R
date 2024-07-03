@@ -241,6 +241,14 @@ df_combined_ehf1 <- df_combined_ehf1 %>%
 #head(df_combined_ehf1)
 
 
+# define the Heatday: if EHF < 0 for this rows and previous 2 rows, then it is not a Heatday,
+# otherwise it is a Heatday                 
+df_combined_ehf1 <- df_combined_ehf1 %>%
+  mutate(Heatday = ifelse(EHF < 0 & lag(EHF, 1) < 0 & lag(EHF, 2) < 0, "No", "Yes"))
+
+
+
+## step 3: aggregate to monthly maxima
 ## aggregate to monthly maxima
 # Aggregate to monthly maxima in terms of EHF
 monthly_max_EHF <- df_combined_ehf1 %>%
@@ -248,3 +256,46 @@ monthly_max_EHF <- df_combined_ehf1 %>%
   summarize(max_EHF = max(EHF, na.rm = TRUE))
 monthly_max_EHF <- monthly_max_EHF %>%
   mutate(Station = station_name)
+
+
+
+# Convert NA values to 'no'
+df_combined_ehf1$Heatday[is.na(df_combined_ehf1$Heatday)] <- "no"
+
+
+heat_wave_length <- 3
+
+# Identify streaks and reclassify
+EHF_melted_temp_3_day <- df_combined_ehf1 %>%
+  group_by(LOCAL_YEAR) %>%
+  mutate(streak = with(rle(Heatday == "Yes"), rep(lengths, lengths))) %>%
+  mutate(Heatday = ifelse(Heatday == "Yes" & streak < heat_wave_length, "too_short", Heatday)) %>%
+  mutate(Heatwave = ifelse(Heatday == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday)) %>%
+  ungroup()
+
+# Create the folder with the station name
+output_dir <- paste0("../output/", station_name)
+dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Save the updated dataframe to a file in the created folder
+save_path <- paste0(output_dir, "/EHF_heatmap_3_dayHW.csv")
+write.csv(EHF_melted_temp_3_day, save_path, row.names = FALSE)
+
+
+heat_wave_length <- 5
+# Identify streaks and reclassify
+EHF_melted_temp_5_day <- df_combined_ehf1 %>%
+  group_by(LOCAL_YEAR) %>%
+  mutate(streak = with(rle(Heatday == "Yes"), rep(lengths, lengths))) %>%
+  mutate(Heatday = ifelse(Heatday == "Yes" & streak < heat_wave_length, "too_short", Heatday)) %>%
+  mutate(Heatwave = ifelse(Heatday == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday)) %>%
+  ungroup()
+
+# Create the folder with the station name
+output_dir <- paste0("../output/", station_name)
+#dir.create(output_dir, showWarnings = FALSE, recursive = TRUE)
+# Save the updated dataframe to a file in the created folder
+save_path <- paste0(output_dir, "/EHF_heatmap_5_dayHW.csv")
+write.csv(EHF_melted_temp_5_day, save_path, row.names = FALSE)
+
+
