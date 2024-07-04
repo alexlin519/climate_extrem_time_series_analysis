@@ -51,7 +51,7 @@ plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2
     pivot_wider(names_from = Station, values_from = max_EHF)
   
   # Compute the correlation matrix
-  ehf_correlation <- cor(wide_data %>% select(-LOCAL_YEAR), use = "pairwise.complete.obs")
+  ehf_correlation <- cor(wide_data %>% select(-LOCAL_YEAR),method = "spearman", use = "pairwise.complete.obs")
   
   # Print the correlation matrix
   print(ehf_correlation)

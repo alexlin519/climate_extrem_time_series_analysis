@@ -250,7 +250,7 @@ generate_plot_2station <- function(day_title,df_year_range, hline_data, year_ran
     theme_minimal() +
     theme(plot.title = element_text(hjust = 0.5),
           #axis.text.y = element_text(size = 14, hjust = 1.5, vjust = -1.8, margin = margin(t = 0, r = 5, b = 0, l = 0)),
-          axis.text.x = element_text(size = 9, angle = 45, vjust = 1.6, 
+          axis.text.x = element_text(size = 6, angle = 45, vjust = 1.6, 
                                      hjust = 1, margin = margin(t = 5, r = 0, b = 0, l = 0))) +
     scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 3)]) +
     scale_y_discrete(labels = function(x) {

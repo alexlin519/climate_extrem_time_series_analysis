@@ -620,7 +620,7 @@ for (sheet in sheets) {
 </div>
 <h2 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> 4.1 correlation + time serires</b>
+<b> 4.1 spearman correlation + time serires</b>
 </h2>
 <div style="display:none;">  
 
