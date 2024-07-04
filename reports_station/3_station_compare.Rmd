@@ -442,9 +442,9 @@ df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%
 #line_segment_plot(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna"))+ #geom_hline(aes(yintercept = as.numeric(Year)), color = "grey", linetype = "solid", alpha = 0.5)
 
 
-df_station_filter<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
+df_station_filter_5d<- line_segment_data_prepare(df_filtered_line_seg_5d, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
 year_ranges <- create_year_ranges(1940, 2024, 5)
-hline_data <- generate_temperature_plots("5 days long",df_station_filter, year_ranges, station_colors)
+hline_data <- generate_temperature_plots("5 days long",df_station_filter_5d, year_ranges, station_colors)
 
 ```
 </div>
@@ -455,7 +455,7 @@ hline_data <- generate_temperature_plots("5 days long",df_station_filter, year_r
 <div style="display:none;">  
 ```{r echo=FALSE, fig.height=17, fig.width=15, message=FALSE}
 year_ranges <- create_year_ranges(1941, 2024, 1)
-hline_data <- generate_temperature_plots("5 days long",df_station_filter, year_ranges, station_colors)
+hline_data <- generate_temperature_plots("5 days long",df_station_filter_5d, year_ranges, station_colors)
 ```
 
 
@@ -702,10 +702,47 @@ plot_list
 </h1>
 <div style="display:none;">  
 
+
+
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> 5.1 EHF line segment data for 5 stations</b>
+<b> 5.1 EHF line segment data for 3 day HW</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, fig.height=8, fig.width=15, message=FALSE}
+
+station_colors <- c(
+ "Prince_George_EHF" = "green", 
+"YVR_EHF" = "blue", 'FortNelson_EHF'='#D2B48C',
+"Kelowna_EHF" = '#FFD700', 'Penticton' = '#FF00FF', 
+'Abbotsford_EHF' = 'red')
+
+
+# filter day of year to summer
+df_EHF_line_seg_3d <- df_EHF_line_seg_3d %>% filter(DayOfYear >= "04-01" & DayOfYear <= "09-01")
+
+station_filter_EHF_3d<-  line_segment_EHF_data_prepare(df_EHF_line_seg_3d, station_only = c("YVR_EHF", "Prince_George_EHF","Kelowna_EHF","Abbotsford_EHF","FortNelson_EHF"))
+year_ranges <- create_year_ranges(1941, 2024, 5)
+hline_data <- generate_temperature_plots_EHF("5 days long",station_filter_EHF_3d, year_ranges, station_colors)
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> 5.15 all year one plot </b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, fig.height=17, fig.width=15, message=FALSE}
+year_ranges <- create_year_ranges(1941, 2024, 1)
+hline_data <- generate_temperature_plots_EHF("3 days long",station_filter_EHF_3d, year_ranges, station_colors)
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> 5.2 EHF line segment data for 5 day HW</b>
 </h3>
 <div style="display:none;">  
 ```{r echo=FALSE, fig.height=8, fig.width=15, message=FALSE}
@@ -725,11 +762,13 @@ year_ranges <- create_year_ranges(1941, 2024, 5)
 hline_data <- generate_temperature_plots_EHF("5 days long",station_filter_EHF_5d, year_ranges, station_colors)
 ```
 
+
+
 </div>
-<h3 onclick="toggleCollapsible(this);">
+<h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> 5.2 all year one plot </b>
-</h3>
+<b> 5.25 all year one plot </b>
+</h4>
 <div style="display:none;">  
 ```{r echo=FALSE, fig.height=17, fig.width=15, message=FALSE}
 year_ranges <- create_year_ranges(1941, 2024, 1)
@@ -743,12 +782,12 @@ hline_data <- generate_temperature_plots_EHF("5 days long",station_filter_EHF_5d
 </h3>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
-df_station_filter
+df_station_filter_5d
 # filter the column, only select 3 columns
 station_filter_EHF_5d  <- station_filter_EHF_5d %>% select(Year,DayOfYear,station)
 
 # merge the 2 data frame
-df_EHF_and_90th <- rbind(station_filter_EHF_5d,df_station_filter)
+df_EHF_and_90th <- rbind(station_filter_EHF_5d,df_station_filter_5d)
 ```
 YVR: 1937-2024
 
@@ -780,30 +819,83 @@ hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_
 </div>
 <h5 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>FortNelson 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+
+
+station_colors <- c( "FortNelson" = "blue",
+                    'FortNelson_EHF' = 'red')
+#filter the station
+df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "FortNelson_EHF" | station == "FortNelson")
+
+year_ranges <- create_year_ranges(1937, 2024, 3
+                                  )
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
+
 
 </div>
 <h5 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b> Prince_George 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+
+
+station_colors <- c( "Prince_George" = "blue",
+                    'Prince_George_EHF' = 'red')
+#filter the station
+df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "Prince_George" | station == "Prince_George_EHF")
+
+year_ranges <- create_year_ranges(1940, 2024, 3
+                                  )
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
+
 
 </div>
 <h5 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>Kelowna 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+
+
+station_colors <- c( "Kelowna" = "blue",
+                    'Kelowna_EHF' = 'red')
+#filter the station
+df_EHF_and_90th_2compare <- df_EHF_and_90th %>% 
+  filter(station == "Kelowna" | station == "Kelowna_EHF")
+
+year_ranges <- create_year_ranges(1899, 2024, 3)
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
 
 </div>
 <h5 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>Abbotsford 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+
+
+station_colors <- c( "Abbotsford" = "blue",
+                    'Abbotsford_EHF' = 'red')
+#filter the station
+df_EHF_and_90th_2compare <- df_EHF_and_90th %>% 
+  filter(station == "Abbotsford" | station == "Abbotsford_EHF")
+
+year_ranges <- create_year_ranges(1935, 2024, 3)
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
+
 
 </div>
 <h5 onclick="toggleCollapsible(this);">
