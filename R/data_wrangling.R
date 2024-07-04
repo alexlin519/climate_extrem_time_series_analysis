@@ -260,8 +260,11 @@ monthly_max_EHF <- monthly_max_EHF %>%
 
 
 # Convert NA values to 'no'
-df_combined_ehf1$Heatday[is.na(df_combined_ehf1$Heatday)] <- "no"
+df_combined_ehf1$Heatday[is.na(df_combined_ehf1$Heatday)] <- "No"
 
+
+#add a column call station
+df_combined_ehf1$station <- station_name
 
 heat_wave_length <- 3
 
@@ -299,3 +302,4 @@ save_path <- paste0(output_dir, "/EHF_heatmap_5_dayHW.csv")
 write.csv(EHF_melted_temp_5_day, save_path, row.names = FALSE)
 
 
+# Year station  DayOfYear
