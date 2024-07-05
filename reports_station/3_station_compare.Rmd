@@ -633,7 +633,7 @@ for (sheet in sheets) {
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
 # Example usage for July (Month = 7)
-ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 5)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(5))
 ts_plot
 ```
 
@@ -645,7 +645,7 @@ ts_plot
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
 # Example usage for July (Month = 7)
-ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 6)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(6))
 ts_plot
 ```
 
@@ -658,10 +658,21 @@ ts_plot
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
 # Example usage for July (Month = 7)
-ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(7))
 ts_plot
 ```
 
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>JUN and July</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(6,7))
+ts_plot
+```
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -670,7 +681,20 @@ ts_plot
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
 # Example usage for July (Month = 7)
-ts_plot <- plot_ehf_and_correlation(df_ehf_all, month = 8)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(8))
+ts_plot
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>4 months in summer</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE,fig.width=15, fig.height=8}
+# Example usage for July (Month = 7)
+ts_plot <- plot_ehf_and_correlation(df_ehf_all, months = c(5,6,7,8))
 ts_plot
 ```
 
@@ -782,7 +806,7 @@ hline_data <- generate_temperature_plots_EHF("5 days long",station_filter_EHF_5d
 </h3>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
-df_station_filter_5d
+#df_station_filter_5d
 # filter the column, only select 3 columns
 station_filter_EHF_5d  <- station_filter_EHF_5d %>% select(Year,DayOfYear,station)
 
