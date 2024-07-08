@@ -28,7 +28,8 @@ file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
 
 station_name <- "Abbotsford"
 source("../R/read_data.R")  ## read data
-df <- process_and_save_data(file_paths, station_name)
+results <- process_and_save_data(file_paths, station_name)
+df <- results[[1]] 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -40,7 +41,47 @@ end_year <- 2024
 
 step <- 40
 ```
+```{r, echo=FALSE}
+process_and_save_data <- function(file_paths, station_name) {
+  setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
+  
+  # Define the columns needed
+  needed_columns <- c("x", "y", "LOCAL_DATE", "TOTAL_PRECIPITATION", "STATION_NAME", 
+                      "MAX_TEMPERATURE", "MIN_TEMPERATURE", "TOTAL_RAIN", "MIN_REL_HUMIDITY",
+                      "LOCAL_YEAR", "LOCAL_MONTH", "MEAN_TEMPERATURE")
+  
+  # Function to read and select necessary columns
+  read_and_select <- function(file_path) {
+    read.csv(file_path) %>%
+      select(all_of(needed_columns))
+  }
+  print("map and read")
+  # Read and combine all datasets
+  df <- map_dfr(file_paths, read_and_select)
+  
+  # Ensure that data_EHF contains finite values in all columns
+  df <- df %>%
+    filter_all(all_vars(is.finite(.)))
+  
+  summary_original <- summary(df)
+  
+  # deal with the non-exist date, call helper function
+  result <- deal_with_non_exist_date(df)
+  #df_complete_final, df_missing, missing_summary
+  
+  # Define the save path
+  save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
+  
+  # Save the selected columns as a CSV file
+  write.csv(result[[1]], file = save_path, row.names = FALSE)
+  print(paste("Data ",station_name," saved to:", save_path))
+  
+  #return the df and all summary
+  return(list(result[[1]], summary_original, result[[2]], result[[3]]))
+}
 
+results <- process_and_save_data(file_paths, station_name)
+```
 
 
 <h3 onclick="toggleCollapsible(this);">
@@ -501,4 +542,19 @@ df_5_day_heatmap <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length =
 #   print(plots$month_plot)
 #   print(plots$hw_length_plot)
 #}
+
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot EHF vs Percentile_90 for specific year</b>
+</h3>
+<div style="display:none;">  
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+combined_plot <- compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
 ```

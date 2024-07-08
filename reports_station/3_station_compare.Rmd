@@ -808,9 +808,20 @@ hline_data <- generate_temperature_plots_EHF("5 days long",station_filter_EHF_5d
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 #df_station_filter_5d
 # filter the column, only select 3 columns
-station_filter_EHF_5d  <- station_filter_EHF_5d %>% select(Year,DayOfYear,station)
+station_filter_EHF_5d  <- station_filter_EHF_5d %>% select(Year,DayOfYear,station,EHI_sig,EHI_accl,EHF)
 
-# merge the 2 data frame
+# Ensure both data frames have the same columns
+common_cols <- union(names(station_filter_EHF_5d), names(df_station_filter_5d))
+
+# Add missing columns to station_filter_EHF_5d
+missing_cols_station_filter_EHF_5d <- setdiff(common_cols, names(station_filter_EHF_5d))
+station_filter_EHF_5d[missing_cols_station_filter_EHF_5d] <- NA
+
+# Add missing columns to df_station_filter_5d
+missing_cols_df_station_filter_5d <- setdiff(common_cols, names(df_station_filter_5d))
+df_station_filter_5d[missing_cols_df_station_filter_5d] <- NA
+
+# Combine the data frames
 df_EHF_and_90th <- rbind(station_filter_EHF_5d,df_station_filter_5d)
 ```
 YVR: 1937-2024
@@ -839,7 +850,19 @@ df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "YVR_EHF" | st
 year_ranges <- create_year_ranges(1937, 2024, 3
                                   )
 hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+
+
 ```
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+
+check_station <- "YVR"
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 1958, check_station)
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 2015, check_station)
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 2021, check_station)
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 2022, check_station)
+```
+
+
 </div>
 <h5 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -857,6 +880,15 @@ df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "FortNelson_EH
 year_ranges <- create_year_ranges(1937, 2024, 3
                                   )
 hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+
+check_station <- "FortNelson"
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 1948, check_station)
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 1975, check_station)
+#compare_ehf_and_percentile_specific(df_EHF_and_90th, 2012, check_station)
+compare_ehf_and_percentile_specific(df_EHF_and_90th, 2013, check_station)
 ```
 
 

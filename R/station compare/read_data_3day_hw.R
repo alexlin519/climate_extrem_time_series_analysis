@@ -36,7 +36,7 @@ file_paths_EHF <- c("../output/YVR/EHF_heatmap_3_dayHW.csv",
 
 read_and_select_EHF <- function(file_path) {
   read.csv(file_path) %>%
-    select(LOCAL_YEAR, LOCAL_DATE, Heatwave, station) 
+    select(LOCAL_YEAR, LOCAL_DATE, Heatwave, station,EHI_sig,EHI_accl,EHF) 
 }
 # Read and combine all datasets
 df_EHF_line_seg_3d <- map_dfr(file_paths_EHF, read_and_select_EHF)

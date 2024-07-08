@@ -27,7 +27,8 @@ file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
                 "../data/YVR climate daily 2013 to 2024 copy.csv")
 
 source("../R/read_data.R")  ## read data
-df <- process_and_save_data(file_paths, station_name)
+results <- process_and_save_data(file_paths, station_name)
+df <- results[[1]] 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -431,4 +432,10 @@ df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, star
 #   print(plots$month_plot)
 #   print(plots$hw_length_plot)
 #}
+```
+
+
+```{r, echo=FALSE,message=FALSE}
+
+
 ```

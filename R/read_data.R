@@ -21,8 +21,12 @@ process_and_save_data <- function(file_paths, station_name) {
   
   # Read and combine all datasets
   df <- map_dfr(file_paths, read_and_select)
-  summary_original <- summary(df)
   
+  # Ensure that data_EHF contains finite values in all columns
+  # df <- data_EHF %>%
+  #   filter_all(all_vars(is.finite(.)))
+  
+  summary_original <- summary(df)
   
   # deal with the non-exist date, call helper function
   result <- deal_with_non_exist_date(df)
@@ -85,3 +89,6 @@ deal_with_non_exist_date <- function(df){
   # Return all 2 df and summary
   return(list(df_complete_final, df_missing, missing_summary))
 }
+
+
+

@@ -456,3 +456,11 @@ df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, star
 #   print(plots$hw_length_plot)
 # }
 ```
+
+```{r, echo=FALSE,message=FALSE}
+df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# Example usage:
+plot_percentiles_vs_year(df_plot_year,1941)
+compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+
+```

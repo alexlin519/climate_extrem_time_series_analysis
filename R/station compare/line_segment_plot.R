@@ -18,7 +18,7 @@ line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL)
   #####
   # Select only the necessary columns for plotting
   df_filtered_plot <- df_filtered_line_seg %>%
-    select(DayOfYear, Year, station)
+    select(DayOfYear, Year, station,daily_max_temp,Percentile_90)
   
   # Specify the path to your zip file
   txt_file <- "../data/dates_heatwave.csv"
@@ -273,3 +273,83 @@ generate_temperature_plots_2station <- function(day_title,df, year_ranges, stati
 }
 
 
+# Function to plot EHF and 90th Percentile Data
+compare_ehf_and_percentile_specific <- function(data, check_year, check_station) {
+  # Filter the data for the specified year
+  data_year <- data %>% filter(Year == check_year)
+  
+  # Separate data for stations with EHF and 90th percentile columns
+  data_ehf <- data_year %>% filter(station == paste(check_station, "_EHF", sep = ""))
+  data_90percentile <- data_year %>% filter(station == check_station)
+  
+  # Function to adjust date breaks
+  adjust_date_breaks <- function(dates) {
+    date_range <- as.integer(difftime(max(dates), min(dates), units = "days"))
+    if (date_range <= 14) {
+      return("1 day")
+    } else if (date_range <= 30) {
+      return("1 day")
+    } else if (date_range <= 90) {
+      return("2 days")
+    } else if (date_range <= 180) {
+      return("3 days")
+    } else {
+      return("5 days")
+    }
+  }
+  
+  # Adjust date breaks
+  date_breaks <- adjust_date_breaks(as.Date(paste(data_ehf$Year, data_ehf$DayOfYear, sep = "-"), "%Y-%m-%d"))
+  
+  # Create a grouping variable for continuous date ranges
+  data_ehf <- data_ehf %>% 
+    mutate(date = as.Date(paste(Year, DayOfYear, sep = "-"), "%Y-%m-%d")) %>%
+    arrange(date) %>%
+    mutate(group = cumsum(c(0, diff(date) != 1)))
+  
+  data_90percentile <- data_90percentile %>%
+    mutate(date = as.Date(paste(Year, DayOfYear, sep = "-"), "%Y-%m-%d")) %>%
+    arrange(date) %>%
+    mutate(group = cumsum(c(0, diff(date) != 1)))
+  
+  # Plot for stations with EHF data (EHI_sig, EHI_accl, EHF)
+  left_plot <- ggplot(data_ehf, aes(x = date, group = group)) +
+    geom_line(aes(y = EHI_sig, color = "EHI_sig")) +
+    geom_line(aes(y = EHI_accl, color = "EHI_accl")) +
+    # add a y = 1 line for EHF
+    geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+    geom_line(aes(y = EHF, color = "EHF")) +
+    labs(title = paste("EHF Data for", check_station, "in", check_year),
+         x = "Date",
+         y = "Value") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    scale_x_date(date_breaks = date_breaks, date_labels = "%b %d") +
+    scale_color_manual(values = c("EHI_sig" = "blue", "EHI_accl" = "green", "EHF" = "red"))
+  
+  # Adjust date breaks for 90th percentile data
+  date_breaks_90 <- adjust_date_breaks(as.Date(paste(data_90percentile$Year, data_90percentile$DayOfYear, sep = "-"), "%Y-%m-%d"))
+  
+  # Plot for stations with 90th percentile data (daily_max_temp, Percentile_90)
+  right_plot <- ggplot(data_90percentile, aes(x = date, group = group)) +
+    geom_line(aes(y = daily_max_temp, color = "daily_max_temp")) +
+    geom_line(aes(y = Percentile_90, color = "Percentile_90")) +
+    labs(title = paste("Max Temp and 90th Percentile for", check_station, "in", check_year),
+         x = "Date",
+         y = "Value") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    scale_x_date(date_breaks = date_breaks_90, date_labels = "%b %d") +
+    scale_color_manual(values = c("daily_max_temp" = "blue", "Percentile_90" = "green"))+
+    scale_y_continuous(breaks = seq(min(c(data_90percentile$daily_max_temp, data_90percentile$Percentile_90), na.rm = TRUE),
+                                    max(c(data_90percentile$daily_max_temp, data_90percentile$Percentile_90), na.rm = TRUE),
+                                    by = 1))  # Adjust the step size as needed
+  # Set the plot dimensions
+  options(repr.plot.width = 14, repr.plot.height = 7)  # Adjust the width and height as needed
+  
+  # Assuming left_plot and right_plot are your ggplot objects
+  combined_plot <- grid.arrange(left_plot, right_plot, ncol = 2)
+  
+  # Return the combined plot
+  return(combined_plot)
+}
