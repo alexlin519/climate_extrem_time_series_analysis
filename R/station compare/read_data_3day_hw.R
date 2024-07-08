@@ -23,3 +23,29 @@ read_and_select <- function(file_path) {
 df_line_seg_3day <- map_dfr(file_paths, read_and_select)
 unique(df_line_seg_3day$station)
 
+
+
+
+
+file_paths_EHF <- c("../output/YVR/EHF_heatmap_3_dayHW.csv",
+                    "../output/Prince_George/EHF_heatmap_3_dayHW.csv",
+                    "../output/Kelowna/EHF_heatmap_3_dayHW.csv",
+                    "../output/Abbotsford/EHF_heatmap_3_dayHW.csv",
+                    "../output/FortNelson/EHF_heatmap_3_dayHW.csv")
+
+
+read_and_select_EHF <- function(file_path) {
+  read.csv(file_path) %>%
+    select(LOCAL_YEAR, LOCAL_DATE, Heatwave, station) 
+}
+# Read and combine all datasets
+df_EHF_line_seg_3d <- map_dfr(file_paths_EHF, read_and_select_EHF)
+
+#rename the columns and add _EHF to all station columns value
+df_EHF_line_seg_3d <- df_EHF_line_seg_3d %>%
+  rename(Year = LOCAL_YEAR) %>%
+  rename(DayOfYear = LOCAL_DATE) %>%
+  mutate_at(vars(station), funs(paste0(., "_EHF")))
+
+# Use the sub() function to remove the year part from the LOCAL_DATE column
+df_EHF_line_seg_3d$DayOfYear <- sub("^\\d{4}-", "", df_EHF_line_seg_3d$DayOfYear)

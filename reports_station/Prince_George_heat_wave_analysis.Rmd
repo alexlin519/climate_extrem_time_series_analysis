@@ -24,7 +24,8 @@ file_paths <- c("../data/Prince_George 1942 Climate data daily.csv",
                 "../data/Prince_George_1940-1942.csv")
 station_name <- "Prince_George" 
 source("../R/read_data.R")  ## read data
-df <- process_and_save_data(file_paths, station_name)
+results <- process_and_save_data(file_paths, station_name)
+df <- results[[1]] 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -55,11 +56,25 @@ unique_stations <- df %>%
 # 1. Summary Statistics
 summary_stats <- summary(df)
 #print(summary_stats)
-
+summary_stats
 # 2. Missing Values Analysis
 missing_values <- sapply(df, function(x) sum(is.na(x)))
 #print(missing_values)
 ```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#df_missing
+(summary(results[[3]]))
+
+#missing_summary
+results[[4]]
+```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#summary_original
+print(results[[2]])
+```
+
 </div>
 ```{r, echo=FALSE}
 # Print a specific row's rolling window

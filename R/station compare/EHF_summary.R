@@ -21,24 +21,23 @@ df_ehf_all <- map_dfr(file_paths, read_and_select)
 #print(head(df_ehf_all))
 write.csv(df_ehf_all, file = "../output/df_ehf_all.csv", row.names = FALSE)
 
-plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2024) {
+plot_ehf_and_correlation <- function(data, months, start_year = 1940,end_year = 2024) {
   # Filter for the specified month and years >= start_year
-  filtered_data <- data %>% filter(Month == month & LOCAL_YEAR >= start_year)
+  filtered_data <- data %>% filter(Month %in% months & LOCAL_YEAR >= start_year)
   
-  # Summarize data (optional, depending on what summary you need)
-  # For example, calculating the mean max_EHF for each station in the specified month
-  summary_data <- filtered_data %>%
-    group_by(Station) %>%
-    summarize(mean_max_EHF = mean(max_EHF, na.rm = TRUE))
+  # Compute the maximum EHF for each station and year across the specified months
+  filtered_data <- filtered_data %>%
+    group_by(Station, LOCAL_YEAR) %>%
+    summarize(max_EHF = max(max_EHF, na.rm = TRUE), .groups = 'drop')
   
-  # Get the month name
-  month_name <- month.name[month]
+  # Get the month names
+  month_names <- month.name[months]
   
   # Plot data
   ts_plot <- ggplot(filtered_data, aes(x = LOCAL_YEAR, y = max_EHF, color = Station)) +
     geom_line(alpha = 1) +
     geom_point(alpha = 0.4) +
-    labs(title = paste("Max EHF in", month_name, "for All Stations"),
+    labs(title = paste("Max EHF in", paste(month_names, collapse = ", "), "for All Stations"),
          x = "Year",
          y = "Max EHF") +
     theme_minimal() +
@@ -51,7 +50,7 @@ plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2
     pivot_wider(names_from = Station, values_from = max_EHF)
   
   # Compute the correlation matrix
-  ehf_correlation <- cor(wide_data %>% select(-LOCAL_YEAR), use = "pairwise.complete.obs")
+  ehf_correlation <- cor(wide_data %>% select(-LOCAL_YEAR),method = "spearman", use = "pairwise.complete.obs")
   
   # Print the correlation matrix
   print(ehf_correlation)
@@ -65,7 +64,7 @@ plot_ehf_and_correlation <- function(data, month, start_year = 1940,end_year = 2
            tl.srt = 0,  # Rotate text labels by 45 degrees
            tl.col = "black",
            col = my_palette)  # Change text color to black for better readability
-  title(main = paste("Correlation of Max EHF in", month_name, "between Stations"), line = 2.5)
+  title(main = paste("Correlation of Max EHF in", paste(month_names, collapse = ", "), "between Stations"), line = 2.5)
   
   return((ts_plot))
   }
