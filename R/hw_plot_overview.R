@@ -68,7 +68,7 @@ full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,thresh
   
   #filter  month column
   df_plot_year <- df_plot_year %>%
-    filter(as.numeric(Month) >= 4 & as.numeric(Month) <= 10)
+    filter(as.numeric(Month) >= 5 & as.numeric(Month) <= 9)
   
   #print(df_plot_year)
   # Create a grouping variable for continuous date ranges
@@ -80,7 +80,7 @@ full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,thresh
   #ehf only for specific year
   data_EHF <- data_EHF %>%
     filter(LOCAL_YEAR == check_year) %>%
-    filter(as.numeric(Month) >= 4 & as.numeric(Month) <= 10)
+    filter(as.numeric(Month) >= 5 & as.numeric(Month) <= 9)
   
   
   df_plot_year <- df_plot_year %>%
@@ -100,7 +100,7 @@ full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,thresh
          y = "Value") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    scale_x_date(date_breaks = "10 days", date_labels = "%b %d") +
+    scale_x_date(date_breaks = "3 days", date_labels = "%b %d") +
     scale_color_manual(values = c("EHI_sig" = "blue", "EHI_accl" = "green", "EHF" = "red"))+
     scale_y_continuous(breaks = seq(min(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
                                     max(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
@@ -123,7 +123,7 @@ full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,thresh
          y = "Value") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    scale_x_date(date_breaks = "10 days", date_labels = "%b %d") +
+    scale_x_date(date_breaks = "4 days", date_labels = "%b %d") +
     scale_color_manual(values = c("EHI_sig" = "blue", "EHI_accl" = "green", "EHF" = "red"))+
     scale_y_continuous(breaks = seq(min(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
                                     max(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
@@ -144,7 +144,7 @@ full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,thresh
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     scale_color_manual(values = c("daily_max_temp" = "blue", "Percentile_90" = "green"))+
     # shows all x value axis in terms of date
-    scale_x_date(date_breaks = "10 days", date_labels = "%b %d") +
+    scale_x_date(date_breaks = "4 days", date_labels = "%b %d") +
     scale_y_continuous(breaks = seq(min(c(df_plot_year$MAX_TEMP_YEAR, df_plot_year$Percentile_90), na.rm = TRUE),
                                     max(c(df_plot_year$MAX_TEMP_YEAR, df_plot_year$Percentile_90), na.rm = TRUE),
                                     by = 2))+  # Adjust the step size as needed
