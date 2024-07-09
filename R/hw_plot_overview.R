@@ -6,7 +6,7 @@ library(lubridate)
 library(zoo)
 library(purrr)
 library(tidyr)
-
+library(gridExtra)
 # Function to process and summarize data for a given year
 process_and_summarize_year <- function(year) {
   df_plot_year <- prepare_plot_data("Percentile_90", year, "MAX_TEMPERATURE")
@@ -62,7 +62,7 @@ process_all_years_and_generate_plots <- function(start_year, end_year) {
 
 
 # Function to plot EHF and 90th Percentile Data
-compare_ehf_and_percentile_specific <- function(data_EHF, check_year) {
+full_compare_ehf_and_percentile_specific <- function(data_EHF, check_year,threshold = 50) {
   #old def data
   df_plot_year <- prepare_plot_data("Percentile_90", check_year, "MAX_TEMPERATURE")
   
@@ -89,13 +89,13 @@ compare_ehf_and_percentile_specific <- function(data_EHF, check_year) {
     mutate(group = cumsum(c(0, diff(date) != 1)))
   
   # Plot for stations with EHF data (EHI_sig, EHI_accl, EHF)
-  left_plot <- ggplot(data_EHF, aes(x = LOCAL_DATE)) +
+  left_plot_full <- ggplot(data_EHF, aes(x = LOCAL_DATE)) +
     geom_line(aes(y = EHI_sig, color = "EHI_sig")) +
     geom_line(aes(y = EHI_accl, color = "EHI_accl")) +
     # add a y = 1 line for EHF
     geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
     geom_line(aes(y = EHF, color = "EHF")) +
-    labs(title = paste("EHF Data for", check_station, "in", check_year),
+    labs(title = paste("Full EHF Data for", station_name, "in", check_year),
          x = "Date",
          y = "Value") +
     theme_minimal() +
@@ -105,16 +105,39 @@ compare_ehf_and_percentile_specific <- function(data_EHF, check_year) {
     scale_y_continuous(breaks = seq(min(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
                                     max(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
                                     by =5)) + # Adjust the step size as needed
-    theme(panel.grid.minor.y = element_blank(),  # Remove minor grid lines
+    theme(panel.grid.minor.y = element_blank(),
+          panel.grid.minor.x = element_blank()) 
+  
+  # zoomed view of the left plot
+  data_EHF_zoomed <- data_EHF %>% mutate(EHF = ifelse(EHF > threshold, threshold, EHF))
+  
+  
+  left_plot_zoomed <- ggplot(data_EHF_zoomed, aes(x = LOCAL_DATE)) +
+    geom_line(aes(y = EHI_sig, color = "EHI_sig")) +
+    geom_line(aes(y = EHI_accl, color = "EHI_accl")) +
+    # add a y = 1 line for EHF
+    geom_hline(yintercept = 1, linetype = "dashed", color = "black") +
+    geom_line(aes(y = EHF, color = "EHF")) +
+    labs(title = paste("EHF Data for", station_name, "in", check_year, "forcing max EHF = ",threshold),
+         x = "Date",
+         y = "Value") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+    scale_x_date(date_breaks = "10 days", date_labels = "%b %d") +
+    scale_color_manual(values = c("EHI_sig" = "blue", "EHI_accl" = "green", "EHF" = "red"))+
+    scale_y_continuous(breaks = seq(min(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
+                                    max(c(data_EHF$EHI_accl, data_EHF$EHF,data_EHF$EHI_sig), na.rm = TRUE),
+                                    by =5)) + # Adjust the step size as needed
+    theme(panel.grid.minor.y = element_blank(),
+          panel.grid.minor.x = element_blank(),# Remove minor grid lines
           legend.position = c(0.999, 0.999),       # Move legend to the top right corner inside the plot
           legend.justification = c("right", "top"))  # Justify legend position to the right and top
-  
   
   # Plot for stations with 90th percentile data (daily_max_temp, Percentile_90)
   right_plot <- ggplot(df_plot_year, aes(x = date)) +
     geom_line(aes(y = MAX_TEMP_YEAR, color = "daily_max_temp")) +
     geom_line(aes(y = Percentile_90, color = "Percentile_90")) +
-    labs(title = paste("Max Temp and 90th Percentile for", check_station, "in", check_year),
+    labs(title = paste("Max Temp and 90th Percentile for", station_name, "in", check_year),
          x = "Date",
          y = "Value") +
     theme_minimal() +
@@ -125,17 +148,18 @@ compare_ehf_and_percentile_specific <- function(data_EHF, check_year) {
     scale_y_continuous(breaks = seq(min(c(df_plot_year$MAX_TEMP_YEAR, df_plot_year$Percentile_90), na.rm = TRUE),
                                     max(c(df_plot_year$MAX_TEMP_YEAR, df_plot_year$Percentile_90), na.rm = TRUE),
                                     by = 2))+  # Adjust the step size as needed
-    theme(panel.grid.minor.y = element_blank(),  # Remove minor grid lines
+    theme(panel.grid.minor.y = element_blank(),
+          panel.grid.minor.x = element_blank(),# Remove minor grid lines
           legend.position = c(0.999, 0.999),       # Move legend to the top right corner inside the plot
           legend.justification = c("right", "top"))  # Justify legend position to the right and top
   # Set the plot dimensions
   options(repr.plot.width = 14, repr.plot.height = 7)  # Adjust the width and height as needed
   
   # Assuming left_plot and right_plot are your ggplot objects
-  combined_plot <- grid.arrange(left_plot, right_plot, ncol = 2)
+  combined_plot <- grid.arrange(left_plot_zoomed, right_plot, ncol = 2)
   
   # Return the combined plot
-  return(combined_plot)
+  return(list(combined_plot,left_plot_full))
 }
 
 
