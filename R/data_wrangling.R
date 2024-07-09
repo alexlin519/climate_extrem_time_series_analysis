@@ -135,17 +135,20 @@ df_grouped_mean <- df_wrangling %>%
 # Calculate the 90th percentile for each day
 df_percentiles <- df_grouped %>%
   mutate(
-    Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE))
+    Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE)),
+    Percentile_95 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.95,'na.rm'=TRUE))
   )
 
 df_percentiles_all <- df_grouped_all %>%
   mutate(
-    Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE))
+    Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE)),
+    Percentile_95 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.95,'na.rm'=TRUE))
   )
 
 df_percentiles_mean <- df_grouped_mean %>%
   mutate(
-    Percentile_90 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE))
+    Percentile_90 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE)),
+    Percentile_95 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE))
   )
 
 
@@ -176,7 +179,14 @@ compare_plot <- ggplot(df_90_compare, aes(x = Date, y = Percentile_90, color = S
 
 #print(compare_plot)
 
-
+compare_plot_95 <- ggplot(df_90_compare, aes(x = Date, y = Percentile_95, color = Source)) +
+  geom_line() +
+  labs(title = paste(station_name ,"95th Percentile Temperature Comparison"),
+       x = "Date",
+       y = "95th Percentile Temperature",
+       color = "Data Source") +
+  scale_x_date(date_labels = "%b %d", date_breaks = "1 month") +
+  theme_minimal()
 
 
 
@@ -194,9 +204,9 @@ df_wrangling$Month <- as.character(df_wrangling$Month)
 df_wrangling$Day <- as.character(df_wrangling$Day)
 
 # Merge the data frames based on Month and Day
-df_combined_ehf1 <- merge(df_wrangling, df_percentiles_mean[, c("Month", "Day", "Percentile_90")], by = c("Month", "Day"), all.x = TRUE)
+df_combined_ehf1 <- merge(df_wrangling, df_percentiles_mean[, c("Month", "Day", "Percentile_90","Percentile_95")], by = c("Month", "Day"), all.x = TRUE)
 df_combined_ehf1 <- df_combined_ehf1[, c("Month", "Day","LOCAL_DATE","LOCAL_YEAR","STATION_NAME",
-                                         "MEAN_TEMPERATURE", "Percentile_90")]
+                                         "MEAN_TEMPERATURE", "Percentile_90","Percentile_95")]
 
 # View the combined data frame
 #head(df_combined_ehf1)
@@ -225,7 +235,8 @@ df_combined_ehf1 <- df_combined_ehf1 %>%
 
 # Calculate the difference between the rolling average and the Percentile_90
 df_combined_ehf1 <- df_combined_ehf1 %>%
-  mutate(EHI_sig = Rolling_3d_Avg_Temp - Percentile_90)
+  mutate(EHI_sig = Rolling_3d_Avg_Temp - Percentile_90,
+         EHI_sig_95 = Rolling_3d_Avg_Temp - Percentile_95)
 
 # Compute the 30-day rolling average of MEAN_TEMPERATURE
 df_combined_ehf1 <- df_combined_ehf1 %>%
@@ -236,7 +247,8 @@ df_combined_ehf1 <- df_combined_ehf1 %>%
 
 # Add the new column EHF
 df_combined_ehf1 <- df_combined_ehf1 %>%
-  mutate(EHF = EHI_sig * pmax(1, EHI_accl))
+  mutate(EHF = EHI_sig * pmax(1, EHI_accl),
+         EHF_95 = EHI_sig_95 * pmax(1, EHI_accl))
 # View the updated data frame
 #head(df_combined_ehf1)
 
@@ -244,7 +256,8 @@ df_combined_ehf1 <- df_combined_ehf1 %>%
 # define the Heatday: if EHF < 0 for this rows and previous 2 rows, then it is not a Heatday,
 # otherwise it is a Heatday                 
 df_combined_ehf1 <- df_combined_ehf1 %>%
-  mutate(Heatday = ifelse(EHF < 0 & lag(EHF, 1) < 0 & lag(EHF, 2) < 0, "No", "Yes"))
+  mutate(Heatday = ifelse(EHF < 0 & lag(EHF, 1) < 0 & lag(EHF, 2) < 0, "No", "Yes"),
+         Heatday_95 = ifelse(EHF_95 < 0 & lag(EHF_95, 1) < 0 & lag(EHF_95, 2) < 0, "No", "Yes"))
 
 
 
@@ -253,7 +266,8 @@ df_combined_ehf1 <- df_combined_ehf1 %>%
 # Aggregate to monthly maxima in terms of EHF
 monthly_max_EHF <- df_combined_ehf1 %>%
   group_by(Month, LOCAL_YEAR) %>%
-  summarize(max_EHF = max(EHF, na.rm = TRUE))
+  summarize(max_EHF = max(EHF, na.rm = TRUE),
+            max_EHF_95 = max(EHF_95, na.rm = TRUE))
 monthly_max_EHF <- monthly_max_EHF %>%
   mutate(Station = station_name)
 
@@ -261,7 +275,7 @@ monthly_max_EHF <- monthly_max_EHF %>%
 
 # Convert NA values to 'no'
 df_combined_ehf1$Heatday[is.na(df_combined_ehf1$Heatday)] <- "No"
-
+df_combined_ehf1$Heatday_95[is.na(df_combined_ehf1$Heatday_95)] <- "No"
 
 #add a column call station
 df_combined_ehf1$station <- station_name
@@ -275,6 +289,13 @@ EHF_melted_temp_3_day <- df_combined_ehf1 %>%
   mutate(Heatday = ifelse(Heatday == "Yes" & streak < heat_wave_length, "too_short", Heatday)) %>%
   mutate(Heatwave = ifelse(Heatday == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday)) %>%
   ungroup()
+EHF_melted_temp_3_day <- EHF_melted_temp_3_day %>%
+  group_by(LOCAL_YEAR) %>%
+  mutate(streak = with(rle(Heatday_95 == "Yes"), rep(lengths, lengths))) %>%
+  mutate(Heatday_95 = ifelse(Heatday_95 == "Yes" & streak < heat_wave_length, "too_short", Heatday_95)) %>%
+  mutate(Heatwave_95 = ifelse(Heatday_95 == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday_95)) %>%
+  ungroup()
+
 
 # Create the folder with the station name
 output_dir <- paste0("../output/", station_name)
@@ -292,6 +313,13 @@ EHF_melted_temp_5_day <- df_combined_ehf1 %>%
   mutate(streak = with(rle(Heatday == "Yes"), rep(lengths, lengths))) %>%
   mutate(Heatday = ifelse(Heatday == "Yes" & streak < heat_wave_length, "too_short", Heatday)) %>%
   mutate(Heatwave = ifelse(Heatday == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday)) %>%
+  ungroup()
+
+EHF_melted_temp_5_day <- EHF_melted_temp_5_day %>%
+  group_by(LOCAL_YEAR) %>%
+  mutate(streak = with(rle(Heatday_95 == "Yes"), rep(lengths, lengths))) %>%
+  mutate(Heatday_95 = ifelse(Heatday_95 == "Yes" & streak < heat_wave_length, "too_short", Heatday_95)) %>%
+  mutate(Heatwave_95 = ifelse(Heatday_95 == "Yes" & streak >= heat_wave_length, "Heatwave", Heatday_95)) %>%
   ungroup()
 
 # Create the folder with the station name

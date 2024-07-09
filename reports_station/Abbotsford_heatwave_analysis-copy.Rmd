@@ -102,7 +102,7 @@ df_percentiles <- df_percentiles %>%
 
 # Select specific columns to save
 selected_columns <- df_percentiles %>%
-  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+  select(Month,Day,Percentile_90,Percentile_95,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
 save_path <- paste0("../output/", station_name, "_percentiles.csv")
 
@@ -156,6 +156,7 @@ write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 <div style="display:none;"> 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 compare_plot
+compare_plot_95
 ```
 
 
