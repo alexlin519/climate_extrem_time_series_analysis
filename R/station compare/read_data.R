@@ -50,7 +50,7 @@ YVR_30y_based <- YVR_30y_based[, c("Month", "Day", "Percentile_90", "Station")]
 #print(colnames(YVR_30y_based))
 #print(colnames(df_station))
 # Combine df with df_station
-df_station <- rbind(YVR_30y_based, df_station)
+#df_station <- rbind(YVR_30y_based, df_station)
 
 # Display the first few rows of the combined data
 head(df_station)

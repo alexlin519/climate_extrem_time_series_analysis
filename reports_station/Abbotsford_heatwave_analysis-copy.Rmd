@@ -355,9 +355,12 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_3_day_heatmap <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
-
-df_5_day_heatmap <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+results_3d <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_3_day_heatmap <- results_3d[[1]]
+df_3_day_heatmap_95 <- results_3d[[2]]
+results_5d <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_day_heatmap <- results_5d[[1]]
+df_5_day_heatmap_95 <- results_5d[[2]]
 
 ```
 

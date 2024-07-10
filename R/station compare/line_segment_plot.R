@@ -8,8 +8,12 @@ if (!require(gridExtra)) {
 library(gridExtra)
 
 line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL) {
-  
-  df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave) == "Heatwave",]
+  # if exist Heatwave_95
+  if ("Heatwave_95" %in% colnames(df_filtered_line_seg)) {
+    df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave_95) == "Heatwave",]
+  } else {
+    df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave) == "Heatwave",]
+  }
   #df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
   
   
@@ -107,7 +111,7 @@ line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL)
 }
 
 line_segment_EHF_data_prepare <- function(df_filtered_line_seg, station_only = NULL) {
-  
+  df_filtered_line_seg_95 <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave_95) == "Heatwave",]
   df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave) == "Heatwave",]
   
   

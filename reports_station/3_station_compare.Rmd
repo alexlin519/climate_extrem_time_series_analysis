@@ -57,13 +57,29 @@ three_stations_90th
 
 three_stations_90th_filter
 ```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1.2 ALL station 95th compare </b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE}
+three_stations_95th
+
+three_stations_95th_filter
+
+```
+
+
 </div>
 
 <h3 onclick="toggleCollapsible(this);">
 
 <!--TEXT SHOWS: -->
 
-<b>1.2 different YVR data</b>
+<!-- <b>1.2 different YVR data</b> -->
 
 </h3>
 
@@ -71,7 +87,7 @@ three_stations_90th_filter
 ## compare 90th percentile of original YVR and YVR with base period 1961-1990
 
 ```{r, echo=FALSE,message=FALSE}
-two_stations_90th_yvr_30
+#two_stations_90th_yvr_30
 ```
 </div>
 </div>
@@ -447,6 +463,7 @@ year_ranges <- create_year_ranges(1940, 2024, 5)
 hline_data <- generate_temperature_plots("5 days long",df_station_filter_5d, year_ranges, station_colors)
 
 ```
+
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -965,4 +982,7 @@ hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_
 <!--TEXT SHOWS: -->
 <b></b>
 </h5>
-<div style="display:none;">  
+<div style="display:none;"> 
+```{r echo=FALSE, message=FALSE,warning=FALSE}
+
+```
