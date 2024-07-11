@@ -386,6 +386,18 @@ save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW.csv")
 # Save the updated dataframe to a file
 write.csv(df_5_day_heatmap, save_path, row.names = FALSE)
 
+#do the same with _95
+colnames(df_3_day_heatmap_95)[colnames(df_3_day_heatmap_95) == "Color"] <- "daily_max_temp"
+df_3_day_heatmap_95$station <- station_name
+save_path <- paste0("../output/", station_name, "_heatmap_3_dayHW_95.csv")
+write.csv(df_3_day_heatmap_95, save_path, row.names = FALSE)
+
+colnames(df_5_day_heatmap_95)[colnames(df_5_day_heatmap_95) == "Color"] <- "daily_max_temp"
+df_5_day_heatmap_95$station <- station_name
+save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW_95.csv")
+write.csv(df_5_day_heatmap_95, save_path, row.names = FALSE)
+
+
 ```
 
 

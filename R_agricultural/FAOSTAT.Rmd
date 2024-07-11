@@ -7,6 +7,7 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 source("../R_agricultural/read_data.R")  ## read data
+source("../R_agricultural/data_wrangling.R")  ## data wrangling
 ```
 
 
@@ -32,4 +33,11 @@ for (item in unique(data_fao$Item)) {
 
   print(facet_plot)
   }
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+weekly_data_x
+data_fao
 ```

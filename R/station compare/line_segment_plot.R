@@ -11,6 +11,7 @@ line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL)
   # if exist Heatwave_95
   if ("Heatwave_95" %in% colnames(df_filtered_line_seg)) {
     df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave_95) == "Heatwave",]
+    return(df_filtered_line_seg)
   } else {
     df_filtered_line_seg <- df_filtered_line_seg[ (df_filtered_line_seg$Heatwave) == "Heatwave",]
   }
@@ -72,40 +73,6 @@ line_segment_data_prepare <- function(df_filtered_line_seg, station_only = NULL)
   #head(df_filtered_plot)
   
   
-  # Define the year ranges for each plot
-  year_ranges <- list(1940:1959, 1960:1979, 1980:1999, 2000:2024)
-  
-  # Loop through each year range and create a plot
-  ###
-  #old version of the code line_segment_plot.R
-  ###
-  # for (i in seq_along(year_ranges)) {
-  #   year_range <- year_ranges[[i]]
-  #   df_year_range <- df_filtered_plot %>% filter(Year %in% year_range)
-  #   
-  #   # Create a unique identifier for each combination of station and year
-  #   df_year_range <- df_year_range %>%
-  #     mutate(Year = as.factor(Year),
-  #            StationYear = factor(paste(Year, station, sep = "_"), 
-  #                                 levels = unique(paste(Year, station, sep = "_"))[order(Year, station)]))  # Order StationYear alphabetically within each year
-  #   
-  #   plot <- ggplot(df_year_range, aes(x = DayOfYear, y = StationYear, fill = station)) +
-  #     geom_tile(aes(width = 0.999, height = 0.999), alpha = 0.75) +  # Adjust transparency and size of rectangles
-  #     labs(title = paste("Temperature Trends Over 3 Days by Station -", min(year_range), "to", max(year_range)),
-  #          x = "Day Of Year",
-  #          y = "Year - Station") +
-  #     scale_fill_manual(values = station_colors) +
-  #     theme_minimal() +
-  #     theme(plot.title = element_text(hjust = 0.5),
-  #           axis.text.y = element_text(size = 6.5, margin = margin(r = -2.5)),
-  #           axis.text.x = element_text(size = 6, angle = 45, hjust = 1, margin = margin(t = -13))) +
-  #     scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)]) +
-  #     scale_y_discrete(labels = function(x) gsub(".*_", "", x))  # Show only the station name on the y-axis
-  #   
-  #   # Print the plot
-  #   print(plot)
-  # }
-  # 
   return(df_filtered_plot)
   
 }
@@ -120,7 +87,11 @@ line_segment_EHF_data_prepare <- function(df_filtered_line_seg, station_only = N
     filter(!is.na(station)) %>%
     filter(station %in% station_only)
   
-  return(df_filtered_plot)
+  df_filtered_plot_95 <- df_filtered_line_seg_95 %>%
+    filter(!is.na(station)) %>%
+    filter(station %in% station_only)
+  
+  return(list(df_filtered_plot, df_filtered_plot_95))
   
 }
 

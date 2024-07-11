@@ -147,7 +147,7 @@ df_percentiles_all <- df_grouped_all %>%
 
 df_percentiles_mean <- df_grouped_mean %>%
   mutate(
-    Percentile_90 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE)),
+    Percentile_90 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.90,'na.rm'=TRUE)),
     Percentile_95 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE))
   )
 
