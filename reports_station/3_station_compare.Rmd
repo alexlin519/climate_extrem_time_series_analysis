@@ -453,7 +453,7 @@ Penticton: 1941-2024
 ```{r, echo=FALSE,message=FALSE}
 
 df_filtered_line_seg_5d <- df_line_seg_5day[ (df_line_seg_5day$Heatwave) == "Heatwave",]
-#df_filtered_line_seg <- df_line_seg[!is.na(df_line$daily_max_temp),]
+#df_filtered_line_seg <-  df_line_seg[!is.na(df_line$daily_max_temp),]
 
 # Check for and remove any remaining NA values in the station column
 df_filtered_line_seg_5d <- df_filtered_line_seg_5d %>%

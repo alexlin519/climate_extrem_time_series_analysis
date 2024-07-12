@@ -38,6 +38,6 @@ for (item in unique(data_fao$Item)) {
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-weekly_data_x
+weekly_data_x <- aggregate_data(data_x)
 data_fao
 ```
