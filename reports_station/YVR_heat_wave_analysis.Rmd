@@ -97,7 +97,7 @@ df_percentiles <- df_percentiles %>%
 
 # Select specific columns to save
 selected_columns <- df_percentiles %>%
-  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+  select(Month,Day,Percentile_90,Percentile_95,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
 save_path <- "../output/YVR_percentiles.csv"
 
@@ -136,6 +136,16 @@ plot_ehf_all(df_combined_ehf1, start_year, end_year, 1961,station_name)
 
 save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> plot 90th compare different based year  </b>
+</h3>
+<div style="display:none;"> 
+```{r, echo=FALSE,message=FALSE}
+compare_plot
+compare_plot_95
 ```
 ## plot given year temp dist vs baseline 90th
 ```{r, echo=FALSE,message=FALSE}
@@ -288,8 +298,16 @@ print(heatmap)
 
 
 ```{r, echo=FALSE,message=FALSE}
-df_3_yvr <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
-df_5_yvr <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+result_3d <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+
+df_3_yvr <- result_3d[[1]]
+df_3_yvr_95 <- result_3d[[2]]
+
+
+result_5d <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+
+df_5_yvr <- result_5d[[1]]
+df_5_yvr_95 <- result_5d[[2]]
 
 ```
 
@@ -313,6 +331,28 @@ df_5_yvr$station <- "YVR"
 # Save the updated dataframe to a file
 write.csv(df_5_yvr, "../output/YVR_heatmap_5_dayHW.csv", row.names = FALSE)
 
+
+
+
+
+
+
+
+
+colnames(df_3_yvr_95)[colnames(df_3_yvr_95) == "Color_95"] <- "daily_max_temp_95"
+# Add the new column
+df_3_yvr_95$station <- "YVR"
+# Save the updated dataframe to a file
+write.csv(df_3_yvr_95, "../output/YVR_heatmap_3_dayHW_95.csv", row.names = FALSE)
+
+
+#df_5_yvr
+# Rename the column
+colnames(df_5_yvr_95)[colnames(df_5_yvr_95) == "Color_95"] <- "daily_max_temp_95"
+# Add the new column
+df_5_yvr_95$station <- "YVR"
+# Save the updated dataframe to a file
+write.csv(df_5_yvr_95, "../output/YVR_heatmap_5_dayHW_95.csv", row.names = FALSE)
 ```
 
 
@@ -435,7 +475,58 @@ df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, star
 ```
 
 
-```{r, echo=FALSE,message=FALSE}
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot EHF vs Percentile_90 for specific year</b>
+</h3>
+<div style="display:none;">  
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1958</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
 
 
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1958)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2015</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2015)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2021</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
 ```

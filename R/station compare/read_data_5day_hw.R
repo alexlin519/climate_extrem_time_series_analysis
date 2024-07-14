@@ -24,7 +24,11 @@ df_line_seg_5day <- map_dfr(file_paths, read_and_select)
 
 # Define file paths
 file_paths_95 <- c(
-  "../output/Abbotsford_heatmap_5_dayHW_95.csv")
+  "../output/Abbotsford_heatmap_5_dayHW_95.csv",
+  "../output/YVR_heatmap_5_dayHW_95.csv",
+  "../output/Prince_George_heatmap_5_dayHW_95.csv",
+  "../output/Kelowna_heatmap_5_dayHW_95.csv",
+  "../output/FortNelson_heatmap_5_dayHW_95.csv")
 
 # Read and combine all datasets
 df_line_seg_5day_95 <- map_dfr(file_paths_95, read_and_select)

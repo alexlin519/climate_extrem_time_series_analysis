@@ -387,12 +387,12 @@ save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW.csv")
 write.csv(df_5_day_heatmap, save_path, row.names = FALSE)
 
 #do the same with _95
-colnames(df_3_day_heatmap_95)[colnames(df_3_day_heatmap_95) == "Color"] <- "daily_max_temp"
+colnames(df_3_day_heatmap_95)[colnames(df_3_day_heatmap_95) == "Color_95"] <- "daily_max_temp"
 df_3_day_heatmap_95$station <- station_name
 save_path <- paste0("../output/", station_name, "_heatmap_3_dayHW_95.csv")
 write.csv(df_3_day_heatmap_95, save_path, row.names = FALSE)
 
-colnames(df_5_day_heatmap_95)[colnames(df_5_day_heatmap_95) == "Color"] <- "daily_max_temp"
+colnames(df_5_day_heatmap_95)[colnames(df_5_day_heatmap_95) == "Color_95"] <- "daily_max_temp"
 df_5_day_heatmap_95$station <- station_name
 save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW_95.csv")
 write.csv(df_5_day_heatmap_95, save_path, row.names = FALSE)
@@ -565,14 +565,14 @@ left_full
 </div>
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>2015</b>
 </h4>
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
 
 
 
-results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2015)
 combined_plot_2021 <- results_2def[[1]]
 left_full <- results_2def[[2]] 
 left_full
@@ -581,14 +581,14 @@ left_full
 </div>
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>2022</b>
 </h4>
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
 
 
 
-results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2022)
 combined_plot_2021 <- results_2def[[1]]
 left_full <- results_2def[[2]] 
 left_full
@@ -598,30 +598,14 @@ left_full
 </div>
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b></b>
+<b>1978</b>
 </h4>
 <div style="display:none;">  
 ```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
 
 
 
-results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
-combined_plot_2021 <- results_2def[[1]]
-left_full <- results_2def[[2]] 
-left_full
-```
-
-</div>
-<h4 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b></b>
-</h4>
-<div style="display:none;">  
-```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
-
-
-
-results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1978)
 combined_plot_2021 <- results_2def[[1]]
 left_full <- results_2def[[2]] 
 left_full

@@ -29,7 +29,8 @@ file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
                 "../data/kelow/kelow_2009-2024.csv")
 station_name <- "Kelowna"
 source("../R/read_data.R")  ## read data
-df <- process_and_save_data(file_paths, station_name)
+results <- process_and_save_data(file_paths, station_name)
+df <- results[[1]] 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -101,7 +102,7 @@ df_percentiles <- df_percentiles %>%
 
 # Select specific columns to save
 selected_columns <- df_percentiles %>%
-  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+  select(Month,Day,Percentile_90,Percentile_95,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
 save_path <- "../output/Kelowna_percentiles.csv"
 
@@ -155,6 +156,7 @@ write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 <div style="display:none;"> 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 compare_plot
+compare_plot_95
 ```
 
 </div>
@@ -354,15 +356,20 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_3_Kelowna <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+result_df_3_Kelowna <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_3_Kelowna <- result_df_3_Kelowna[[1]]
+df_3_Kelowna_95 <- result_df_3_Kelowna[[2]]
 
-df_5_Kelowna <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
-
+result_df_5_Kelowna <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_Kelowna <- result_df_5_Kelowna[[1]]
+df_5_Kelowna_95 <- result_df_5_Kelowna[[2]]
 ```
 
 
 
 ```{r, echo=FALSE,message=FALSE}
+
+
 #df_3_Kelowna
 # Rename the column
 colnames(df_3_Kelowna)[colnames(df_3_Kelowna) == "Color"] <- "daily_max_temp"
@@ -378,7 +385,25 @@ colnames(df_5_Kelowna)[colnames(df_5_Kelowna) == "Color"] <- "daily_max_temp"
 # Add the new column
 df_5_Kelowna$station <- "Kelowna"
 # Save the updated dataframe to a file
+
 write.csv(df_5_Kelowna, "../output/Kelowna_heatmap_5_dayHW.csv", row.names = FALSE)
+
+
+
+colnames(df_3_Kelowna_95)[colnames(df_3_Kelowna_95) == "Color_95"] <- "daily_max_temp"
+# Add the new column
+df_3_Kelowna_95$station <- "Kelowna"
+# Save the updated dataframe to a file
+write.csv(df_3_Kelowna_95, "../output/Kelowna_heatmap_3_dayHW_95.csv", row.names = FALSE)
+
+
+#df_5_Kelowna
+# Rename the column
+colnames(df_5_Kelowna_95)[colnames(df_5_Kelowna_95) == "Color_95"] <- "daily_max_temp"
+# Add the new column
+df_5_Kelowna_95$station <- "Kelowna"
+# Save the updated dataframe to a file
+write.csv(df_5_Kelowna_95, "../output/Kelowna_heatmap_5_dayHW_95.csv", row.names = FALSE)
 
 ```
 
@@ -502,4 +527,94 @@ df_5_Kelowna <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, 
 #   print(plots$month_plot)
 #   print(plots$hw_length_plot)
 #}
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot EHF vs Percentile_90 for specific year</b>
+</h3>
+<div style="display:none;">  
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1958</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1958)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1971</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1971)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1998</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1998)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2021</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2022</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2022)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
 ```

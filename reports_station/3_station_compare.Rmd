@@ -209,53 +209,18 @@ df_count_sorted_df <- sorted_df %>%
 </h3>
 
 <div style="display:none;">
-```{r, echo=FALSE,message=FALSE}
-# library(ggplot2)
-# library(dplyr)
-# 
-# # Ensure your filtered data frame is named filtered_heatmap_all
-# 
-# # List of unique stations
-# stations <- unique(filtered_heatmap_all$Station)
-# 
-# # Generate scatter plots for each pair of stations
-# for (i in 1:(length(stations)-1)) {
-#   for (j in (i+1):length(stations)) {
-#     station1 <- stations[i]
-#     station2 <- stations[j]
-#     
-#     # Filter data for the two stations
-#     df_station1 <- filtered_heatmap_all %>% filter(Station == station1)
-#     df_station2 <- filtered_heatmap_all %>% filter(Station == station2)
-#     
-#     # Merge data on Date
-#     df_merged <- merge(df_station1, df_station2, by = c("Year", "DayOfYear"), suffixes = c("_1", "_2"))
-#     
-#     # Create scatter plot
-#     plot <- ggplot(df_merged, aes(x = Max_Temp_Year_1, y = Max_Temp_Year_2)) +
-#       geom_point() +
-#       labs(
-#         title = paste("Scatter Plot of Max Temperature:", station1, "vs", station2),
-#         x = paste("Max Temperature (", station1, ")", sep = ""),
-#         y = paste("Max Temperature (", station2, ")", sep = "")
-#       ) +
-#       theme_minimal()
-#     
-#     # Print the plot
-#     print(plot)
-#   }
-# }
-
-```
 
 ```{r, echo=FALSE,message=FALSE}
-dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
-print_plot(dftop20,"FortNelson","Prince_George")
-print_plot(dftop20,"FortNelson","YVR")
-print_plot(dftop20,"FortNelson","Abbotsford")
-print_plot(dftop20,"FortNelson","Penticton")
-print_plot(dftop20,"FortNelson","Kamloops")
-print_plot(dftop20,"FortNelson","Kelowna")
+# dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
+# print_plot(dftop20,"FortNelson","Prince_George")
+# print_plot(dftop20,"FortNelson","YVR")
+# print_plot(dftop20,"FortNelson","Abbotsford")
+# print_plot(dftop20,"FortNelson","Penticton")
+# print_plot(dftop20,"FortNelson","Kamloops")
+# print_plot(dftop20,"FortNelson","Kelowna")
+
+
+
 # print_plot(dftop20,"Abbotsford","Penticton")
 # print_plot(dftop20, "Kamloops", "Prince_George")
 # print_plot(dftop20, "Prince_George", "Kamloops")
@@ -298,10 +263,10 @@ print_plot(dftop20,"FortNelson","Kelowna")
 <div style="display:none;">
 ```{r, echo=FALSE,message=FALSE}
 
-df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
-print_plot(df_top20_35,"FortNelson","Prince_George")
-print_plot(df_top20_35,"FortNelson","YVR")
-print_plot(df_top20_35,"FortNelson","Abbotsford")
+# df_top20_35 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 19:35)
+# print_plot(df_top20_35,"FortNelson","Prince_George")
+# print_plot(df_top20_35,"FortNelson","YVR")
+# print_plot(df_top20_35,"FortNelson","Abbotsford")
 
 ```
 </div>
@@ -342,7 +307,7 @@ Fit a Linear Model Generate 95% Prediction Intervals as reference lines
 
 ```{r, echo=FALSE,message=FALSE}
 
-dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:19)
+#dftop20_yvr <- generate_scatter_plots_for_yvr_diff_data(filtered_heatmap_all, 1:19)
 #dftop20
 ```
 </div>
@@ -518,6 +483,10 @@ hline_data <- generate_temperature_plots("3 days long",df_station_yvr_comp, year
 
 <div style="display:none;">
 ```{r echo=FALSE, fig.height=8, fig.width=15, message=FALSE}
+station_colors <- c("Prince_George" = "green", "YVR" = "blue", 'FortNelson'='red',
+                    "Kelowna" = '#FFD700', 'Abbotsford' = '#FF00FF')
+```
+```{r echo=FALSE, fig.height=8, fig.width=15, message=FALSE}
 df_station_filter_95<- line_segment_data_prepare(df_line_seg_3day_95, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
 hline_data_95 <- generate_temperature_plots("3 days long",df_station_filter_95, year_ranges, station_colors)
 ```
@@ -535,6 +504,7 @@ hline_data_95 <- generate_temperature_plots("3 days long",df_station_filter_95, 
 
 <div style="display:none;">
 ```{r echo=FALSE, fig.height=8, fig.width=15, message=FALSE}
+year_ranges <- create_year_ranges(1940, 2024, 1)
 df_station_filter_5d_95<- line_segment_data_prepare(df_line_seg_5day_95, station_only = c("YVR", "Prince_George","Kamloops","Kelowna","Abbotsford","Penticton","FortNelson"))
 hline_data_95 <- generate_temperature_plots("5 days long",df_station_filter_5d_95, year_ranges, station_colors)
 
@@ -816,7 +786,7 @@ hline_data <- generate_temperature_plots_EHF("3 days long",station_filter_EHF_3d
 <div style="display:none;">  
 ```{r echo=FALSE, fig.height=17, fig.width=15, message=FALSE}
 year_ranges <- create_year_ranges(1941, 2024, 1)
-hline_data <- generate_temperature_plots_EHF("3 days long",station_filter_EHF_3d, year_ranges, station_colors)
+hline_data <- generate_temperature_plots_EHF("3 days long",station_filter_EHF_3d_90, year_ranges, station_colors)
 ```
 
 
@@ -911,6 +881,9 @@ Abbotsford: 1935-2024
 <b>YVR 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+
+90 percentile
+
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 
 
@@ -918,20 +891,27 @@ station_colors <- c( "YVR" = "blue",
                     'YVR_EHF' = 'red')
 #filter the station
 df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "YVR_EHF" | station == "YVR")
-
+df_EHF_and_95th_2compare <- df_EHF_and_95th %>% 
+  filter(station == "YVR" | station == "YVR_EHF")
 year_ranges <- create_year_ranges(1937, 2024, 3
                                   )
-hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+#hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
 
 
 ```
+
+95th percentile
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_2compare, year_ranges, station_colors)
+```
 ```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
 
-check_station <- "YVR"
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 1958, check_station)
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 2015, check_station)
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 2021, check_station)
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 2022, check_station)
+# check_station <- "YVR"
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 1958, check_station)
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 2015, check_station)
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 2021, check_station)
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 2022, check_station)
 ```
 
 
@@ -941,6 +921,9 @@ compare_ehf_and_percentile_specific(df_EHF_and_90th, 2022, check_station)
 <b>FortNelson 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+
+90 percentile
+
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 
 
@@ -948,19 +931,26 @@ station_colors <- c( "FortNelson" = "blue",
                     'FortNelson_EHF' = 'red')
 #filter the station
 df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "FortNelson_EHF" | station == "FortNelson")
-
+df_EHF_and_95th_2compare <- df_EHF_and_95th %>% 
+  filter(station == "FortNelson" | station == "FortNelson_EHF")
 year_ranges <- create_year_ranges(1937, 2024, 3
                                   )
-hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+#hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+```
+
+95th percentile
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_2compare, year_ranges, station_colors)
 ```
 
 ```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
 
-check_station <- "FortNelson"
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 1948, check_station)
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 1975, check_station)
-#compare_ehf_and_percentile_specific(df_EHF_and_90th, 2012, check_station)
-compare_ehf_and_percentile_specific(df_EHF_and_90th, 2013, check_station)
+# check_station <- "FortNelson"
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 1948, check_station)
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 1975, check_station)
+# #compare_ehf_and_percentile_specific(df_EHF_and_90th, 2012, check_station)
+# compare_ehf_and_percentile_specific(df_EHF_and_90th, 2013, check_station)
 ```
 
 
@@ -969,7 +959,11 @@ compare_ehf_and_percentile_specific(df_EHF_and_90th, 2013, check_station)
 <!--TEXT SHOWS: -->
 <b> Prince_George 5 days HW compare</b>
 </h5>
-<div style="display:none;">  
+<div style="display:none;">
+
+90 percentile
+
+
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 
 
@@ -977,11 +971,19 @@ station_colors <- c( "Prince_George" = "blue",
                     'Prince_George_EHF' = 'red')
 #filter the station
 df_EHF_and_90th_2compare <- df_EHF_and_90th %>% filter(station == "Prince_George" | station == "Prince_George_EHF")
-
+df_EHF_and_95th_2compare <- df_EHF_and_95th %>% 
+  filter(station == "Prince_George" | station == "Prince_George_EHF")
 year_ranges <- create_year_ranges(1940, 2024, 3
                                   )
-hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+#hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
 ```
+
+95th percentile
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_2compare, year_ranges, station_colors)
+```
+
 
 
 </div>
@@ -991,6 +993,9 @@ hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_
 </h5>
 <div style="display:none;">  
 
+90 percentile
+
+
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 
 
@@ -999,9 +1004,17 @@ station_colors <- c( "Kelowna" = "blue",
 #filter the station
 df_EHF_and_90th_2compare <- df_EHF_and_90th %>% 
   filter(station == "Kelowna" | station == "Kelowna_EHF")
-
+df_EHF_and_95th_2compare <- df_EHF_and_95th %>% 
+  filter(station == "Kelowna" | station == "Kelowna_EHF")
 year_ranges <- create_year_ranges(1899, 2024, 3)
-hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+#hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors)
+
+```
+
+95th percentile
+
+```{r echo=FALSE, message=FALSE,warning=FALSE, fig.width=16}
+hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_2compare, year_ranges, station_colors)
 ```
 
 </div>
@@ -1010,6 +1023,8 @@ hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_
 <b>Abbotsford 5 days HW compare</b>
 </h5>
 <div style="display:none;">  
+
+90th percentile
 
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
 
@@ -1023,7 +1038,13 @@ df_EHF_and_90th_2compare <- df_EHF_and_90th %>%
 df_EHF_and_95th_2compare <- df_EHF_and_95th %>% 
   filter(station == "Abbotsford" | station == "Abbotsford_EHF")
 year_ranges <- create_year_ranges(1935, 2024, 3)
-hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors) 
+#hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_90th_2compare, year_ranges, station_colors) 
+
+```
+
+95th percentile
+
+```{r echo=FALSE, message=FALSE,warning=FALSE}
 hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_2compare, year_ranges, station_colors)
 ```
 
@@ -1060,6 +1081,12 @@ hline_data <- generate_temperature_plots_2station("5 days long",df_EHF_and_95th_
 </h4>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE,warning=FALSE}
+station_colors <- c(
+ "Prince_George_EHF" = "green", 
+"YVR_EHF" = "blue", 'FortNelson_EHF'='#D2B48C',
+"Kelowna_EHF" = '#FFD700', 'Penticton' = '#FF00FF', 
+'Abbotsford_EHF' = 'red')
+year_ranges <- create_year_ranges(1940, 2024, 4)
 hline_data <- generate_temperature_plots_EHF("3 days long",station_filter_EHF_3d_95, year_ranges, station_colors)
 ```
 

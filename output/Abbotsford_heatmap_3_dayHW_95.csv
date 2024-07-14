@@ -1,4 +1,4 @@
-"Year","DayOfYear","variable","value","Percentile_90","Percentile_95","Temp_Higher","Temp_Higher_95","streak_95","Heatwave_95","Color_95","station"
+"Year","DayOfYear","variable","value","Percentile_90","Percentile_95","Temp_Higher","Temp_Higher_95","streak_95","Heatwave_95","daily_max_temp","station"
 1935,"04-01","Max_Temp_Year",NA,17.44,18.9,NA,NA,1,NA,NA,"Abbotsford"
 1935,"04-02","Max_Temp_Year",NA,17.8,18.9,NA,NA,1,NA,NA,"Abbotsford"
 1935,"04-03","Max_Temp_Year",NA,17.82,19.4,NA,NA,1,NA,NA,"Abbotsford"

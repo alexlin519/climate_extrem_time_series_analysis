@@ -27,7 +27,8 @@ file_paths <- c("../data/FortNelson/Daily climate data.csv",
                 "../data/FortNelson/Daily climate data (2).csv",
                 "../data/FortNelson/Daily climate data (3).csv")
 source("../R/read_data.R")  ## read data
-df <- process_and_save_data(file_paths, station_name)
+results <- process_and_save_data(file_paths, station_name)
+df <- results[[1]] 
 source("../R/data_wrangling.R") ## wrangling data
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -98,7 +99,7 @@ df_percentiles <- df_percentiles %>%
 
 # Select specific columns to save
 selected_columns <- df_percentiles %>%
-  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+  select(Month,Day,Percentile_90,Percentile_95,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
 save_path <- paste0("../output/", station_name, "_percentiles.csv")
 
@@ -152,6 +153,7 @@ write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 <div style="display:none;"> 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 compare_plot
+compare_plot_95
 ```
 
 
@@ -351,10 +353,13 @@ print(heatmap)
 
 ```{r, echo=FALSE,message=FALSE}
 
-df_3_day_heatmap <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+result_3d <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
+df_3_day_heatmap <- result_3d[[1]]
+df_3_day_heatmap_95 <- result_3d[[2]]
 
-df_5_day_heatmap <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
-
+result_35d <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_day_heatmap <- result_35d[[1]]
+df_5_day_heatmap_95 <- result_35d[[2]]
 ```
 
 
@@ -378,6 +383,27 @@ df_5_day_heatmap$station <- station_name
 save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW.csv")
 # Save the updated dataframe to a file
 write.csv(df_5_day_heatmap, save_path, row.names = FALSE)
+
+
+
+#df_3_day_heatmap
+# Rename the column
+colnames(df_3_day_heatmap_95)[colnames(df_3_day_heatmap_95) == "Color_95"] <- "daily_max_temp"
+# Add the new column
+df_3_day_heatmap_95$station <- station_name
+# Save the updated dataframe to a file
+save_path <- paste0("../output/", station_name, "_heatmap_3_dayHW_95.csv")
+write.csv(df_3_day_heatmap_95, save_path, row.names = FALSE)
+
+
+#df_5_day_heatmap
+# Rename the column
+colnames(df_5_day_heatmap_95)[colnames(df_5_day_heatmap_95) == "Color_95"] <- "daily_max_temp"
+# Add the new column
+df_5_day_heatmap_95$station <- station_name
+save_path <- paste0("../output/", station_name, "_heatmap_5_dayHW_95.csv")
+# Save the updated dataframe to a file
+write.csv(df_5_day_heatmap_95, save_path, row.names = FALSE)
 
 ```
 
@@ -501,4 +527,62 @@ df_5_day_heatmap <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length =
 #   print(plots$month_plot)
 #   print(plots$hw_length_plot)
 #}
+```
+
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot EHF vs Percentile_90 for specific year</b>
+</h3>
+<div style="display:none;">  
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1948</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1948)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1980</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1980)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2004</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2004)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
 ```

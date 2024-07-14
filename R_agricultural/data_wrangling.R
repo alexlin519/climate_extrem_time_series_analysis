@@ -4,6 +4,7 @@ library(lubridate)
 library(tidyr)
 library(zoo)
 library(ggplot2)
+library(scales)
 
 aggregate_data <- function(data_x){
   # Add columns for year and week
@@ -28,108 +29,35 @@ aggregate_data <- function(data_x){
 }
 
 
-
-
-
-
-merged_data_x <- weekly_data_x %>%
-  select(-week_Mean_Percentile_95, -week_Mean_EHF_95) %>%
-  pivot_wider(names_from = Week, values_from = week_Mean_Temperature, names_prefix = "Week_")
-# drop the row when year ==2024 or year == na
-merged_data_x <- merged_data_x %>% 
-  select(-Week_NA) %>%
-  filter(Year != 2024) %>%
-  filter(Year != 1935) %>%
-  filter(!is.na(Year))
-#check the merged data has na
-print(sum(is.na(merged_data_x)))
-
-# Interpolate NA values in the wide data frame
-# by taking the average of the previous and next values
-merged_data_x[,-1] <- na.approx(merged_data_x[,-1], na.rm = FALSE)
-
-y_data <- data_fao %>%
-  filter(Element == "Yield")
-# Perform linear regression for each crop
-unique_crops <- unique(data_fao$Item)
-results <- list()
-for (crop in unique_crops) {
-  crop_data <- y_data %>% filter(Item == crop)
-
-  # Check if crop_data is not empty
-  if (nrow(crop_data) > 0) {
-
-    # Merge the temperature and yield data by Year
-    merged_data <- inner_join(crop_data, merged_data_x, by = "Year")
-
-    # Extract response variable y and predictor variables x
-    y <- merged_data$Value
-    x <- merged_data %>% select(starts_with("Week_"))
-
-    #y <- crop_data$Value
-    #x <- merged_data_x %>% select(starts_with("Week_"))
-
-    # Print x to show what it looks like
-    print("Predictor matrix x:")
-    print(x)
-
-    # Add intercept to the model
-    #x <- as.data.frame(model.matrix(~ . - 1, x))
-
-    model <- lm(y ~ ., data = x)
-    results[[crop]] <- summary(model)
-    
-    # Extract coefficients and their standard errors, removing the intercept
-    coeffs <- summary(model)$coefficients[-1,]
-    coeffs_df <- as.data.frame(coeffs)
-    coeffs_df$Week <- as.numeric(gsub("Week_", "", rownames(coeffs_df)))
-    coeffs_df <- coeffs_df[order(coeffs_df$Week), ]
-    
-    # Create the plot
-    p <- ggplot(coeffs_df, aes(x = Week, y = Estimate)) +
-      geom_line(color = "blue") +
-      geom_ribbon(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`), alpha = 0.2) +
-      labs(title = paste("Coefficient by Week for:", crop),
-           x = "Week",
-           y = "Coefficient Estimate") +
-      theme_minimal()+
-      heme(panel.grid.minor.y = element_blank(),
-           panel.grid.minor.x = element_blank()) 
-    
-    print(p)
-    
-  } else {
-    results[[crop]] <- "No data available for this crop."
+perform_linear_regression <- function(weekly_data_x, data_fao,station,predictor_variable) {
+  
+  # Check if the predictor_variable is valid
+  if (!predictor_variable %in% c("week_Mean_Percentile_95", "week_Mean_EHF_95", "week_Mean_Temperature")) {
+    stop("Invalid predictor_variable. Choose either 'week_Mean_Percentile_95', 'week_Mean_EHF_95', or 'week_Mean_Temperature'.")
   }
-}
-
-# Print results for each crop
-for (crop in unique_crops) {
-  print(paste("Results for crop:", crop))
-  print(results[[crop]])
-}
-
-
-
-
-
-
-perform_linear_regression <- function(weekly_data_x, data_fao,station) {
-
+  
+  columns_to_keep <- setdiff(c("week_Mean_Percentile_95", "week_Mean_EHF_95", "week_Mean_Temperature"), predictor_variable)
+  
+  # Process weekly data
+  merged_data_x <- weekly_data_x %>%
+    filter(station ==  station) %>%
+    select(-all_of(columns_to_keep)) %>%
+    pivot_wider(names_from = Week, values_from = !!sym(predictor_variable), names_prefix = "Week_") %>%
+    select(-Week_NA) %>%
+    filter(!is.na(Year)) # drop row where year column is na
+  
+  
   if (station == "Abbotsford") {
     # Process weekly data
-    merged_data_x <- weekly_data_x %>%
-      select(-week_Mean_Percentile_95, -week_Mean_EHF_95) %>%
-      pivot_wider(names_from = Week, values_from = week_Mean_Temperature, names_prefix = "Week_") %>%
-      select(-Week_NA) %>%
+    merged_data_x <- merged_data_x %>%
       filter(Year != 2024) %>%
-      filter(Year != 1935) %>%
-      filter(!is.na(Year))
+      filter(Year != 1935) 
     }
   
   # Check for NAs in the merged data
   if (sum(is.na(merged_data_x)) > 0) {
-    print(paste("There are",sum(is.na(merged_data_x)," NA in the matrix X in",station,"station")))
+    num_of_na <- sum(is.na(merged_data_x))
+    print(paste("There are",num_of_na," NA in the matrix X in",station,"station"))
     # Interpolate NA values in the wide data frame
     merged_data_x[,-1] <- na.approx(merged_data_x[,-1], na.rm = FALSE)
   }
@@ -160,7 +88,7 @@ perform_linear_regression <- function(weekly_data_x, data_fao,station) {
       
       # Add intercept to the model
       model <- lm(y ~ ., data = x)
-      results[[crop]] <- summary(model)
+      results[[crop]] <- list(summary = summary(model))
       
       # Extract coefficients and their standard errors, removing the intercept
       coeffs <- summary(model)$coefficients[-1,]
@@ -172,9 +100,12 @@ perform_linear_regression <- function(weekly_data_x, data_fao,station) {
       p <- ggplot(coeffs_df, aes(x = Week, y = Estimate)) +
         geom_line(color = "blue") +
         geom_ribbon(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`), alpha = 0.2) +
-        labs(title = paste("Coefficient by Week for:", crop),
+        labs(title = paste("Coefficient by Week for:", crop, "in", station),
              x = "Week",
              y = "Coefficient Estimate") +
+        #shows more x and y values
+        scale_x_continuous(breaks = seq(min(coeffs_df$Week), max(coeffs_df$Week), by = 2))+
+        scale_y_continuous(breaks = pretty_breaks(n = 16))+ # Specify the number of breaks
         theme_minimal() +
         theme(panel.grid.minor.y = element_blank(),
               panel.grid.minor.x = element_blank())
@@ -189,14 +120,5 @@ perform_linear_regression <- function(weekly_data_x, data_fao,station) {
   return(results)
 }
 
-# # Example usage:
-# results <- perform_linear_regression(weekly_data_x, data_fao)
-# #Print results for each crop
-# for (crop in unique_crops) {
-#   print(paste("Results for crop:", crop))
-#   print(results[[crop]]$summary)
-#   if (!is.null(results[[crop]]$plot)) {
-#     print(results[[crop]]$plot)
-#   }
-# }
+
 

@@ -51,7 +51,8 @@ for (item in unique(data_fao$Item)) {
 
 
 # Read the CSV file
-file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv")
+file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
+                "../output/Kelowna/EHF_heatmap_5_dayHW.csv")
 # Define the columns needed
 #Month	Day	LOCAL_DATE	LOCAL_YEAR	STATION_NAME	MEAN_TEMPERATURE	Percentile_90	
 #Percentile_95	Rolling_3d_Avg_Temp	EHI_sig	EHI_sig_95	Rolling_Avg_30Day	EHI_accl	
