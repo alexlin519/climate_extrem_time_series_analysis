@@ -144,21 +144,20 @@ perform_linear_regression_weekly <- function(weekly_data_x, data_fao,station,pre
 
 
 
-perform_linear_regression_monthly <- function(weekly_data_x, data_fao,station,predictor_variable) {
-  
+perform_linear_regression_monthly <- function(monthly_data_x, data_fao,station,predictor_variable) {
   # Check if the predictor_variable is valid
-  if (!predictor_variable %in% c("week_Mean_Percentile_95", "week_Mean_EHF_95", "week_Mean_Temperature")) {
-    stop("Invalid predictor_variable. Choose either 'week_Mean_Percentile_95', 'week_Mean_EHF_95', or 'week_Mean_Temperature'.")
+  if (!predictor_variable %in% c("maxmon_Mean_Temp", "maxmon_Percentile_95", "maxmon_EHF_95")) {
+    stop("Invalid predictor_variable. Choose either 'maxmon_Mean_Temp', 'maxmon_Percentile_95', or 'maxmon_EHF_95'.")
   }
   
-  columns_to_keep <- setdiff(c("week_Mean_Percentile_95", "week_Mean_EHF_95", "week_Mean_Temperature"), predictor_variable)
+  columns_to_keep <- setdiff(c("maxmon_Mean_Temp", "maxmon_Percentile_95", "maxmon_EHF_95"), predictor_variable)
   
   # Process weekly data
-  merged_data_x <- weekly_data_x %>%
+  merged_data_x <- monthly_data_x %>%
     filter(station ==  station) %>%
     select(-all_of(columns_to_keep)) %>%
-    pivot_wider(names_from = Week, values_from = !!sym(predictor_variable), names_prefix = "Week_") %>%
-    select(-Week_NA) %>%x
+    pivot_wider(names_from = Month, values_from = !!sym(predictor_variable), names_prefix = "Month_") %>%
+    select(-Month_NA)
   
   
   if (station == "Abbotsford") {
@@ -194,7 +193,7 @@ perform_linear_regression_monthly <- function(weekly_data_x, data_fao,station,pr
       
       # Extract response variable y and predictor variables x
       y <- merged_data$Value
-      x <- merged_data %>% select(starts_with("Week_"))
+      x <- merged_data %>% select(starts_with("Month_"))
       
       # Print x to show what it looks like
       # print(paste("Predictor matrix x for crop:", crop))
@@ -207,18 +206,18 @@ perform_linear_regression_monthly <- function(weekly_data_x, data_fao,station,pr
       # Extract coefficients and their standard errors, removing the intercept
       coeffs <- summary(model)$coefficients[-1,]
       coeffs_df <- as.data.frame(coeffs)
-      coeffs_df$Week <- as.numeric(gsub("Week_", "", rownames(coeffs_df)))
-      coeffs_df <- coeffs_df[order(coeffs_df$Week), ]
+      coeffs_df$Month <- as.numeric(gsub("Month_", "", rownames(coeffs_df)))
+      coeffs_df <- coeffs_df[order(coeffs_df$Month), ]
       
       # Create the plot
-      p <- ggplot(coeffs_df, aes(x = Week, y = Estimate)) +
+      p <- ggplot(coeffs_df, aes(x = Month, y = Estimate)) +
         geom_line(color = "blue") +
         geom_ribbon(aes(ymin = Estimate - `Std. Error`, ymax = Estimate + `Std. Error`), alpha = 0.2) +
-        labs(title = paste("Coefficient by Week for:", crop, "in", station),
-             x = "Week",
+        labs(title = paste("Coefficient by Month for:", crop, "in", station),
+             x = "Month",
              y = "Coefficient Estimate") +
         #shows more x and y values
-        scale_x_continuous(breaks = seq(min(coeffs_df$Week), max(coeffs_df$Week), by = 2))+
+        scale_x_continuous(breaks = seq(min(coeffs_df$Month), max(coeffs_df$Month), by = 2))+
         scale_y_continuous(breaks = pretty_breaks(n = 16))+ # Specify the number of breaks
         theme_minimal() +
         theme(panel.grid.minor.y = element_blank(),
