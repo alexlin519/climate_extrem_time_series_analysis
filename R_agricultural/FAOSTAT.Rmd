@@ -41,6 +41,11 @@ plot_fao_data(data_fao)
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+# FILTER data_x to start from 1961 as it is the start of the FAO data
+#LOCAL_DATE
+data_x <- data_x %>%
+  filter(LOCAL_DATE >= "1961-01-01")
+
 weekly_data_x <- aggregate_data_week(data_x)
 monthly_data_x <- aggregate_data_month(data_x)
 
@@ -75,6 +80,26 @@ for (crop in unique_crops) {
 
 ```
 
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Kelowna weekly</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Example usage:
+results <- perform_linear_regression_weekly(weekly_data_x, data_fao,"Kelowna", "week_Mean_EHF_95")
+
+unique_crops <- unique(data_fao$Item)
+#Print results for each crop
+for (crop in unique_crops) {
+  print(paste("Results for crop:", crop))
+  print(results[[crop]]$summary)
+  if (!is.null(results[[crop]]$plot)) {
+    print(results[[crop]]$plot)
+  }
+}
+
+```
 
 </div>
 
@@ -95,6 +120,33 @@ for (crop in unique_crops) {
   if (!is.null(results[[crop]]$plot)) {
     print(results[[crop]]$plot)
   }
+}
+
+```
+
+
+</div>
+
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Abbotsford monthly</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Example usage:
+results <- perform_linear_regression_monthly(monthly_data_x, data_fao,"Kelowna", "maxmon_EHF_95")
+
+unique_crops <- unique(data_fao$Item)
+#Print results for each crop
+for (crop in unique_crops) {
+  print(paste("Results for crop:", crop))
+  print(results[[crop]]$summary)
+  if (!is.null(results[[crop]]$plot)) {
+    print(results[[crop]]$plot)
+  }
+  
+  
+  
 }
 
 ```

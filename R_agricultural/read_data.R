@@ -1,5 +1,6 @@
 # Load necessary libraries
 library(tidyverse)
+library(zoo)
 
 # Read the CSV file
 file_paths <- c("../data/agri/FAOSTAT_data.csv",
