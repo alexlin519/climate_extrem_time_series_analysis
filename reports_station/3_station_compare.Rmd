@@ -211,7 +211,7 @@ df_count_sorted_df <- sorted_df %>%
 <div style="display:none;">
 
 ```{r, echo=FALSE,message=FALSE}
-# dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
+dftop20 <- generate_extreme_temp_scatter_plots(filtered_heatmap_all, 1:19)
 # print_plot(dftop20,"FortNelson","Prince_George")
 # print_plot(dftop20,"FortNelson","YVR")
 # print_plot(dftop20,"FortNelson","Abbotsford")
