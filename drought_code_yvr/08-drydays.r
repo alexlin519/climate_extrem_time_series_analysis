@@ -1,6 +1,13 @@
 impute_temps <- function(file_path_temp_precip) {
   # Load the data
   load(file_path_temp_precip)
+  # # Identify the number of consecutive NAs at the beginning of df$maxtemp
+  # n_na <- sum(cumprod(is.na(df$maxtemp)))
+  # 
+  # # Drop the top n_na rows
+  # if (n_na > 0) {
+  #   df <- df[-(1:n_na), ]
+  # }
   
   imax <- which(is.na(df$maxtemp))
   imin <- which(is.na(df$mintemp))

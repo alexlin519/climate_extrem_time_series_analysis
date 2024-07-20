@@ -1,8 +1,21 @@
 library(timeDate)
+
+# Function to drop values until the first discontinuity
+drop_until_first_discontinuity <- function(vec) {
+  for (i in seq_along(vec)) {
+    if (vec[i] != i) {
+      return(vec[i:length(vec)])
+    }
+  }
+  return(vec)
+}
+
+
 process_heat_exceedances <- function(temp_precip_path, stat_path, station_name) {
   load(temp_precip_path)
   load(stat_path)
-  
+  # Apply the function
+  missing_maxtem <- drop_until_first_discontinuity(missing_maxtem)
   imx = missing_maxtem
   icheckmx = sort(c(imx, imx - 1, imx + 1))
   icheckmx = unique(icheckmx)
@@ -39,10 +52,10 @@ process_heat_exceedances <- function(temp_precip_path, stat_path, station_name) 
   excvec = NULL; ss = 0; len = 0
   if (iex) { begin_ex = c(begin_ex, 1); iend = 1 }
   for (i in 2:n) {
-    if (iex & iexceed[i]) { iend = i; ss = ss + exc[i]; len = len + 1 }
-    else if (iex & !iexceed[i]) {
+    if (iex & iexceed[i]) { iend = i; ss = ss + exc[i]; len = len + 1 } #& !is.na(iexceed[i]) 
+    else if (iex & !iexceed[i]) { # & (!is.na(iexceed[i]))
       end_ex = c(end_ex, iend); iex = FALSE; excvec = c(excvec, ss / len); ss = 0; len = 0
-    } else if (!iex & iexceed[i]) {
+    } else if (!iex  & iexceed[i]) { #&!is.na(iexceed[i])
       begin_ex = c(begin_ex, i); iend = i; iex = TRUE; ss = ss + exc[i]; len = len + 1
     }
   }
