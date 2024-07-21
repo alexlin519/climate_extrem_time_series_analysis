@@ -124,3 +124,29 @@ plot_scatter_color_top <- function(data_1_path,data1_start_year,station1,
   
   
 }
+
+
+# Define the function
+plot_avg_exc_temp <- function(data, year) {
+  ggplot(data, aes(x = month, y = avgexc, color = station, size = rank)) +
+    geom_point(alpha = 0.6) +
+    geom_text(aes(label = rank), vjust = -0.5, size = 3, color = "black") +  # Add rank labels
+    labs(title = paste("Average Excess Temperature (avgexc) by Station",year, "SUMMER"),
+         x = "Year",
+         y = "Average Excess Temperature (°C)",
+         size = "Rank") +
+    theme_minimal() +
+    scale_color_manual(values = station_colors) +
+    scale_size_continuous(
+      name = "Rank",
+      trans = scales::trans_new(
+        name = "custom",
+        transform = function(x) ifelse(x > 300, 300, x),
+        inverse = function(x) x,
+        domain = c(0, 300)
+      ),
+      range = c(8.5, 2.5),  # Adjust this range based on the desired size scale
+      limits = c(1, 300)
+    ) +
+    scale_x_continuous(breaks = seq(1, 12, by = 1))
+}
