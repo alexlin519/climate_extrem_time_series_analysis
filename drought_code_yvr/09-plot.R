@@ -64,7 +64,7 @@ plot_avg_temp_change <- function(heatwave_data) {
                      "Spring" = "#7FFF00",  # Green
                      "Summer" = "red",  # Red
                      "Fall" = "#ff7f00")    # Orange
-  sca <- ggplot(heatwave_data, aes(x = year, y = avgexc, color = factor(season))) +
+  sca <- ggplot(heatwave_data, aes(x = year_month, y = avgexc, color = factor(season))) +
     geom_point(size = 3, alpha = 0.7) +
     labs(title = "Scatter Plot of Average Temperature Change by Year and Month",
          x = "Year",
@@ -72,7 +72,8 @@ plot_avg_temp_change <- function(heatwave_data) {
          color = "Month") +
     theme_minimal() +
     scale_color_manual(values = season_colors) +
-    scale_x_continuous(breaks = seq(1937, 2024, by = 2)) +
+    scale_x_date(date_labels = "%Y", date_breaks = "2 year")+
+    #scale_x_continuous(breaks = seq(1937, 2024, by = 2)) +
     theme(panel.grid.minor.y = element_blank(),
           panel.grid.minor.x = element_blank())
   print(sca)
