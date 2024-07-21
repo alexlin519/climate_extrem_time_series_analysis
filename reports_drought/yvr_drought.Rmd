@@ -368,3 +368,31 @@ plot_scatter <- function(data_1_path,data1_start_year,station1,
 plot_scatter(consec_precip_bymonth_path_Kelowna,1937,"Kelowna",
                     consec_precip_bymonth_path,1937,"YVR",1:19)
 ```
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Define the stations and their respective file paths and start years
+stations <- list(
+  
+  Abbotsford = list(path = consec_precip_bymonth_path_abb, start_year = 1935),
+  FortNelson = list(path = consec_precip_bymonth_path_fn, start_year = 1937),
+  PrinceGeorge = list(path = consec_precip_bymonth_path_pg, start_year = 1940),
+  Kelowna = list(path = consec_precip_bymonth_path_Kelowna, start_year = 1899),
+  YVR = list(path = consec_precip_bymonth_path, start_year = 1937)
+)
+
+# Iterate over station pairs and generate scatter plots
+station_names <- names(stations)
+for (i in 1:(length(station_names) - 1)) {
+  for (j in (i + 1):length(station_names)) {
+    station1 <- station_names[i]
+    station2 <- station_names[j]
+    data_1_path <- stations[[station1]]$path
+    data_2_path <- stations[[station2]]$path
+    data1_start_year <- stations[[station1]]$start_year
+    data2_start_year <- stations[[station2]]$start_year
+    
+    plot_scatter(data_1_path, data1_start_year, station1, data_2_path, data2_start_year, station2,1:19)
+  }
+}
+```
