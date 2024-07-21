@@ -37,7 +37,7 @@ source("../drought_code_yvr/diff_station_dry_cor.r")
 
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> Read data</b>
+<b> Part 1: EDA</b>
 </h1>
 <div style="display:none;"> 
 
@@ -62,7 +62,6 @@ result_hw <- process_heat_periods(temp_precip_path, percentiles90th_path, "YVR")
 # result_hw$heatwave_csv_path
 
 
-heatwave_csv_path_2 <- process_heat_exceedances(temp_precip_path, percentiles90th_path, "YVR")
 
 ```
 
@@ -306,74 +305,28 @@ plot_avg_temp_change(heatwave_data)
 </div>
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> Correlation </b>
+<b>Part 2: Correlation </b>
 </h1>
 <div style="display:none;"> 
+
+
 ```{r, echo=FALSE,warning=FALSE,message=FALSE}
 #consec_precip_bymonth_path_Kelowna
-plot_ccf_max_consec(consec_precip_bymonth_path_Kelowna,1899,"Kelowna",
-                    consec_precip_bymonth_path,1937,"YVR")
-```
-#### The maximum cross-correlation at lag -0.75 indicates a relatively stronger relationship when Kelowna's data leads YVR's data by 0.75 time units.
-
-
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_scatter <- function(data_1_path,data1_start_year,station1, 
-                                data_2_path,data2_start_year,station2,extreme_range) {
-  # Load the data
-  data_1 <- read_csv(data_1_path)
-  data_2 <- read_csv(data_2_path)
-  data_1$year <- as.integer(substr(data_1$yrmon, 1, 4))
-  data_2$year <- as.integer(substr(data_2$yrmon, 1, 4))
-  #filter year
-  data_1 <- data_1 %>% filter(year >= data1_start_year)
-  data_2 <- data_2 %>% filter(year >= data2_start_year)
-  
-  # Merge the datasets on yrmon
-  df_merged <- merge(data_1, data_2, by = c("yrmon"), suffixes = c("_1", "_2"))
-  
-  
-  # Identify the range of extreme points based on the highest temperatures
-      top_extremes <- df_merged %>%
-        arrange(desc(max_consec_1 + max_consec_2)) %>%
-        slice(extreme_range) %>%
-        #mutate(label = paste(Year, DayOfYear, sep = "-"))
-        mutate(label = paste(yrmon, sep = "-"))
-      # Add the dataframe to the list
-      #label_dataframes[[paste(station1, station2, sep = "_vs_")]] <- top_extremes
-      
-      # Create a color palette for the labels
-      base_colors <- c('#FF0000', '#008000', '#0000FF', '#000000', '#FF00FF', '#FFA500', '#FFD700', '#D2691E',
-                 '#D2B48C', '#808000', '#FFFF00', '#40E0D0', '#00BFFF', '#1E90FF', '#8A2BE2', '#FF1493',
-                 '#A52A2A', '#7FFF00', '#8B008B', '#FF69B4','#A9A9A9', '#696969') 
-      # Create scatter plot with text annotations and color for top extremes
-      plot <- ggplot(df_merged, aes(x = max_consec_1, y = max_consec_2)) +
-        geom_point() +
-        geom_point(data = top_extremes, aes(x = max_consec_1, y = max_consec_2, color = label), size = 1.5) +
-        scale_color_manual(values = base_colors) +
-        geom_abline(slope = 1, intercept = 0, linetype = "solid", color = "red", size = 1) +  # Add 45-degree line
-        labs(
-          title = paste("Scatter Plot of Max Temperature:", station1, "vs", station2),
-          x = paste("Max Temperature (", station1, ")", sep = ""),
-          y = paste("Max Temperature (", station2, ")", sep = "")
-        ) +
-        theme_minimal()
-      print(plot)
-      
-      
-}
-
-#consec_precip_bymonth_path_fn
-
-plot_scatter(consec_precip_bymonth_path_Kelowna,1937,"Kelowna",
-                    consec_precip_bymonth_path,1937,"YVR",1:19)
+#plot_ccf_max_consec(consec_precip_bymonth_path_Kelowna,1899,"Kelowna",
+#                    consec_precip_bymonth_path,1937,"YVR")
 ```
 
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>scatter plot with top20 colored</b>
+</h3>
+<div style="display:none;">  
 ```{r, echo=FALSE,warning=FALSE,message=FALSE}
 # Define the stations and their respective file paths and start years
 stations <- list(
-  
   Abbotsford = list(path = consec_precip_bymonth_path_abb, start_year = 1935),
   FortNelson = list(path = consec_precip_bymonth_path_fn, start_year = 1937),
   PrinceGeorge = list(path = consec_precip_bymonth_path_pg, start_year = 1940),
@@ -392,7 +345,238 @@ for (i in 1:(length(station_names) - 1)) {
     data1_start_year <- stations[[station1]]$start_year
     data2_start_year <- stations[[station2]]$start_year
     
-    plot_scatter(data_1_path, data1_start_year, station1, data_2_path, data2_start_year, station2,1:19)
+    plot_scatter_color_top(data_1_path, data1_start_year, station1, data_2_path, data2_start_year, station2,1:19)
   }
 }
+```
+
+
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Part 3: Ranking </b>
+</h1>
+<div style="display:none;">
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b></b>
+</h3>
+<div style="display:none;">  
+
+#### combine all station avgexc data
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Function to process data, base years, and heat exceedances for a station
+process_station_data <- function(raw_data_path, station_name) {
+  temp_precip_path <- process_data(raw_data_path, station_name)
+  percentiles90th_path <- process_base_years(temp_precip_path, station_name)
+  heatwave_csv_path <- process_heat_exceedances(temp_precip_path, percentiles90th_path, station_name)
+  heatwave_data <- read.csv(heatwave_csv_path)
+  heatwave_data$station <- station_name
+  return(heatwave_data)
+}
+
+# List of stations and their corresponding raw data paths
+stations_data <- list(
+  "YVR" = "../output/YVR_raw_filtered_columns.csv",
+  "Prince_George" = "../output/Prince_George_raw_filtered_columns.csv",
+  "FortNelson" = "../output/FortNelson_raw_filtered_columns.csv",
+  "Kelowna" = "../output/Kelowna_raw_filtered_columns.csv",
+  "Abbotsford" = "../output/Abbotsford_raw_filtered_columns.csv"
+)
+
+# Initialize an empty list to hold data frames
+all_heatwave_data <- list()
+
+# Loop over each station, process data and store in the list
+for (station in names(stations_data)) {
+  raw_data_path <- stations_data[[station]]
+  station_data <- process_station_data(raw_data_path, station)
+  all_heatwave_data[[station]] <- station_data
+}
+
+# Combine all data frames into one
+combined_heatwave_data <- do.call(rbind, all_heatwave_data)
+
+#filter the year to be >= 1940
+combined_heatwave_data <- combined_heatwave_data[combined_heatwave_data$year >= 1940, ]
+
+
+# Save the combined data to a CSV file if needed
+write.csv(combined_heatwave_data, "../drought_code_yvr/data/combined_avgexc.csv", row.names = FALSE)
+
+
+
+```
+
+#### Rank the stations based on the number of dry days
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=16, fig.height=6}
+
+# Assuming combined_heatwave_data is the name of your dataframe
+# Order data by avgexc
+ordered_data <- combined_heatwave_data %>% arrange(desc(avgexc))
+
+# Create a rank column within each station based on avgexc
+ranked_data <- ordered_data %>%
+  group_by(station) %>%
+  mutate(rank = rank(-avgexc, ties.method = "first")) %>%
+  ungroup()
+
+# Convert rank to numeric type
+ranked_data$rank <- as.numeric(as.character(ranked_data$rank))
+#year-month column
+ranked_data$yrmon <- as.Date(paste0(ranked_data$year, "-", ranked_data$month, "-01"))
+
+#first 20 rows of ranked_data
+head(ranked_data, 30)
+
+station_colors <- c("Kelowna" = "red", "Prince_George" = "green", "YVR" = "blue",
+                    "FortNelson" = '#FFD700', 'Abbotsford' = '#FF00FF')
+
+# Scatter plot of avgexc vs. year
+ggplot(ranked_data, aes(x = year, y = avgexc, color = station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Average Excess Temperature Over Years by Station",
+       x = "Year",
+       y = "Average Excess Temperature (°C)",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 100, 100, x),
+      inverse = function(x) x,
+      domain = c(0, 100)
+    ),
+    range = c(4, 1),  # Adjust this range based on the desired size scale
+    limits = c(1, 100))+
+  scale_x_continuous(breaks = seq(1940, 2024, by = 2))
+
+# scatter plot, but x is year-month
+# Scatter plot of avgexc vs. year
+ggplot(ranked_data, aes(x = yrmon, y = avgexc, color = station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Average Excess Temperature Over Years by Station",
+       x = "Year",
+       y = "Average Excess Temperature (°C)",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 100, 100, x),
+      inverse = function(x) x,
+      domain = c(0, 100)
+    ),
+    range = c(4, 1),  # Adjust this range based on the desired size scale
+    limits = c(1, 100))+
+  #year-month scale
+  scale_x_date(date_labels = "%Y", date_breaks = "2 year")
+
+
+```
+
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#fliter the year
+ranked_data_1941 <- ranked_data %>% filter(year == 1941)
+ranked_data_1941
+#2021
+ranked_data_2021 <- ranked_data %>% filter(year == 2021)
+ranked_data_2021
+```
+
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Scatter plot with avgexc on the y-axis, station on the x-axis, and rank represented by size
+ggplot(ranked_data_1941, aes(x = station, y = avgexc, size = rank, color = station)) +
+  geom_point(alpha = 0.7) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 300, 300, x),
+      inverse = function(x) x,
+      domain = c(0, 300)
+    ),
+    range = c(10, 1),  # Adjust this range based on the desired size scale
+    limits = c(1, 300)
+  ) +
+  labs(title = "Scatter Plot of Avgexc by Station with Rank as Size",
+       x = "Station",
+       y = "Avgexc",
+       size = "Rank") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#histogram
+ggplot(ranked_data_1941, aes(x = avgexc, fill = station)) +
+  geom_histogram(binwidth = 0.5, alpha = 0.7, position = "identity") +
+  labs(title = "Histogram of Average Excess Temperature by Station",
+       x = "Average Excess Temperature (°C)",
+       y = "Frequency",
+       fill = "Station") +
+  theme_minimal() +
+  theme(legend.position = "top")
+
+#ranked_data_1941$rank <- as.numeric(as.character(ranked_data_1941$rank))
+ggplot(ranked_data_1941, aes(x = month, y = avgexc, color = station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  geom_text(aes(label = rank), vjust = -0.5, size = 3, color = "black") +  # Add rank labels
+  labs(title = "Average Excess Temperature Over Years by Station",
+       x = "Year",
+       y = "Average Excess Temperature (°C)",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 300, 300, x),
+      inverse = function(x) x,
+      domain = c(0, 300)
+    ),
+    range = c(8.5, 2.5 ),  # Adjust this range based on the desired size scale
+    limits = c(1, 300))+
+  
+  #month scale
+  scale_x_continuous(breaks = seq(1, 12, by = 1))
+  
+
+ggplot(ranked_data_2021, aes(x = month, y = avgexc, color = station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  geom_text(aes(label = rank), vjust = -0.5, size = 3, color = "black") +  # Add rank labels
+  labs(title = "Average Excess Temperature Over Years by Station",
+       x = "Year",
+       y = "Average Excess Temperature (°C)",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 300, 300, x),
+      inverse = function(x) x,
+      domain = c(0, 300)
+    ),
+    range = c(8.5, 2.5 ),  # Adjust this range based on the desired size scale
+    limits = c(1, 300))+
+  
+  #month scale
+  scale_x_continuous(breaks = seq(1, 12, by = 1))
+  
 ```
