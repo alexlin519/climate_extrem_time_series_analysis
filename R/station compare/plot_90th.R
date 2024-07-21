@@ -35,7 +35,15 @@ three_stations_90th <- ggplot(df_station, aes(x = Date, y = Percentile_90, color
  #                                  "YVR" = "solid"))
 
 
-
+three_stations_95th <- ggplot(df_station, aes(x = Date, y = Percentile_95, color = Station, group = Station)) +
+  geom_line(size = 0.6) +  # Adjust line size for better visibility
+  labs(title = "Percentile 95 Temperature by Station",
+       x = "Date",
+       y = "Percentile 95 Temperature") +
+  theme_minimal() +
+  scale_x_date(date_labels = "%b %d", date_breaks = "1 month") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = station_colors)
 
 
 # Define the colors for specific stations
@@ -60,7 +68,15 @@ three_stations_90th_filter <- ggplot(filter_df_station, aes(x = Date, y = Percen
 #                                    "solid", "Prince_George" = "solid","Kelowna" = "solid",
 #                                  "YVR" = "solid"))
 
-
+three_stations_95th_filter <- ggplot(filter_df_station, aes(x = Date, y = Percentile_95, color = Station, group = Station)) +
+  geom_line(size = 0.6,na.rm = FALSE) +  # Adjust line size for better visibility
+  labs(title = "Percentile 95 Temperature by Station",
+       x = "Date",
+       y = "Percentile 95 Temperature") +
+  theme_minimal() +
+  scale_x_date(date_labels = "%b %d", date_breaks = "1 month") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = station_colors)
 
 
 

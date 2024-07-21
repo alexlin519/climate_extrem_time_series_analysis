@@ -21,22 +21,34 @@ process_and_save_data <- function(file_paths, station_name) {
   
   # Read and combine all datasets
   df <- map_dfr(file_paths, read_and_select)
+  
+  # Ensure that data_EHF contains finite values in all columns
+  # df <- data_EHF %>%
+  #   filter_all(all_vars(is.finite(.)))
+  
   summary_original <- summary(df)
   
-  
   # deal with the non-exist date, call helper function
-  result <- deal_with_non_exist_date(df)
+  #result <- deal_with_non_exist_date(df)
+  result <- NA
   #df_complete_final, df_missing, missing_summary
   
   # Define the save path
   save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
   
   # Save the selected columns as a CSV file
-  write.csv(result[[1]], file = save_path, row.names = FALSE)
-  print(paste("Data ",station_name," saved to:", save_path))
+  # Save the selected columns as a CSV file if the result is not NA
+  if (!is.na(result)) {
+    write.csv(result[[1]], file = save_path, row.names = FALSE)
+    print(paste("Data ", station_name, " saved to:", save_path))
+    return(list(result[[1]], summary_original, result[[2]], result[[3]]))
+  } else {
+    write.csv(df, file = save_path, row.names = FALSE)
+    print(paste("Data ", station_name, " saved to:", save_path))
+    return(list(df, summary_original,NA,NA))
+  }
   
-  #return the df and all summary
-  return(list(result[[1]], summary_original, result[[2]], result[[3]]))
+  
 }
 
 
@@ -46,6 +58,12 @@ deal_with_non_exist_date <- function(df){
   # Create a complete sequence of dates
   complete_dates <- data.frame(LOCAL_DATE = seq(min(df$LOCAL_DATE), max(df$LOCAL_DATE), by="day"))
 
+  # Check if the dataframe is already complete
+  if (nrow(df) == nrow(complete_dates)) {
+    # If complete, return NA and print a message
+    print("The dataframe is already complete. No missing dates.")
+    return(NA)
+  }
   # Merge the complete dates with the original dataset
   df_complete <- complete_dates %>%
     left_join(df, by = "LOCAL_DATE")
@@ -85,3 +103,6 @@ deal_with_non_exist_date <- function(df){
   # Return all 2 df and summary
   return(list(df_complete_final, df_missing, missing_summary))
 }
+
+
+

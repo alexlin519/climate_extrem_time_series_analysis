@@ -49,3 +49,18 @@ for (item in unique(data_fao$Item)) {
   print(facet_plot)
 }
 
+
+# Read the CSV file
+file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
+                "../output/Kelowna/EHF_heatmap_5_dayHW.csv")
+# Define the columns needed
+#Month	Day	LOCAL_DATE	LOCAL_YEAR	STATION_NAME	MEAN_TEMPERATURE	Percentile_90	
+#Percentile_95	Rolling_3d_Avg_Temp	EHI_sig	EHI_sig_95	Rolling_Avg_30Day	EHI_accl	
+#EHF	EHF_95	Heatday	Heatday_95	station	streak	Heatwave	Heatwave_95
+needed_columns <- c("LOCAL_DATE", "MEAN_TEMPERATURE", "Percentile_95", "EHF_95","station")
+read_and_select <- function(file_path) {
+  read.csv(file_path) %>%
+    select(all_of(needed_columns))
+}
+# Read and combine all datasets
+data_x <- map_dfr(file_paths, read_and_select)

@@ -106,7 +106,7 @@ df_percentiles <- df_percentiles %>%
 
 # Select specific columns to save
 selected_columns <- df_percentiles %>%
-  select(Month,Day,Percentile_90,Station)  # Adjust column names as needed
+  select(Month,Day,Percentile_90,Percentile_95,Station)  # Adjust column names as needed
 # Define the path to save the CSV file
 save_path <- "../output/PriGeog_percentiles.csv"
 
@@ -120,6 +120,7 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 compare_plot
+compare_plot_95
 # Example usage:
 df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
 # Example usage:
@@ -304,9 +305,12 @@ print(heatmap)
 
 
 ```{r, echo=FALSE,message=FALSE}
-df_3_yvr <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
-df_5_yvr <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
-
+result_3d <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31')
+df_3_yvr <- result_3d[[1]]
+df_3_yvr_95 <- result_3d[[2]]
+result_5d <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
+df_5_yvr <- result_5d[[1]]
+df_5_yvr_95 <- result_5d[[2]]
 ```
 
 
@@ -327,6 +331,25 @@ colnames(df_5_yvr)[colnames(df_5_yvr) == "Color"] <- "daily_max_temp"
 df_5_yvr$station <- "Prince_George"
 # Save the updated dataframe to a file
 write.csv(df_5_yvr, "../output/Prince_George_heatmap_5_dayHW.csv", row.names = FALSE)
+
+
+
+
+
+colnames(df_3_yvr_95)[colnames(df_3_yvr_95) == "Color_95"] <- "daily_max_temp_95"
+# Add the new column
+df_3_yvr_95$station <- "Prince_George"
+# Save the updated dataframe to a file
+write.csv(df_3_yvr_95, "../output/Prince_George_heatmap_3_dayHW_95.csv", row.names = FALSE)
+
+
+#df_5_yvr
+# Rename the column
+colnames(df_5_yvr_95)[colnames(df_5_yvr_95) == "Color_95"] <- "daily_max_temp_95"
+# Add the new column
+df_5_yvr_95$station <- "Prince_George"
+# Save the updated dataframe to a file
+write.csv(df_5_yvr_95, "../output/Prince_George_heatmap_5_dayHW_95.csv", row.names = FALSE)
 
 ```
 
@@ -455,4 +478,103 @@ df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, star
 #   print(plots$month_plot)
 #   print(plots$hw_length_plot)
 # }
+```
+
+```{r, echo=FALSE,message=FALSE}
+#df_plot_year <- prepare_plot_data("Percentile_90", 1941, "MAX_TEMPERATURE")
+# Example usage:
+#plot_percentiles_vs_year(df_plot_year,1941)
+#compare_ehf_and_percentile_specific(df_combined_ehf1, 2021)
+
+```
+
+
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> Plot EHF vs Percentile_90 for specific year</b>
+</h3>
+<div style="display:none;">  
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1941</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1941)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1958</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1958)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1969</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1969)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>1993</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 1993)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>2022</b>
+</h4>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+
+
+
+results_2def <- full_compare_ehf_and_percentile_specific(df_combined_ehf1, 2022)
+combined_plot_2021 <- results_2def[[1]]
+left_full <- results_2def[[2]] 
+left_full
 ```

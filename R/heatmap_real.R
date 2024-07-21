@@ -148,6 +148,7 @@ create_heatmap_diff <- function(df, start_date, end_date) {
 create_heatmap_filter_hw <- function(df, heat_wave_length, start_date, end_date) {
   # Add a binary column indicating whether the temperature is higher than the baseline
   df$Temp_Higher <- ifelse(df$Max_Temp_Year > df$Percentile_90, "Higher", "Not Higher")
+  df$Temp_Higher_95 <- ifelse(df$Max_Temp_Year > df$Percentile_95, "Higher", "Not Higher")
   
   # Filter data for the specified date range
   df_filtered <- df %>%
@@ -158,38 +159,64 @@ create_heatmap_filter_hw <- function(df, heat_wave_length, start_date, end_date)
                            measure.vars = "Max_Temp_Year")
   
   data_melted_temp <- data_melted_temp %>%
-    left_join(df_filtered %>% select(Year, DayOfYear, Percentile_90), by = c("Year", "DayOfYear"))
+    left_join(df_filtered %>% select(Year, DayOfYear, Percentile_90,Percentile_95), by = c("Year", "DayOfYear"))
 
   data_melted_temp$Temp_Higher <- ifelse(data_melted_temp$value > data_melted_temp$Percentile_90, "Higher", "Not Higher")
+  data_melted_temp$Temp_Higher_95 <- ifelse(data_melted_temp$value > data_melted_temp$Percentile_95, "Higher", "Not Higher")
   
   # Identify streaks and reclassify
-  data_melted_temp <- data_melted_temp %>%
+  data_melted_temp_90 <- data_melted_temp %>%
     group_by(Year) %>%
     mutate(streak = with(rle(Temp_Higher == "Higher"), rep(lengths, lengths))) %>%
     mutate(Temp_Higher = ifelse(Temp_Higher == "Higher" & streak < heat_wave_length, "Not Higher", Temp_Higher)) %>%
     mutate(Heatwave = ifelse(Temp_Higher == "Higher" & streak >= heat_wave_length, "Heatwave", Temp_Higher)) %>%
     ungroup()
   
-  data_melted_temp$Color <- ifelse(data_melted_temp$Heatwave == "Heatwave", data_melted_temp$value, NA)
+  data_melted_temp_95 <- data_melted_temp %>%
+    group_by(Year) %>%
+    mutate(streak_95 = with(rle(Temp_Higher_95 == "Higher"), rep(lengths, lengths))) %>%
+    mutate(Temp_Higher_95 = ifelse(Temp_Higher_95 == "Higher" & streak_95 < heat_wave_length, "Not Higher", Temp_Higher_95)) %>%
+    mutate(Heatwave_95 = ifelse(Temp_Higher_95 == "Higher" & streak_95 >= heat_wave_length, "Heatwave", Temp_Higher_95)) %>%
+    ungroup()
+  
+  data_melted_temp_90$Color <- ifelse(data_melted_temp_90$Heatwave == "Heatwave",
+                                      data_melted_temp_90$value, NA)
+  data_melted_temp_95$Color_95 <- ifelse(data_melted_temp_95$Heatwave_95 == "Heatwave",
+                                         data_melted_temp_95$value, NA)
   
   # Plot the heatmap
-  heatmap_plot <- ggplot(data_melted_temp, aes(x = DayOfYear, y = Year)) +
+  heatmap_plot <- ggplot(data_melted_temp_90, aes(x = DayOfYear, y = Year)) +
     geom_tile(aes(fill = Color)) +
     scale_fill_gradient2(low = "blue", mid = "yellow", high = "red",
-                         midpoint =  mean(df_filtered$Max_Temp_Year[data_melted_temp$Heatwave == "Heatwave"], na.rm = TRUE),
+                         midpoint =  mean(df_filtered$Max_Temp_Year[data_melted_temp_90$Heatwave == "Heatwave"], na.rm = TRUE),
                          na.value = "white", name = "Temperature") +
-    labs(title = "Temperature Comparison Heatmap (April 1st to September 30th) Over 50 Years",
+    labs(title = "90 Percentile Heatmap summer ",
          x = "Day of Year", y = "Year") +
     theme_minimal() +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
           plot.title = element_text(size = 14, face = "bold"),
           axis.title = element_text(size = 12)) +
     scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])+
-    scale_y_continuous(breaks = seq(min(data_melted_temp$Year), max(data_melted_temp$Year), by = 5))  # Add more breaks on y-axis
+    scale_y_continuous(breaks = seq(min(data_melted_temp_90$Year), max(data_melted_temp_90$Year), by = 5))  # Add more breaks on y-axis
+  
+  heatmap_plot_95 <- ggplot(data_melted_temp_95, aes(x = DayOfYear, y = Year)) +
+    geom_tile(aes(fill = Color_95)) +
+    scale_fill_gradient2(low = "blue", mid = "yellow", high = "red",
+                         midpoint =  mean(df_filtered$Max_Temp_Year[data_melted_temp_95$Heatwave_95 == "Heatwave"], na.rm = TRUE),
+                         na.value = "white", name = "Temperature") +
+    labs(title = "95 Percentile Heatmap summer ",
+         x = "Day of Year", y = "Year") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) +
+    scale_x_discrete(breaks = function(x) x[seq(1, length(x), by = 5)])+
+    scale_y_continuous(breaks = seq(min(data_melted_temp_95$Year), max(data_melted_temp_95$Year), by = 5))  # Add more breaks on y-axis
   
   
   print(heatmap_plot)
-  return(data_melted_temp)
+  print(heatmap_plot_95)
+  return(list(data_melted_temp,data_melted_temp_95))
 }
 
 create_EHF_heatmap_filter_hw <- function(df, heat_wave_length, start_date, end_date) {

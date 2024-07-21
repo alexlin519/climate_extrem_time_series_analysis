@@ -25,6 +25,17 @@ unique(df_line_seg_3day$station)
 
 
 
+file_paths_95 <- c(
+  "../output/Abbotsford_heatmap_3_dayHW_95.csv",
+  "../output/YVR_heatmap_3_dayHW_95.csv",
+  "../output/Prince_George_heatmap_3_dayHW_95.csv",
+  "../output/Kelowna_heatmap_3_dayHW_95.csv",
+  "../output/FortNelson_heatmap_3_dayHW_95.csv")
+
+# Read and combine all datasets
+df_line_seg_3day_95 <- map_dfr(file_paths_95, read_and_select)
+unique(df_line_seg_3day_95$station)
+
 
 
 file_paths_EHF <- c("../output/YVR/EHF_heatmap_3_dayHW.csv",
@@ -35,8 +46,10 @@ file_paths_EHF <- c("../output/YVR/EHF_heatmap_3_dayHW.csv",
 
 
 read_and_select_EHF <- function(file_path) {
-  read.csv(file_path) %>%
-    select(LOCAL_YEAR, LOCAL_DATE, Heatwave, station) 
+  read.csv(file_path) 
+  #%>%
+   # select(LOCAL_YEAR, LOCAL_DATE, Heatwave, station,EHI_sig,EHI_accl,EHF)
+  #,Heatwave_95,EHF_95,EHI_sig_95,Percentile_90,Percentile_95) 
 }
 # Read and combine all datasets
 df_EHF_line_seg_3d <- map_dfr(file_paths_EHF, read_and_select_EHF)
