@@ -89,11 +89,11 @@ consec_precip_bymonth_path <- calculate_max_consec(imputed_temp_data, "YVR")
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> plot nexc with year-month</b>
+<b> plot Maximum Consecutive Dry Days by Month with year-month</b>
 </h4>
 <div style="display:none;">
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_consecutive_dry_days(consec_precip_bymonth_path, start_year = 1940, end_year = 2024, step = 10)
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=15, fig.height=6}
+plot_consecutive_dry_days(consec_precip_bymonth_path, start_year = 1940, end_year = 2024, step = 15)
 ```
 </div>
 <h4 onclick="toggleCollapsible(this);">
@@ -136,12 +136,12 @@ consec_precip_bymonth_path_Kelowna <- calculate_max_consec(imputed_temp_data, "K
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> plot nexc with year-month</b>
+<b> plot Maximum Consecutive Dry Days by Month with year-month</b>
 </h4>
 <div style="display:none;">  
 #### Plot the consecutive dry days for Kelowna, starting from 1940, Kelowna has data from 1899 to 2024.
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_consecutive_dry_days(consec_precip_bymonth_path_Kelowna, start_year = 1940, end_year = 2024, step = 10)
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=15, fig.height=6}
+plot_consecutive_dry_days(consec_precip_bymonth_path_Kelowna, start_year = 1940, end_year = 2024, step = 15)
 
 ```
 
@@ -181,11 +181,11 @@ consec_precip_bymonth_path_pg <- calculate_max_consec(imputed_temp_data, "Prince
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> plot nexc with year-month</b>
+<b> plot Maximum Consecutive Dry Days by Month with year-month</b>
 </h4>
 <div style="display:none;">  
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_consecutive_dry_days(consec_precip_bymonth_path_pg, start_year = 1940, end_year = 2024, step = 10)
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=15, fig.height=6}
+plot_consecutive_dry_days(consec_precip_bymonth_path_pg, start_year = 1940, end_year = 2024, step = 15)
 
 ```
 
@@ -224,11 +224,11 @@ consec_precip_bymonth_path_fn <- calculate_max_consec(imputed_temp_data, "FortNe
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> plot nexc with year-month</b>
+<b> plot Maximum Consecutive Dry Days by Month with year-month</b>
 </h4>
 <div style="display:none;">  
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_consecutive_dry_days(consec_precip_bymonth_path_fn, start_year = 1940, end_year = 2024, step = 10)
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=15, fig.height=6}
+plot_consecutive_dry_days(consec_precip_bymonth_path_fn, start_year = 1940, end_year = 2024, step = 15)
 
 ```
 
@@ -266,12 +266,12 @@ consec_precip_bymonth_path_abb <- calculate_max_consec(imputed_temp_data, "Abbot
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b> plot nexc with year-month</b>
+<b> plot Maximum Consecutive Dry Days by Month with year-month</b>
 </h4>
 <div style="display:none;">  
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
-plot_consecutive_dry_days(consec_precip_bymonth_path_abb, start_year = 1940, end_year = 2024, step = 10)
-dddedata <- read_csv(consec_precip_bymonth_path_abb)
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=15, fig.height=6}
+plot_consecutive_dry_days(consec_precip_bymonth_path_abb, start_year = 1940, end_year = 2024, step = 15)
+
 ```
 
 </div>
@@ -428,7 +428,6 @@ head(ranked_data, 30)
 
 station_colors <- c("Kelowna" = "red", "Prince_George" = "green", "YVR" = "blue",
                     "FortNelson" = '#FFD700', 'Abbotsford' = '#FF00FF')
-
 # Scatter plot of avgexc vs. year
 ggplot(ranked_data, aes(x = year, y = avgexc, color = station, size = rank)) +
   geom_point(alpha = 0.6) +
@@ -615,18 +614,108 @@ combined_data_consec <- do.call(rbind, data_list)
 # create new column year and month based on yrmon
 combined_data_consec$year <- as.integer(substr(combined_data_consec$yrmon, 1, 4))
 combined_data_consec$month <- as.integer(substr(combined_data_consec$yrmon, 5, 6))
-
+#filter the year to be >= 1940
+combined_data_consec <- combined_data_consec[combined_data_consec$year >= 1940, ]
 # Save the combined data frame to a file
 write.csv(combined_data_consec, "../drought_code_yvr/data/combine_max_consec.csv", row.names = FALSE)
 ```
 #### Rank the stations based on the number of dry days
 
-```{r, echo=FALSE,warning=FALSE,message=FALSE}
 
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE,fig.width=16, fig.height=7}
+# filter month
+ordered_data_conse <- combined_data_consec %>% arrange(desc(max_consec))
+
+#first 20 rows of ra
+ordered_data_conse_summer <- ordered_data_conse %>% filter(month %in% 6:9)
+# Create a rank column within each station based on avgexc
+ranked_data_conse_summer <- ordered_data_conse_summer %>%
+  group_by(Station) %>%
+  mutate(rank = rank(-max_consec, ties.method = "first")) %>%
+  ungroup()
+
+# Convert rank to numeric type
+ranked_data_conse_summer$rank <- as.numeric(as.character(ranked_data_conse_summer$rank))
+#year-month column
+ranked_data_conse_summer$yrmon <- as.Date(paste0(ranked_data_conse_summer$year, "-", ranked_data_conse_summer$month, "-01"))
+
+
+station_colors <- c("Kelowna" = "red", "PrinceGeorge" = "green", "YVR" = "blue",
+                    "FortNelson" = '#FFD700', 'Abbotsford' = '#FF00FF')
+
+ggplot(ranked_data_conse_summer, aes(x = yrmon, y = max_consec, color = Station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  geom_text(aes(label = ifelse(rank <= 15, rank, "")), vjust = -0.5, size = 3, color = "black") +  # Add rank labels for top 20
+  labs(title = "Maximum Consecutive Dry Days June-Sep by Station",
+       x = "Year",
+       y = "Max Consecutive Dry Days",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 60, 60, x),
+      inverse = function(x) x,
+      domain = c(0, 60)
+    ),
+    range = c(6, 1),  # Adjust this range based on the desired size scale
+    limits = c(1, 60))+
+  #year-month scale
+  scale_x_date(date_labels = "%Y", date_breaks = "2 year")
+
+```
+
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#filter year
+ranked_data_conse_summer_2021 <- ranked_data_conse_summer %>% filter(year == 2021)
+
+
+ggplot(ranked_data_conse_summer_2021, aes(x = yrmon, y = max_consec, color = Station, size = rank)) +
+  geom_point(alpha = 0.6) +
+  geom_text(aes(label = ifelse(rank <= 50, rank, "")), vjust = -0.5, size = 3, color = "black") +  # Add rank labels for top 20
+  labs(title = "Maximum Consecutive Dry Days June-Sep by Station",
+       x = "Year",
+       y = "Max Consecutive Dry Days",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) +
+  scale_size_continuous(
+    name = "Rank",
+    trans = scales::trans_new(
+      name = "custom",
+      transform = function(x) ifelse(x > 60, 60, x),
+      inverse = function(x) x,
+      domain = c(0, 60)
+    ),
+    range = c(6, 1),  # Adjust this range based on the desired size scale
+    limits = c(1, 60))+
+  #year-month scale
+  scale_x_date(date_labels = "%Y", date_breaks = "2 year")
 
 ```
 
 
 
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#filter year
+ranked_data_conse_summer_1941 <- ranked_data_conse_summer %>% filter(year == 1941)
 
 
+ggplot(ranked_data_conse_summer_1941, aes(x = yrmon, y = max_consec, color = Station)) +
+  geom_point(alpha = 0.6) +
+  geom_text_repel(aes(label = ifelse(rank <= 300, rank, "")), vjust = -0.5, size = 3, color = "black",max.overlaps = Inf) +  # Add rank labels for top 20
+  labs(title = "Maximum Consecutive Dry Days June-Sep by Station",
+       x = "Year",
+       y = "Max Consecutive Dry Days",
+       size = "Rank") +
+  theme_minimal()+
+  #color
+  scale_color_manual(values = station_colors) 
+  
+```

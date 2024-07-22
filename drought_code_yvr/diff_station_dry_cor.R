@@ -47,6 +47,19 @@ plot_consecutive_dry_days <- function(data_path, start_year, end_year, step) {
     
     print(plot)
   }
+  
+  
+  
+  # Box plot to compare avgexc across different years
+  box <- ggplot(data, aes(x = factor(Year), y = max_consec)) +
+    geom_boxplot() +
+    labs(title = "Box Plot of Maximum Consecutive Dry Days by Year",
+         x = "Year",
+         y = "Max Consecutive Dry Days(max_consec)") +
+    theme_minimal()+
+    scale_x_discrete(labels = function(x) str_wrap(x, width = 5))+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  print(box)
 }
 
 # 

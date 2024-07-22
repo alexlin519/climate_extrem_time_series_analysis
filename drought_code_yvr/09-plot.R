@@ -1,6 +1,7 @@
 library(ggplot2)
 library(readr)
 library(dplyr)
+library(ggrepel)
 library(stringr)  # Load stringr for str_wrap function
 # Function to categorize months into seasons
 categorize_season <- function(month) {
@@ -131,7 +132,7 @@ plot_scatter_color_top <- function(data_1_path,data1_start_year,station1,
 plot_avg_exc_temp <- function(data, year) {
   ggplot(data, aes(x = month, y = avgexc, color = station, size = rank)) +
     geom_point(alpha = 0.6) +
-    geom_text(aes(label = rank), vjust = -0.5, size = 3, color = "black") +  # Add rank labels
+    geom_text_repel(aes(label = ifelse(rank <= 300, rank, "")), vjust = -0.5, size = 3, color = "black",max.overlaps = Inf) +  # Add rank labels
     labs(title = paste("Average Excess Temperature (avgexc) by Station",year, "SUMMER"),
          x = "Year",
          y = "Average Excess Temperature (°C)",
