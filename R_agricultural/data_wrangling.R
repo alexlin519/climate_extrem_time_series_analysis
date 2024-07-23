@@ -102,7 +102,7 @@ perform_linear_regression_weekly <- function(weekly_data_x, data_fao,certain_sta
   #     filter(Year != 1899) 
   # }
   
-  
+  na_positions <- which(is.na(merged_data_x), arr.ind = TRUE)
   # Check for NAs in the merged data
   if (sum(is.na(merged_data_x)) > 0) {
     for (i in 1:nrow(na_positions)) {

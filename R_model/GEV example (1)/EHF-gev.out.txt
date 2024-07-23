@@ -1,0 +1,267 @@
+Summary statistics
+      year            fn               pg               ke         
+ Min.   :1941   Min.   :-3.640   Min.   :-4.270   Min.   : -3.070  
+ 1st Qu.:1962   1st Qu.:-0.335   1st Qu.:-0.810   1st Qu.: -0.390  
+ Median :1982   Median : 4.710   Median : 3.920   Median :  3.380  
+ Mean   :1982   Mean   : 7.813   Mean   : 7.506   Mean   :  6.689  
+ 3rd Qu.:2002   3rd Qu.:11.425   3rd Qu.:10.180   3rd Qu.:  9.075  
+ Max.   :2023   Max.   :77.680   Max.   :98.850   Max.   :108.400  
+       ab               yv        
+ Min.   : -3.53   Min.   :-2.350  
+ 1st Qu.:  1.24   1st Qu.: 0.390  
+ Median :  9.41   Median : 3.830  
+ Mean   : 13.97   Mean   : 6.848  
+ 3rd Qu.: 18.47   3rd Qu.: 9.430  
+ Max.   :153.67   Max.   :60.730  
+
+Spearman correlation matrix
+     year   fn   pg   ke   ab   yv
+year 1.00 0.06 0.18 0.09 0.38 0.35
+fn   0.06 1.00 0.48 0.41 0.54 0.39
+pg   0.18 0.48 1.00 0.54 0.65 0.68
+ke   0.09 0.41 0.54 1.00 0.57 0.58
+ab   0.38 0.54 0.65 0.57 1.00 0.81
+yv   0.35 0.39 0.68 0.58 0.81 1.00
+
+Spearman correlation matrix, permuted
+     year   fn   ke   pg   ab   yv
+year 1.00 0.06 0.09 0.18 0.38 0.35
+fn   0.06 1.00 0.41 0.48 0.54 0.39
+ke   0.09 0.41 1.00 0.54 0.57 0.58
+pg   0.18 0.48 0.54 1.00 0.65 0.68
+ab   0.38 0.54 0.57 0.65 1.00 0.81
+yv   0.35 0.39 0.58 0.68 0.81 1.00
+
+regression on scaled year, by location
+
+Call:
+lm(formula = fn ~ I((year - 1941)/10), data = ehf0609)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.474  -7.990  -2.433   3.139  67.656 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)  
+(Intercept)           5.4879     2.6632   2.061   0.0425 *
+I((year - 1941)/10)   0.5671     0.5608   1.011   0.3150  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 12.24 on 81 degrees of freedom
+Multiple R-squared:  0.01247,	Adjusted R-squared:  0.0002736 
+F-statistic: 1.022 on 1 and 81 DF,  p-value: 0.315
+
+
+------------------------------------------------------------
+
+
+Call:
+lm(formula = pg ~ I((year - 1941)/10), data = ehf0609)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-13.138  -8.146  -3.982   3.360  87.647 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)
+(Intercept)           3.6188     3.0848   1.173    0.244
+I((year - 1941)/10)   0.9480     0.6496   1.459    0.148
+
+Residual standard error: 14.18 on 81 degrees of freedom
+Multiple R-squared:  0.02562,	Adjusted R-squared:  0.01359 
+F-statistic:  2.13 on 1 and 81 DF,  p-value: 0.1483
+
+
+------------------------------------------------------------
+
+
+Call:
+lm(formula = ke ~ I((year - 1941)/10), data = ehf0609)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-11.723  -6.973  -3.723   3.072  98.381 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)
+(Intercept)            3.187      2.973   1.072    0.287
+I((year - 1941)/10)    0.854      0.626   1.364    0.176
+
+Residual standard error: 13.66 on 81 degrees of freedom
+Multiple R-squared:  0.02246,	Adjusted R-squared:  0.01039 
+F-statistic: 1.861 on 1 and 81 DF,  p-value: 0.1763
+
+
+------------------------------------------------------------
+
+
+Call:
+lm(formula = ab ~ I((year - 1941)/10), data = ehf0609)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-22.039 -10.514  -4.369   2.797 130.136 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)  
+(Intercept)           3.9240     4.4264   0.886   0.3780  
+I((year - 1941)/10)   2.4513     0.9321   2.630   0.0102 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 20.35 on 81 degrees of freedom
+Multiple R-squared:  0.07866,	Adjusted R-squared:  0.06728 
+F-statistic: 6.915 on 1 and 81 DF,  p-value: 0.01022
+
+
+------------------------------------------------------------
+
+
+Call:
+lm(formula = yv ~ I((year - 1941)/10), data = ehf0609)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-9.645 -5.224 -3.302  1.907 49.766 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(>|t|)  
+(Intercept)           2.5214     2.1781   1.158    0.250  
+I((year - 1941)/10)   1.0554     0.4587   2.301    0.024 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 10.01 on 81 degrees of freedom
+Multiple R-squared:  0.06135,	Adjusted R-squared:  0.04976 
+F-statistic: 5.294 on 1 and 81 DF,  p-value: 0.02397
+
+
+------------------------------------------------------------
+
+
+acf for cuberoot of  fn 
+ [1]  1.000 -0.042 -0.084 -0.089 -0.068  0.151 -0.053  0.002  0.080 -0.003
+[11]  0.047
+
+acf for cuberoot of  pg 
+ [1]  1.000 -0.093 -0.071 -0.019 -0.019 -0.070  0.001  0.005  0.067  0.112
+[11]  0.034
+
+acf for cuberoot of  ke 
+ [1]  1.000  0.092  0.230 -0.116  0.131 -0.017  0.159  0.089  0.122 -0.152
+[11]  0.083
+
+acf for cuberoot of  ab 
+ [1] 1.000 0.109 0.000 0.137 0.146 0.029 0.010 0.269 0.084 0.183 0.142
+
+acf for cuberoot of  yv 
+ [1]  1.000  0.120  0.027  0.078  0.198  0.047 -0.003  0.073  0.159  0.153
+[11]  0.131
+
+Fit GEV = generalized extreme value distribution by location
+
+ FN 
+
+Call: fgev(x = y) 
+Deviance: 577.7216 
+
+Estimates
+  loc  scale  shape  
+1.953  5.372  0.396  
+
+Standard Errors
+   loc   scale   shape  
+0.7218  0.6448  0.1346  
+
+Optimization Information
+  Convergence: successful 
+  Function Evaluations: 32 
+  Gradient Evaluations: 13 
+
+
+============================================================
+
+ PG 
+
+Call: fgev(x = y) 
+Deviance: 578.5297 
+
+Estimates
+   loc   scale   shape  
+0.9601  5.1094  0.4959  
+
+Standard Errors
+   loc   scale   shape  
+0.6755  0.6421  0.1330  
+
+Optimization Information
+  Convergence: successful 
+  Function Evaluations: 33 
+  Gradient Evaluations: 13 
+
+
+============================================================
+
+ Kelowna 
+
+Call: fgev(x = y) 
+Deviance: 543.0182 
+
+Estimates
+  loc  scale  shape  
+1.130  4.101  0.505  
+
+Standard Errors
+   loc   scale   shape  
+0.5380  0.5144  0.1299  
+
+Optimization Information
+  Convergence: successful 
+  Function Evaluations: 30 
+  Gradient Evaluations: 13 
+
+
+============================================================
+
+ Abbotsford 
+
+Call: fgev(x = y) 
+Deviance: 649.193 
+
+Estimates
+  loc  scale  shape  
+4.676  8.234  0.402  
+
+Standard Errors
+   loc   scale   shape  
+1.1023  0.9861  0.1329  
+
+Optimization Information
+  Convergence: successful 
+  Function Evaluations: 32 
+  Gradient Evaluations: 15 
+
+
+============================================================
+
+ YVR 
+
+Call: fgev(x = y) 
+Deviance: 536.6318 
+
+Estimates
+  loc  scale  shape  
+1.994  4.083  0.442  
+
+Standard Errors
+   loc   scale   shape  
+0.5358  0.4923  0.1267  
+
+Optimization Information
+  Convergence: successful 
+  Function Evaluations: 45 
+  Gradient Evaluations: 16 
+
+
+============================================================
