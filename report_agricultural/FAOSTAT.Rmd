@@ -304,8 +304,7 @@ fruit_year
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
-c("Year", "Crop_Type", "Production_Tons",
-                              "Production_Kg", "Area_Hectares", "Yield_kg_per_ha")]
+
 # Summarize production by year and crop type
 # Plot the data
 # Define the base colors
@@ -313,12 +312,7 @@ base_colors <- c('#0000FF', '#008000', '#FF0000', '#000000', '#FF00FF',
                  '#FFA500', '#D2B48C', '#808000', 
                  '#FFFF00', 
                  '#40E0D0', '#00BFFF', '#A52A2A',
-                 
-                 
                  '#8A2BE2')
-                 
-                 '#FF1493',
-                  '#7FFF00', '#8B008B', '#FF69B4')
 
 ggplot(full_fruits, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
   geom_line() +
