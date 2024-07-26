@@ -47,6 +47,19 @@ plot_consecutive_dry_days <- function(data_path, start_year, end_year, step) {
     
     print(plot)
   }
+  
+  
+  
+  # Box plot to compare avgexc across different years
+  box <- ggplot(data, aes(x = factor(Year), y = max_consec)) +
+    geom_boxplot() +
+    labs(title = "Box Plot of Maximum Consecutive Dry Days by Year",
+         x = "Year",
+         y = "Max Consecutive Dry Days(max_consec)") +
+    theme_minimal()+
+    scale_x_discrete(labels = function(x) str_wrap(x, width = 5))+
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  print(box)
 }
 
 # 
@@ -180,3 +193,19 @@ plot_ccf_max_consec <- function(data_1_path,data1_start_year,station1,
   # }
 }
 
+
+# 
+# plot_scatter <- function(data_1_path,data1_start_year,station1, 
+#                                 data_2_path,data2_start_year,station2) {
+#   # Load the data
+#   data_1 <- read_csv(data_1_path)
+#   data_2 <- read_csv(data_2_path)
+#   # Create the time series object for Kelowna
+#   ts_data_1 <- ts(data_1$max_consec, start = c(data1_start_year, 1), frequency = 12)
+#   ts_data_2 <- ts(data_2$max_consec, start = c(data2_start_year, 1), frequency = 12)
+#   #scatter plot
+#   plot(data_1$max_consec,data_2$max_consec,
+#        xlab = paste("Max consec dry days in",station1),
+#        ylab = paste("Max consec dry days in",station2),
+#        main = paste("Scatter plot of max consec dry days between",station1,"and",station2))
+# }

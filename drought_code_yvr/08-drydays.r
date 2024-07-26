@@ -1,6 +1,13 @@
 impute_temps <- function(file_path_temp_precip) {
   # Load the data
   load(file_path_temp_precip)
+  # # Identify the number of consecutive NAs at the beginning of df$maxtemp
+  # n_na <- sum(cumprod(is.na(df$maxtemp)))
+  # 
+  # # Drop the top n_na rows
+  # if (n_na > 0) {
+  #   df <- df[-(1:n_na), ]
+  # }
   
   imax <- which(is.na(df$maxtemp))
   imin <- which(is.na(df$mintemp))
@@ -29,18 +36,40 @@ impute_temps <- function(file_path_temp_precip) {
 }
 
 calculate_max_consec <- function(data_imputed,station_name) {
-  df_dropna <- data_imputed[!is.na(data_imputed$totprec), ]
+  #df_dropna <- data_imputed[!is.na(data_imputed$totprec), ]
+  df_dropna <- data_imputed
   precip <- df_dropna$totprec
   #precip[is.na(precip)] <- 0
-  i1ormore <- (precip >= 1)
+  i1ormore <- (precip >= 1) # dry days is lower than 1 mm
   n <- length(precip)
   nn <- n
   notdry <- nn+1
   consec <- rep(0, nn)
-  if(i1ormore[nn]) { consec[nn] <- 0; notdry <- nn } else { consec[nn] <- 1 }
-  for(i in (nn-1):1) {
-    if(i1ormore[i]) { consec[i] <- 0; notdry <- i }
-    else { consec[i] <- consec[i+1]+1 }
+  # if(i1ormore[nn]) { consec[nn] <- 0; notdry <- nn } else { consec[nn] <- 1 }
+  # for(i in (nn-1):1) {
+  #   if(i1ormore[i]) { consec[i] <- 0; notdry <- i }
+  #   else { consec[i] <- consec[i+1]+1 }
+  # }
+  # Initialize the consec vector based on the last element
+  if (is.na(i1ormore[nn])) {
+    consec[nn] <- 0
+  } else if (i1ormore[nn]) {
+    consec[nn] <- 0
+    notdry <- nn
+  } else {
+    consec[nn] <- 1
+  }
+  
+  # Loop through the rest of the elements
+  for (i in (nn - 1):1) {
+    if (is.na(i1ormore[i])) {
+      consec[i] <- 0
+    } else if (i1ormore[i]) {
+      consec[i] <- 0
+      notdry <- i
+    } else {
+      consec[i] <- consec[i + 1] + 1
+    }
   }
   df_dropna$consec <- consec
   df_dropna$yrmon <- 100*df_dropna$year + df_dropna$month

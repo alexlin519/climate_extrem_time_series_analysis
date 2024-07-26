@@ -1,0 +1,60 @@
+---
+title: "Weekly Report -- Week 12"
+author: "alex lin "
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: html_document
+bibliography: references.bib
+---
+
+------------------------------------------------------------------------
+
+# Summary
+
+## 1. Analysis the dry period
+
+1.  **each station line plot**
+
+    -   max consec day
+
+    -   avg exc temp
+
+2.  **correlation scatter plot**
+
+3.  **ranking of the station for these two variables**
+
+    -   1941
+
+    -   2021
+
+## 2. New Crop data
+
+1.  **new temp station Fort St John**
+
+2.  **yield data 1990 - 2024**
+
+3.  **lm regression for Fort St John in Peace River region**
+
+## 3. New Fruits data
+
+1.  **market value production data 1926-2024**
+
+2. **area data**
+
+3. **calculate the yield**
+
+## 4. Extra data in Notion table
+
+## 5. explore the GEV code
+
+1.  alternative methods to assess trend
+
+## Next steps
+
+-   learn more about GEV code
+
+-   ranking for 5 year coldest spring / hottest summer
+
+-   other dry variables
+------------------------------------------------------------------------
+
+# References

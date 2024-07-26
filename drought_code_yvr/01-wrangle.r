@@ -15,7 +15,25 @@ process_data <- function(file_path,station_name) {
            totprec = TOTAL_PRECIPITATION) %>%
     mutate(yyyymmdd = as.Date(date)) %>%
     select(year, month, yyyymmdd, mintemp, meantemp, maxtemp, totprec)
+  #order by date
+  df <- df[order(df$yyyymmdd),]
+  # Identify the number of consecutive NAs at the beginning of df$maxtemp
+  n_na <- sum(cumprod(is.na(df$maxtemp)))
   
+  # Drop the top n_na rows
+  if (n_na > 0) {
+    df <- df[-(1:n_na), ]
+  }
+  # Identify the number of consecutive NAs at the end of df$maxtemp
+  n_na_end <- sum(cumprod(rev(is.na(df$maxtemp))))
+  
+  # Drop the last n_na_end rows
+  if (n_na_end > 0) {
+    df <- df[1:(nrow(df) - n_na_end), ]
+  }
+  
+  #reset index
+  rownames(df) <- 1:nrow(df)
   mintem <- df$mintemp
   maxtem <- df$maxtemp
   meantem <- df$meantemp

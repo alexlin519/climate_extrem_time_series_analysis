@@ -105,4 +105,35 @@ deal_with_non_exist_date <- function(df){
 }
 
 
+update_precipitation <- function(main_df, extra_df_path) {
+  # Read the extra dataframe
+  extra_df <- read.csv(extra_df_path)
+  
+  # Select necessary columns
+  extra_df <- extra_df %>% select(LOCAL_DATE, TOTAL_PRECIPITATION)
+  
+  # Count NA in the main dataframe before update
+  initial_na_count <- sum(is.na(main_df$TOTAL_PRECIPITATION))
+  cat("Initial NA count in main dataframe:", initial_na_count, "\n")
+  
+  # Count NA in the extra dataframe
+  extra_na_count <- sum(is.na(extra_df$TOTAL_PRECIPITATION))
+  cat("NA count in extra dataframe:", extra_na_count, "\n")
+  
+  # Convert LOCAL_DATE to Date type if it's not already
+  extra_df$LOCAL_DATE <- as.Date(extra_df$LOCAL_DATE)
+  main_df$LOCAL_DATE <- as.Date(main_df$LOCAL_DATE)
+  
+  # Update main_df with values from extra_df where main_df has NA in TOTAL_PRECIPITATION
+  main_df <- main_df %>%
+    left_join(extra_df, by = "LOCAL_DATE", suffix = c("", ".extra")) %>%
+    mutate(TOTAL_PRECIPITATION = ifelse(is.na(TOTAL_PRECIPITATION), TOTAL_PRECIPITATION.extra, TOTAL_PRECIPITATION)) %>%
+    select(-TOTAL_PRECIPITATION.extra)
+  
+  # Count NA in the main dataframe after update
+  final_na_count <- sum(is.na(main_df$TOTAL_PRECIPITATION))
+  cat("Final NA count in main dataframe:", final_na_count, "\n")
+  
+  return(main_df)
+}
 

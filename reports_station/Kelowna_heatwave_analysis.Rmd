@@ -31,6 +31,12 @@ station_name <- "Kelowna"
 source("../R/read_data.R")  ## read data
 results <- process_and_save_data(file_paths, station_name)
 df <- results[[1]] 
+# Example usage
+df <- update_precipitation(dfff,"../data/kelow/kelowna_extra_ubco.csv")
+# Define the save path
+save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
+write.csv(df, file = save_path, row.names = FALSE)  
+
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
 source("../R/data_for_hw_plot.R")  
@@ -44,6 +50,31 @@ step <- 40
 
 
 ```
+
+```{r, echo=FALSE}
+dfff <- df
+kelowna_extra <- read.csv("../data/kelow/kelowna_extra_ubco.csv")
+#select columns
+kelowna_extra <- kelowna_extra %>% select(LOCAL_DATE,TOTAL_PRECIPITATION)
+
+#count na
+sum(is.na(dfff$TOTAL_PRECIPITATION))
+sum(is.na(kelowna_extra$TOTAL_PRECIPITATION))
+
+# Convert LOCAL_DATE to Date type if it's not already
+kelowna_extra$LOCAL_DATE <- as.Date(kelowna_extra$LOCAL_DATE)
+dfff$LOCAL_DATE <- as.Date(dfff$LOCAL_DATE)
+
+# Update dfff with values from kelowna_extra where dfff has NA in TOTAL_PRECIPITATION
+dfff <- dfff %>%
+  left_join(kelowna_extra, by = "LOCAL_DATE", suffix = c("", ".extra")) %>%
+  mutate(TOTAL_PRECIPITATION = ifelse(is.na(TOTAL_PRECIPITATION), TOTAL_PRECIPITATION.extra, TOTAL_PRECIPITATION)) %>%
+  select(-TOTAL_PRECIPITATION.extra)
+sum(is.na(dfff$TOTAL_PRECIPITATION))
+
+
+```
+
 
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
