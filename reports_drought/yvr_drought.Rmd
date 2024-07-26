@@ -678,7 +678,7 @@ ranked_data_conse_summer_2021 <- ranked_data_conse_summer %>% filter(year == 202
 ggplot(ranked_data_conse_summer_2021, aes(x = yrmon, y = max_consec, color = Station, size = rank)) +
   geom_point(alpha = 0.6) +
   geom_text(aes(label = ifelse(rank <= 50, rank, "")), vjust = -0.5, size = 3, color = "black") +  # Add rank labels for top 20
-  labs(title = "Maximum Consecutive Dry Days June-Sep by Station",
+  labs(title = "Maximum Consecutive Dry Days June-Sep by Station in 2021",
        x = "Year",
        y = "Max Consecutive Dry Days",
        size = "Rank") +
@@ -710,7 +710,7 @@ ranked_data_conse_summer_1941 <- ranked_data_conse_summer %>% filter(year == 194
 ggplot(ranked_data_conse_summer_1941, aes(x = yrmon, y = max_consec, color = Station)) +
   geom_point(alpha = 0.6) +
   geom_text_repel(aes(label = ifelse(rank <= 300, rank, "")), vjust = -0.5, size = 3, color = "black",max.overlaps = Inf) +  # Add rank labels for top 20
-  labs(title = "Maximum Consecutive Dry Days June-Sep by Station",
+  labs(title = "Maximum Consecutive Dry Days June-Sep by Station in 1941",
        x = "Year",
        y = "Max Consecutive Dry Days",
        size = "Rank") +

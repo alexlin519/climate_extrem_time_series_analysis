@@ -1,9 +1,12 @@
 # GEV for max EHF June to September, by location
 
 library(evd)
-source("gev.R")
+source("../R_model/GEV example (1)/gev.R")
 
-ehf0609 = read.csv("ehf0609.csv", header=T)
+#current path
+getwd()
+setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
+ehf0609 = read.csv("../R_model/GEV example (1)/ehf0609.csv", header=T)
 #names(ehf0609)
 
 cat("Summary statistics\n")
@@ -29,7 +32,7 @@ round(sp2,2)
 
 cat("\nregression on scaled year, by location\n")
 
-par(mfrow=c(3,3))
+#par(mfrow=c(3,3))
 plot(fn~year, data=ehf0609)
 FN_trend = lm(fn ~ I((year-1941)/10), data=ehf0609)
 summary(FN_trend)
@@ -56,6 +59,23 @@ summary(YV_trend)
 cat("\n------------------------------------------------------------\n\n")
 
 # What are better methods to assess trend?
+# Create the plot
+ggplot(ehf0609, aes(x = year, y = yv)) +
+  geom_point() +  # Plot the data points
+  geom_smooth(method = "lm", formula = y ~ I((x - 1941) / 10), color = "blue") +  # Add the linear regression line
+  labs(title = "Trend of YV Over Years",
+       x = "Year",
+       y = "YV") +
+  theme_minimal()
+# Example: LOESS smoothing
+library(ggplot2)
+ggplot(ehf0609, aes(x=year, y=fn)) + 
+  geom_point() + 
+  geom_smooth(method="loess")
+3.# Example: Seasonal Decomposition
+library(forecast)
+decomposed = stl(ts(ehf0609$fn, frequency=12), s.window="periodic")
+plot(decomposed)
 
 # ============================================================
 
@@ -101,7 +121,7 @@ mle = FN_gev$estimate
 n = nrow(ehf0609)
 ii = ((1:n)-0.5)/n
 quant_gev = qgev(ii, xi=mle[3], mu=mle[1], sigma=mle[2])
-#plot(quant_gev,sort(ehf0609$fn)); abline(c(0,1)) # fit is OK
+plot(quant_gev,sort(ehf0609$fn)); abline(c(0,1)) # fit is OK
 
 # wrapper function
 
@@ -117,6 +137,8 @@ wrap_gev = function(y,name="y")
   cat("\n============================================================\n")
   mle
 }
+#special permatrix cases
+
 
 par(mfrow=c(3,3))
 FN_gev = wrap_gev(ehf0609$fn,"FN")

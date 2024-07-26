@@ -59,7 +59,8 @@ plot_fao_data <- function(data_fao) {
 
 # Read the CSV file
 file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
-                "../output/Kelowna/EHF_heatmap_5_dayHW.csv")
+                "../output/Kelowna/EHF_heatmap_5_dayHW.csv",
+                "../output/FortStJoh/EHF_heatmap_5_dayHW.csv")
 # Define the columns needed
 #Month	Day	LOCAL_DATE	LOCAL_YEAR	STATION_NAME	MEAN_TEMPERATURE	Percentile_90	
 #Percentile_95	Rolling_3d_Avg_Temp	EHI_sig	EHI_sig_95	Rolling_Avg_30Day	EHI_accl	
@@ -78,8 +79,8 @@ data_x <- map_dfr(file_paths, read_and_select)
 # Read the CSV file
 # file_paths <- c("../data/agri/Canola_crop.csv",
 #                 "../data/agri/Barley_crop.csv")
-
-file_paths <- c("../data/agri/Field_Crops_Data.csv")
+#file_paths <- c("../data/agri/Field_Crops_Data.csv")
+file_paths <- c("../data/agri/FieldCropsEstimates.csv")
 
 # Define the columns needed
 needed_columns <- c("REF_DATE", "Harvest.disposition","VALUE",'GEO',"Type.of.crop","UOM")
@@ -141,7 +142,6 @@ read_and_select_fru <- function(file_path) {
     rename(Crop_Type = Commodity)
 }
 
-
 # Read and combine all datasets
 data_statcan_fruit <- map_dfr(file_paths, read_and_select_fru)
 
@@ -155,20 +155,23 @@ data_statcan_fruit$VALUE <- as.numeric(data_statcan_fruit$VALUE)
 sum(is.na(data_statcan_fruit))
 
 
+
+
+
+
+
 # Impute missing values with the mean of neighboring values
 data_statcan_fruit <- data_statcan_fruit %>%
   group_by(Crop_Type,Estimates) %>%
   mutate(VALUE = na.approx(VALUE, rule = 2))
-
-
-
 
 # Separate the production and area data
 production_data <- subset(data_statcan_fruit, Estimates == "Marketed production")
 area_data <- subset(data_statcan_fruit, Estimates == "Cultivated area, total")
 
 # Merge production and area data by year and crop type
-merged_data <- merge(production_data, area_data, by = c("REF_DATE", "Crop_Type"))
+#merged_data <- merge(production_data, area_data, by = c("REF_DATE", "Crop_Type"))
+merged_data <- merge(production_data, area_data, by = c("REF_DATE", "Crop_Type"), all.x = TRUE, suffixes = c("_Production", "_Area")) # change to ensure missing area data results in NA
 
 # Rename the columns for clarity
 colnames(merged_data) <- c("Year", "Crop_Type", "Production_Tons", "Production_Estimates", "Production_UOM", "Area_Hectares", "Area_Estimates", "Area_UOM")
@@ -185,5 +188,7 @@ final_data$Crop_Type <- gsub("Fresh ", "", final_data$Crop_Type)
 final_data$Crop_Type <- gsub("\\s*\\[.*\\]", "", final_data$Crop_Type)
 
 full_fruits <- final_data
+
+
 
 

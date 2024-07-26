@@ -130,7 +130,7 @@ for (crop in unique_crops) {
 
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b>Abbotsford monthly</b>
+<b>Kelowna monthly</b>
 </h4>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -154,9 +154,36 @@ for (crop in unique_crops) {
 
 
 </div>
+
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> FortStJohn monthly</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Example usage:
+results <- perform_linear_regression_monthly(monthly_data_x, data_fao,"FortStJoh", "maxmon_EHF_95")
+
+unique_crops <- unique(data_fao$Item)
+#Print results for each crop
+for (crop in unique_crops) {
+  print(paste("Results for crop:", crop))
+  print(results[[crop]]$summary)
+  if (!is.null(results[[crop]]$plot)) {
+    print(results[[crop]]$plot)
+  }
+  
+  
+  
+}
+
+```
+
+
+</div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
-<b>linear reg for yield VS daily Max Temp</b>
+<b>linear reg for yield VS weekly Max Temp</b>
 </h3>
 <div style="display:none;">  
 </div>
@@ -217,11 +244,16 @@ crop_year
 </h4>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+base_colors <- c('#FF0000', '#008000', '#0000FF', '#FF00FF', '#FFD700', 
+                  '#8B008B') 
+
 # Summarize production by year and crop type
 # Plot the data
 ggplot(crop_yield, aes(x = REF_DATE, y = yield, color = Crop_Type)) +
   geom_line() +
   geom_point() +
+  #color
+  scale_color_manual(values = base_colors) +
   labs(title = "yield of Crops over Time",
        x = "Year",
        y = "Average yield (kilograms per hectare)",
@@ -243,6 +275,7 @@ ggplot(crop_yield, aes(x = REF_DATE, y = yield, color = Crop_Type)) +
 ggplot(total_produ, aes(x = REF_DATE, y = Production, color = Crop_Type)) +
   geom_line() +
   geom_point() +
+    scale_color_manual(values = base_colors) +
   labs(title = "Total Production (metric tonnes) over Time",
        x = "Year",
        y = "Total Production",
@@ -262,6 +295,7 @@ ggplot(total_produ, aes(x = REF_DATE, y = Production, color = Crop_Type)) +
 ggplot(total_produ, aes(x = REF_DATE, y = Production, color = Crop_Type)) +
   geom_line() +
   geom_point() +
+    scale_color_manual(values = base_colors) +
   labs(title = "Total Production (metric tonnes) over Time",
        x = "Year",
        y = "Total Production",
@@ -286,13 +320,13 @@ ggplot(total_produ, aes(x = REF_DATE, y = Production, color = Crop_Type)) +
 <b>year range</b>
 </h4>
 <div style="display:none;">  
-```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 fruit_year <- data_statcan_fruit %>%
   group_by(Estimates,Crop_Type) %>%
   summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
 #order by Start_Year
 fruit_year <- fruit_year[order(fruit_year$Start_Year),]
-fruit_year
+print(fruit_year,n = Inf, width = Inf)
 ```
 
 </div>
@@ -313,8 +347,10 @@ base_colors <- c('#0000FF', '#008000', '#FF0000', '#000000', '#FF00FF',
                  '#FFFF00', 
                  '#40E0D0', '#00BFFF', '#A52A2A',
                  '#8A2BE2')
-
-ggplot(full_fruits, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
+#drop na
+full_fruits_yield_plot <- full_fruits %>%
+  filter(!is.na(Yield_kg_per_ha)) 
+ggplot(full_fruits_yield_plot, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
   geom_line() +
   geom_point() +
   labs(title = "Yield (kilograms per hectare) of Crops over Time",
@@ -340,6 +376,28 @@ ggplot(full_fruits, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
 </div>
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
+<b>Marketed production (ton)</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+
+ggplot(full_fruits, aes(x = Year, y = Production_Tons, color = Crop_Type)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Yield (kilograms per hectare) of Crops over Time",
+       x = "Year",
+       y = "Yield",
+       color = "Crop Type") +
+  theme_minimal()+
+  scale_x_continuous(breaks = seq(min(full_fruits$Year), max(full_fruits$Year), by = 5))+
+   scale_color_manual(values = base_colors)
+```
+
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
 <b>total Cultivated area (Hectares)</b>
 </h4>
 <div style="display:none;">  
@@ -347,7 +405,7 @@ ggplot(full_fruits, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 
-ggplot(full_fruits, aes(x = Year, y = Area_Hectares, color = Crop_Type)) +
+ggplot(full_fruits_yield_plot, aes(x = Year, y = Area_Hectares, color = Crop_Type)) +
   geom_line() +
   geom_point() +
   labs(title = "Cultivated area (Hectares) of Crops over Time",
@@ -370,6 +428,110 @@ ggplot(full_fruits_zoom_area, aes(x = Year, y = Area_Hectares, color = Crop_Type
   theme_minimal()+
   scale_x_continuous(breaks = seq(min(full_fruits$Year), max(full_fruits$Year), by = 1))+
    scale_color_manual(values = base_colors)
+
+fruits_zoom_more <- full_fruits %>%
+   filter(Area_Hectares <= 1000)
+ggplot(fruits_zoom_more, aes(x = Year, y = Area_Hectares, color = Crop_Type)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Cultivated area (Hectares) of Crops over Time",
+       x = "Year",
+       y = "Area",
+       color = "Crop Type") +
+  theme_minimal()+
+  scale_x_continuous(breaks = seq(min(full_fruits$Year), max(full_fruits$Year), by = 1))+
+   scale_color_manual(values = base_colors)
+```
+
+## filter some fruits types
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+extend_fruits <- full_fruits %>%
+   filter(Crop_Type == "plums and prune plums" | Crop_Type == "pears" | Crop_Type == "nectarines" | Crop_Type == "sour cherries" | Crop_Type == "strawberries" | Crop_Type == "peaches" | Crop_Type == "apricots") %>%
+  filter(Year >= 2002)
+
+#plot
+ggplot(extend_fruits, aes(x = Year, y = Area_Hectares, color = Crop_Type)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "Cultivated area (Hectares) of Crops over Time",
+       x = "Year",
+       y = "Area",
+       color = "Crop Type") +
+  theme_minimal()+
+  scale_x_continuous(breaks = seq(2002, max(full_fruits$Year), by = 1))
+
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>fill area with mean </b>
+</h3>
+<div style="display:none;">  
+#### mean as previous value
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+# Calculate the mean area for each crop type
+# Calculate mean areas by Crop_Type
+mean_areas <- full_fruits %>%
+  group_by(Crop_Type) %>%
+  summarize(Mean_Area = mean(Area_Hectares, na.rm = TRUE))
+
+# Fill NA values in full_fruits$Area_Hectares with the corresponding mean
+full_fruits_filled <- full_fruits %>%
+  left_join(mean_areas, by = "Crop_Type") %>%
+  mutate(Area_Hectares = ifelse(is.na(Area_Hectares), Mean_Area, Area_Hectares)) %>%
+  select(-Mean_Area) # Remove the Mean_Area column if not needed
+
+# Now you can proceed with your plotting or any other analysis
+ggplot(full_fruits_filled, aes(x = Year, y = Area_Hectares, color = Crop_Type)) +
+  geom_line() +
+  theme_minimal()
+
+```
+
+#### calculate the yield again
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+full_fruits_filled$Yield_kg_per_ha <- full_fruits_filled$Production_Kg / full_fruits_filled$Area_Hectares
+
+
+# Summarize production by year and crop type
+
+ggplot(full_fruits_filled, aes(x = Year, y = Yield_kg_per_ha, color = Crop_Type)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = 2001, linetype = "dashed",color = "red") +
+  labs(title = "Yield (kilograms per hectare) of Crops over Time",
+       x = "Year",
+       y = "Yield",
+       color = "Crop Type") +
+  theme_minimal()+
+  scale_x_continuous(breaks = seq(min(full_fruits$Year), max(full_fruits$Year), by = 5))+
+  scale_color_manual(values = base_colors)
+
+
+
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>individual crop yield</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+for (i in unique(full_fruits_filled$Crop_Type)){
+  p <- ggplot(full_fruits_filled %>% filter(Crop_Type == i), aes(x = Year, y = Yield_kg_per_ha)) +
+    geom_line() +
+    geom_point() +
+      geom_vline(xintercept = 2001, linetype = "dashed",color = "red") +
+    labs(title = paste("Yield of Crops over Time for", i),
+         x = "Year",
+         y = "Yield",
+         color = "Crop Type") +
+    theme_minimal() 
+  print(p)
+}
+
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
@@ -423,4 +585,36 @@ ggplot(full_fruits_zoom_area, aes(x = Year, y = Area_Hectares, color = Crop_Type
 ```
 
 
+</div>
+<h2 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>4.3: lm with crop 1990-2024</b>
+</h2>
+<div style="display:none;">  
+
+</div>
+
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> FortStJohn monthly for Peace River region</b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Example usage:
+results <- perform_lm_monthly_statcan(monthly_data_x, crop_yield,"FortStJoh", "maxmon_EHF_95","Peace River, 8 - British Columbia")
+#crop_yield
+unique_crops <- unique(crop_yield$Crop_Type)
+#Print results for each crop
+for (crop in unique_crops) {
+  print(paste("Results for crop:", crop))
+  print(results[[crop]]$summary)
+  if (!is.null(results[[crop]]$plot)) {
+    print(results[[crop]]$plot)
+  }
+  
+  
+  
+}
+
+```
 

@@ -63,8 +63,17 @@ summary(df_spesific$totprec)
 # Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 #  0.0000  0.0000  0.0000  0.1512  0.0000 17.8000      29 
 
+#after get data from UBC-O as replacement for NA
+# Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# 0.0000  0.0000  0.0000  0.2589  0.0000 17.8000 
+
 #unique values of the total precipitation and the number of occurences
 table(df_spesific$totprec)
 # 0  0.3  0.5  1.8  3.5  3.8    4  6.1 17.8 
 # 245    4    1    1    1    1    1    1    1
 
+#afte get data from UBC-O as replacement for NA
+# 0  0.3  0.4  0.5  0.7  0.8  1.5  1.6  1.8  2.8    3  3.1  3.5  3.8    4  4.1 
+# 259    6    2    1    1    1    1    1    1    1    2    1    1    1    1    1 
+# 5.8  6.1  7.3 17.8 
+# 1    1    1    1 
