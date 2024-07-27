@@ -2,6 +2,7 @@
 library(tidyverse)
 library(zoo)
 
+###-------FAO data----------------
 # Read the CSV file
 file_paths <- c("../data/agri/FAOSTAT_data.csv",
                 "../data/agri/FAOSTAT_data_4more.csv")
@@ -56,7 +57,7 @@ plot_fao_data <- function(data_fao) {
   }
 }
 
-
+###------------EHF data ----------------
 # Read the CSV file
 file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
                 "../output/Kelowna/EHF_heatmap_5_dayHW.csv",
@@ -74,7 +75,7 @@ read_and_select <- function(file_path) {
 data_x <- map_dfr(file_paths, read_and_select)
 
 
-
+###------------new crop data ----------------
 #read crop production data
 # Read the CSV file
 # file_paths <- c("../data/agri/Canola_crop.csv",
@@ -119,13 +120,7 @@ total_produ <- total_produ %>%
 
 
 
-
-
-
-
-
-
-
+###------------new fruit data ----------------
 
 # File paths for Canola, Barley, and Fruit data
 file_paths <- c("../data/agri/Fruit_prod.csv",
@@ -190,5 +185,35 @@ final_data$Crop_Type <- gsub("\\s*\\[.*\\]", "", final_data$Crop_Type)
 full_fruits <- final_data
 
 
+###------------potato only data ----------------
+# File paths for Potato data
+file_paths <- c("../data/agri/Potato_Data.csv")
+
+# Define the columns needed
+needed_columns <- c("REF_DATE", "VALUE","UOM")
+
+# Function to read and select necessary columns, and add crop type
+read_and_select_pot <- function(file_path) {
+  read_csv(file_path) %>%
+    select(all_of(needed_columns))
+}
+
+# Read and combine all datasets
+data_pot <- map_dfr(file_paths, read_and_select_pot)
+
+#create new column called crop type
+data_pot$Crop_Type <- "Potato"
+#plot
+ggplot(data = data_pot, aes(x = REF_DATE, y = VALUE)) +
+  geom_line() +
+  labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
+
+# moving avg 5 year window
+pot_soomth <- data_pot %>%
+  group_by(Crop_Type) %>%
+  mutate(VALUE = rollmean(VALUE, k = 5, fill = NA))
+ggplot(data = pot_soomth, aes(x = REF_DATE, y = VALUE)) +
+  geom_line() +
+  labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
 
 
