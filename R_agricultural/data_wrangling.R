@@ -443,7 +443,7 @@ calculate_yield <- function(production, area, multiplier) {
 prepare_backup_yield <- function(data) {
   backup_yield <- data %>%
     filter(Estimates %in% c("Area harvested (hectares)", "Marketed production (metric tonnes)")) %>%
-    group_by(REF_DATE, Crop_Type) %>%
+    group_by(REF_DATE) %>%
     summarize(
       yield_mp_ah_hec_meton = calculate_yield(
         first(VALUE[Estimates == "Marketed production (metric tonnes)"]),
@@ -461,15 +461,22 @@ merge_data <- function(complete_data, backup_yield) {
 
 # Function to plot yield over time
 plot_yield_over_time <- function(merged_data) {
-  ggplot(merged_data, aes(x = REF_DATE)) +
-    geom_line(aes(y = VALUE), color = "blue") +
-    geom_line(aes(y = yield_mp_ah_hec_meton), color = "red") +
-    labs(title = paste("Yield of", merged_data$Crop_Type[1], "over Time"),
+  p <- ggplot(merged_data, aes(x = REF_DATE)) +
+    geom_line(aes(y = yield_mp_ah_hec_meton, color = "Calculated Yield"), size = 1,alpha = 0.6) +
+    geom_point(aes(y = yield_mp_ah_hec_meton, color = "Calculated Yield"), size = 2,alpha = 0.6) +
+    geom_line(aes(y = VALUE, color = "Original Average Yield"), size = 1,alpha = 0.7) +
+    geom_point(aes(y = VALUE, color = "Original Average Yield"), size = 2,alpha = 0.7) +
+    labs(title = paste("Yield per Acre (Pounds) of", merged_data$Crop_Type[1]),
          x = "Year",
          y = "Yield",
          color = "Estimates") +
     theme_minimal() +
-    scale_x_continuous(breaks = seq(min(merged_data$REF_DATE), max(merged_data$REF_DATE), by = 1))
+    scale_color_manual(values = c("Calculated Yield" = "red","Original Average Yield" = "blue" ),
+                       labels = c("Calculated Yield","Original Average Yield" )) +
+    scale_x_continuous(breaks = seq(min(merged_data$REF_DATE), max(merged_data$REF_DATE), by = 2))+
+    theme(panel.grid.minor.y = element_blank(),
+          panel.grid.minor.x = element_blank()) 
+  return(p)
 }
 
 

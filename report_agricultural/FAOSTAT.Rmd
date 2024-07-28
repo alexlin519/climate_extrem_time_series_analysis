@@ -692,15 +692,130 @@ plot_selected_yields(long_data, selected_yield_types, custom_colors)
 
 ```
 
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot **good** quality replacement for yield data </b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=18, fig.height=7}
+
+# List of crops categorized by quality
+good_quality <- list("spinach", "lettuce", "sweet corn")
+ok_quality <- list("asparagus", "cabbage")
+soso_quality <- list("carrots", "celery", "green peas", "rutabagas and turnips")
+mixed_quality <- list("green and wax beans", "parsnips")
+bad_quality <- list("beets","cauliflowers", "dry onions")
+
+
+
+#for loop
+for (c in good_quality){
+  complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
+  filter_data <- data_veg_1940 %>%
+    filter(Crop_Type == c)
+  backup_yield <- prepare_backup_yield(filter_data)
+  merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+  
+  p <- plot_yield_over_time(merged_yield)
+  #add a vertical line
+  p <- p + geom_vline(xintercept = 2021, linetype = "dashed",color = "red")
+  print(p)
+}
+
+
+
+
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot **ok** quality replacement for yield data </b>
+</h4>
+<div style="display:none;">  
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
-complete_data <- handle_missing_yield(data_veg_1940,crop_type = "asparagus")##green peas
-backup_yield <- prepare_backup_yield(data_veg_1940)
-merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE", "Crop_Type"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+for (c in ok_quality){
+  complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
+  filter_data <- data_veg_1940 %>%
+    filter(Crop_Type == c)
+  backup_yield <- prepare_backup_yield(filter_data)
+  merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+  
+  p <- plot_yield_over_time(merged_yield)
+  #add a vertical line
+  p <- p + geom_vline(xintercept = 2021, linetype = "dashed",color = "red")
+  print(p)
+}
 
-plot_yield_over_time(merged_yield)
 
+
+
+```
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot **soso** quality replacement for yield data </b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+for (c in soso_quality){
+  complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
+  filter_data <- data_veg_1940 %>%
+    filter(Crop_Type == c)
+  backup_yield <- prepare_backup_yield(filter_data)
+  merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+  
+  p <- plot_yield_over_time(merged_yield)
+  #add a vertical line
+  p <- p + geom_vline(xintercept = 2021, linetype = "dashed",color = "red")
+  print(p)
+}
+```
+
+
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot **mixed** quality replacement for yield data </b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+for (c in mixed_quality){
+  complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
+  filter_data <- data_veg_1940 %>%
+    filter(Crop_Type == c)
+  backup_yield <- prepare_backup_yield(filter_data)
+  merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+  
+  p <- plot_yield_over_time(merged_yield)
+  #add a vertical line
+  p <- p + geom_vline(xintercept = 2021, linetype = "dashed",color = "red")
+  print(p)
+}
 ```
 
 
 
-
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>plot **bad** quality replacement for yield data </b>
+</h4>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+for (c in bad_quality){
+  complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
+  filter_data <- data_veg_1940 %>%
+    filter(Crop_Type == c)
+  backup_yield <- prepare_backup_yield(filter_data)
+  merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+  
+  p <- plot_yield_over_time(merged_yield)
+  #add a vertical line
+  p <- p + geom_vline(xintercept = 2021, linetype = "dashed",color = "red")
+  print(p)
+}
+```

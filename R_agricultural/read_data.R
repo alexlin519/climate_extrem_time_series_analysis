@@ -262,13 +262,14 @@ veg_year<- data_veg %>%
 length(unique(data_veg$Crop_Type))
 #filter some veg out
 data_veg_1940 <- data_veg %>% 
-  filter(Crop_Type != "broccoli" & Crop_Type != "Brussels sprouts" & Crop_Type != "eggplants (except Chinese eggplants" & 
+  filter(Crop_Type != "broccoli" & Crop_Type != "Brussels sprouts" & Crop_Type != "eggplants (except Chinese eggplants)" & 
            Crop_Type != "French shallots and green onions" &  Crop_Type != "garlic" &  
            Crop_Type != "Other fresh fine herbs" &  Crop_Type != "Other fresh melons" &  
            Crop_Type != "Other fresh vegetables" &  Crop_Type != "parsley" &  
            Crop_Type != "peppers" &  Crop_Type != "pumpkins" &  Crop_Type != "radishes" &  
            Crop_Type != "squash and zucchini" &  Crop_Type != "sweet potatoes" &  
            Crop_Type != "Total fresh vegetables" &  Crop_Type != "watermelons" &  
+           Crop_Type != "rhubarb"  &
            Crop_Type != "leeks" &  Crop_Type != "tomatoes" &  Crop_Type != "cucumbers and fresh gherkins (all varieties)")
 length(unique(data_veg_1940$Crop_Type))
 
