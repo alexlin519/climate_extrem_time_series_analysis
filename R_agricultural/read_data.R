@@ -217,3 +217,63 @@ ggplot(data = pot_soomth, aes(x = REF_DATE, y = VALUE)) +
   labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
 
 
+
+
+###------------new veg data ----------------
+
+# Read the CSV file
+
+file_paths <- c("../data/agri/Vegetable_Data.csv")
+# Define the columns needed
+needed_columns <- c("REF_DATE", "Estimates","VALUE","Commodity","UOM")
+read_and_select <- function(file_path) {
+  read.csv(file_path) %>%
+    select(all_of(needed_columns))%>% 
+    rename(Crop_Type = Commodity)
+}
+# Read and combine all datasets
+data_veg <- map_dfr(file_paths, read_and_select)
+
+#na
+sum(is.na(data_veg$VALUE))
+# Impute missing VALUEs with the mean of neighboring VALUEs
+data_veg <- data_veg %>%
+  group_by(Crop_Type,Estimates) %>%
+  mutate(VALUE = na.approx(VALUE, rule = 2))
+sum(is.na(data_veg$VALUE))
+
+# Clean the Crop_Type column by removing "Fresh" and the numbers
+data_veg$Crop_Type <- gsub("Fresh ", "", data_veg$Crop_Type)
+data_veg$Crop_Type <- gsub("\\s*\\[.*\\]", "", data_veg$Crop_Type)
+
+
+
+
+
+# Summarize the data by Crop_Type to get the year range
+veg_year<- data_veg %>%
+  group_by(Crop_Type,Estimates) %>%
+  summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
+
+
+
+
+#NUM of crop type
+length(unique(data_veg$Crop_Type))
+#filter some veg out
+data_veg_1940 <- data_veg %>% 
+  filter(Crop_Type != "broccoli" & Crop_Type != "Brussels sprouts" & Crop_Type != "eggplants (except Chinese eggplants" & 
+           Crop_Type != "French shallots and green onions" &  Crop_Type != "garlic" &  
+           Crop_Type != "Other fresh fine herbs" &  Crop_Type != "Other fresh melons" &  
+           Crop_Type != "Other fresh vegetables" &  Crop_Type != "parsley" &  
+           Crop_Type != "peppers" &  Crop_Type != "pumpkins" &  Crop_Type != "radishes" &  
+           Crop_Type != "squash and zucchini" &  Crop_Type != "sweet potatoes" &  
+           Crop_Type != "Total fresh vegetables" &  Crop_Type != "watermelons" &  
+           Crop_Type != "leeks" &  Crop_Type != "tomatoes" &  Crop_Type != "cucumbers and fresh gherkins (all varieties)")
+length(unique(data_veg_1940$Crop_Type))
+
+
+veg_year_2<- data_veg_1940 %>%
+  group_by(Crop_Type,Estimates) %>%
+  summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
+

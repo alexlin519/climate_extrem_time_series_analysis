@@ -18,8 +18,10 @@ function toggleCollapsible(section) {
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+source("../R_agricultural/explore_qualified_crop.R")  ## explore qualified crop
 source("../R_agricultural/read_data.R")  ## read data
 source("../R_agricultural/data_wrangling.R")  ## data wrangling
+
 ```
 <h1 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -617,4 +619,88 @@ for (crop in unique_crops) {
 }
 
 ```
+
+
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Part 5: veg data</b>
+</h1>
+<div style="display:none;">  
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+
+veg_year
+veg_year_2
+# Use the functions
+long_data <- process_data(data_veg_1940,"green peas")
+
+# Define custom colors
+custom_colors <- c(
+  "Average_yield_per_acre_pounds" = "red",
+  "Average_yield_per_hectare_kilograms" = "blue",
+  "yield_tp_ah_acre_pounds" = "#008000",
+  "yield_tp_ah_hectare_kg" = "#FF00FF",
+  "yield_mp_ap_acre_pounds" = "#FFFF00",
+  "yield_mp_ap_hectare_kg" = "#A52A2A",
+  "yield_mp_ah_acre_pounds" = "#696969",
+  "yield_mp_ah_hectare_kg" = "#40E0D0",
+  "yield_tp_ap_acre_pounds" = "#FF1493",
+  "yield_tp_ap_hectare_kg" = "#1E90FF"
+)
+# Plot all yields
+plot_yields(long_data, custom_colors)
+
+# Plot selected yields
+selected_yield_types <- c("Average_yield_per_acre_pounds", "yield_mp_ah_hectare_kg", "yield_tp_ap_acre_pounds","yield_mp_ah_acre_pounds","yield_tp_ap_hectare_kg")
+plot_selected_yields(long_data, selected_yield_types, custom_colors)
+
+
+
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+
+# data_veg_1940
+# 
+# veg_year_2
+# unique(data_veg_1940$Crop_Type)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=8, fig.height=4}
+#plot data_veg_1940 yield for diff type of veg
+#each type is a plot
+
+#check the rest crop yield is good
+
+# data_veg_1940_yield <- data_veg_1940 %>%
+#   filter(Estimates == "Average yield per acre (pounds)")
+# for (i in unique(data_veg_1940_yield$Crop_Type)){
+#   p <- ggplot(data_veg_1940_yield %>% filter(Crop_Type == i), aes(x = REF_DATE, y = VALUE)) +
+#     geom_line() +
+#     geom_point() +
+#     labs(title = paste("Yield of Crops over Time for", i),
+#          x = "Year",
+#          y = "Yield",
+#          color = "Crop Type") +
+#     theme_minimal() 
+#   print(p)
+# }
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+complete_data <- handle_missing_yield(data_veg_1940,crop_type = "asparagus")##green peas
+backup_yield <- prepare_backup_yield(data_veg_1940)
+merged_yield <- merge(complete_data, backup_yield, by = c("REF_DATE", "Crop_Type"), all.x = TRUE, suffixes = c("_Production", "_Area"))
+
+plot_yield_over_time(merged_yield)
+
+```
+
+
+
 
