@@ -49,8 +49,8 @@ data_x <- data_x %>%
   filter(LOCAL_DATE >= "1961-01-01")
 
 weekly_data_x <- aggregate_data_week(data_x)
-monthly_data_x <- aggregate_data_month(data_x)
-
+monthly_data_x <- aggregate_data_month(data_x,agg_method = "max")
+season_data_x <- aggregate_data_season(data_x,agg_method = "max")
 ```
 </div>
 
@@ -829,8 +829,22 @@ for (c in bad_quality){
 </h1>
 <div style="display:none;">  
 
-```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
-
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Example usage:
+results <- perform_lm_monthly_statcan(monthly_data_x, crop_yield,"FortStJoh", "maxmon_EHF_95","Peace River, 8 - British Columbia")
+#crop_yield
+unique_crops <- unique(crop_yield$Crop_Type)
+#Print results for each crop
+for (crop in unique_crops) {
+  print(paste("Results for crop:", crop))
+  print(results[[crop]]$summary)
+  if (!is.null(results[[crop]]$plot)) {
+    print(results[[crop]]$plot)
+  }
+  
+  
+  
+}
 
 ```
 

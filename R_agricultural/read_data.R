@@ -2,6 +2,7 @@
 library(tidyverse)
 library(zoo)
 
+
 ###-------FAO data----------------
 # Read the CSV file
 file_paths <- c("../data/agri/FAOSTAT_data.csv",
@@ -61,7 +62,10 @@ plot_fao_data <- function(data_fao) {
 # Read the CSV file
 file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
                 "../output/Kelowna/EHF_heatmap_5_dayHW.csv",
-                "../output/FortStJoh/EHF_heatmap_5_dayHW.csv")
+                "../output/FortStJoh/EHF_heatmap_5_dayHW.csv",
+                "../output/YVR/EHF_heatmap_5_dayHW.csv",
+                "../output/Prince_George/EHF_heatmap_5_dayHW.csv",
+                "../output/FortNelson/EHF_heatmap_5_dayHW.csv")
 # Define the columns needed
 #Month	Day	LOCAL_DATE	LOCAL_YEAR	STATION_NAME	MEAN_TEMPERATURE	Percentile_90	
 #Percentile_95	Rolling_3d_Avg_Temp	EHI_sig	EHI_sig_95	Rolling_Avg_30Day	EHI_accl	

@@ -48,7 +48,10 @@ handle_na <- function(data) {
 }
 
 
-aggregate_data_month <- function(data_x){
+aggregate_data_month <- function(data_x,agg_method){
+  # Define the aggregation function based on the provided method
+  agg_func <- match.fun(agg_method)
+  
   # Add columns for year and month
   print("Adding columns for year and month")
   data_x <- data_x %>% 
@@ -61,14 +64,46 @@ aggregate_data_month <- function(data_x){
   monthly_data_x <- data_x %>% 
     group_by(Year, Month,station) %>% 
     summarise(
-      maxmon_Mean_Temp = max(MEAN_TEMPERATURE, na.rm = TRUE),
-      maxmon_Percentile_95 = max(Percentile_95, na.rm = TRUE),
-      maxmon_EHF_95 = max(EHF_95, na.rm = TRUE)
+      maxmon_Mean_Temp = agg_func(MEAN_TEMPERATURE, na.rm = TRUE),
+      maxmon_Percentile_95 = agg_func(Percentile_95, na.rm = TRUE),
+      maxmon_EHF_95 = agg_func(EHF_95, na.rm = TRUE)
     )
   
   # View the aggregated data
   #print(monthly_data_x)
 }
+
+aggregate_data_season <- function(data_x,agg_method ) {
+  # Define the aggregation function based on the provided method
+  agg_func <- match.fun(agg_method)
+  
+  # Add columns for year, month, and season
+  print("Adding columns for year, month, and season")
+  data_x <- data_x %>% 
+    mutate(
+      Year = year(LOCAL_DATE),
+      Month = month(LOCAL_DATE),
+      Season = case_when(
+        Month %in% c(12, 1, 2) ~ "Winter",
+        Month %in% c(3, 4, 5) ~ "Spring",
+        Month %in% c(6, 7, 8) ~ "Summer",
+        Month %in% c(9, 10, 11) ~ "Fall"
+      )
+    )
+  
+  # Aggregate data by year, season, and station to get the mean for each season
+  seasonal_data_x <- data_x %>% 
+    group_by(Year, Season, station) %>% 
+    summarise(
+      maxsea_Mean_Temp = agg_func(MEAN_TEMPERATURE, na.rm = TRUE),
+      maxsea_Percentile_95 = agg_func(Percentile_95, na.rm = TRUE),
+      maxsea_EHF_95 = agg_func(EHF_95, na.rm = TRUE)
+    )
+  
+  # View the aggregated data
+  # print(seasonal_data_x)
+}
+
 
 perform_linear_regression_weekly <- function(weekly_data_x, data_fao,certain_station,predictor_variable) {
   
