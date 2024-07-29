@@ -208,14 +208,6 @@ ggplot(data = data_pot, aes(x = REF_DATE, y = VALUE)) +
   geom_line() +
   labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
 
-# moving avg 5 year window
-pot_soomth <- data_pot %>%
-  group_by(Crop_Type) %>%
-  mutate(VALUE = rollmean(VALUE, k = 5, fill = NA))
-ggplot(data = pot_soomth, aes(x = REF_DATE, y = VALUE)) +
-  geom_line() +
-  labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
-
 
 
 

@@ -819,3 +819,21 @@ for (c in bad_quality){
   print(p)
 }
 ```
+
+
+
+</div>
+<h1 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Part 6: patatoes</b>
+</h1>
+<div style="display:none;">  
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+
+
+```
+
+
+
+
