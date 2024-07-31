@@ -8,7 +8,7 @@ library(scales)
 
 aggregate_data_week <- function(data_x){
   # Add columns for year and week
-  print("Adding columns for year and week")
+  #print("Adding columns for year and week")
   data_x <- data_x %>% 
     mutate(
       Year = year(LOCAL_DATE),
@@ -53,7 +53,7 @@ aggregate_data_month <- function(data_x,agg_method){
   agg_func <- match.fun(agg_method)
   
   # Add columns for year and month
-  print("Adding columns for year and month")
+  #print("Adding columns for year and month")
   data_x <- data_x %>% 
     mutate(
       Year = year(LOCAL_DATE),
@@ -78,7 +78,7 @@ aggregate_data_season <- function(data_x,agg_method ) {
   agg_func <- match.fun(agg_method)
   
   # Add columns for year, month, and season
-  print("Adding columns for year, month, and season")
+  #print("Adding columns for year, month, and season")
   data_x <- data_x %>% 
     mutate(
       Year = year(LOCAL_DATE),
