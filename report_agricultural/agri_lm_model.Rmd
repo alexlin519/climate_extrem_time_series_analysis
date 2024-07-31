@@ -330,7 +330,7 @@ colnames(season_data_x)
 ```
 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
+```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=10, fig.height=6}
 # plot hist for data_pot in Detrended_Yield
 
 ggplot(data_pot, aes(x = Detrended_Yield_LOESS)) +

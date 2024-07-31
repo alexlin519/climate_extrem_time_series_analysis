@@ -80,7 +80,7 @@ top_n_highest_lowest <- function(data, n, col_var) {
 data_pot <- df %>% filter(Crop_Type == "Potato")
 
 # Call the function to get the top yields
-n <- 10
+n <- 40
 col_var <- "Detrended_Yield_LOESS"
 top_yields <- top_n_highest_lowest(data_pot, n, col_var)
 

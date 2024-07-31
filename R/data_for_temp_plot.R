@@ -115,7 +115,7 @@ plot_ehf_all <- function(df_combined_ehf1, start_year, end_year, specific_year,s
   }
   
   # Plot all years in grey and the specific year in red
-  ggplot(all_years_data, aes(x = DayOfYear)) +
+  p <- ggplot(all_years_data, aes(x = DayOfYear)) +
     geom_line(data = filter(all_years_data, Year != specific_year), 
               aes(y = EHF, group = Year), 
               color = "grey", alpha = 0.5) +
@@ -137,6 +137,7 @@ plot_ehf_all <- function(df_combined_ehf1, start_year, end_year, specific_year,s
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
           plot.title = element_text(size = 14, face = "bold"),
           axis.title = element_text(size = 12)) 
+  return(p)
 }
 
 
