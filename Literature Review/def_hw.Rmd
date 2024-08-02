@@ -106,7 +106,7 @@ According to [@3def]
 
 -   looking for 1941 heatwave data around the current temp stations.
 
--   
+-   [@potato-heat] suggested that the heatwave definition should be based on the local climate, so we will explore the local climate data to determine the best heatwave definition for the region.
 
     ------------------------------------------------------------------------
 

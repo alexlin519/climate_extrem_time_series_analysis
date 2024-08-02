@@ -42,7 +42,6 @@ LOESS_avg <- ggplot(data_pot, aes(x = REF_DATE)) +
 
 
 
-
 ### model monthly potato yield with ehf----------------
 
 

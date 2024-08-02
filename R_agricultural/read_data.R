@@ -193,7 +193,7 @@ full_fruits <- final_data
 # File paths for Potato data
 file_paths <- c("../data/agri/Potato_Data.csv")
 
-# Define the columns needed
+# Define the columns needed,UOM is unit, VALUE is yield
 needed_columns <- c("REF_DATE", "VALUE","UOM")
 
 # Function to read and select necessary columns, and add crop type
