@@ -4,6 +4,8 @@ author: "alex lin "
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: html_document
 ---
+
+
 <script>
 function toggleCollapsible(section) {
   var content = section.nextElementSibling;
@@ -14,6 +16,7 @@ function toggleCollapsible(section) {
   }
 }
 </script>
+
 
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
@@ -37,15 +40,13 @@ monthly_data_x <- aggregate_data_month(data_x,agg_method = "max")
 season_data_x <- aggregate_data_season(data_x,agg_method = "max")
 ```
 
-
-
-
 <h1 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b>Part 1: veg data</b>
-</h1>
-<div style="display:none;">  
 
+<!--TEXT SHOWS: -->
+
+<b>Part 1: veg data</b>
+
+</h1>
 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
@@ -80,7 +81,6 @@ plot_selected_yields(long_data, selected_yield_types, custom_colors)
 
 ```
 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 
 # data_veg_1940
@@ -88,6 +88,7 @@ plot_selected_yields(long_data, selected_yield_types, custom_colors)
 # veg_year_2
 # unique(data_veg_1940$Crop_Type)
 ```
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=8, fig.height=4}
 #plot data_veg_1940 yield for diff type of veg
 #each type is a plot
@@ -109,14 +110,17 @@ plot_selected_yields(long_data, selected_yield_types, custom_colors)
 # }
 
 ```
+:::
 
-
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>plot **good** quality replacement for yield data </b>
+
 </h4>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=18, fig.height=7}
 
 # List of crops categorized by quality
@@ -146,13 +150,17 @@ for (c in good_quality){
 
 
 ```
+:::
 
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>plot **ok** quality replacement for yield data </b>
+
 </h4>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 for (c in ok_quality){
   complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
@@ -171,13 +179,17 @@ for (c in ok_quality){
 
 
 ```
+:::
 
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>plot **soso** quality replacement for yield data </b>
+
 </h4>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 for (c in soso_quality){
   complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
@@ -192,14 +204,17 @@ for (c in soso_quality){
   print(p)
 }
 ```
+:::
 
-
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>plot **mixed** quality replacement for yield data </b>
+
 </h4>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 for (c in mixed_quality){
   complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
@@ -214,15 +229,17 @@ for (c in mixed_quality){
   print(p)
 }
 ```
+:::
 
-
-
-</div>
 <h4 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>plot **bad** quality replacement for yield data </b>
+
 </h4>
-<div style="display:none;">  
+
+::: {style="display:none;"}
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 for (c in bad_quality){
   complete_data <- handle_missing_yield(data_veg_1940,crop_type = c)##green peas
@@ -237,23 +254,23 @@ for (c in bad_quality){
   print(p)
 }
 ```
+:::
 
-
-
-
-</div>
 <h1 onclick="toggleCollapsible(this);">
+
 <!--TEXT SHOWS: -->
+
 <b>Part 2: patato data</b>
+
 </h1>
-<div style="display:none;">  
+
+<div style="display:none;">
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 mov_avg
 LOESS_avg
 
 ```
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 #### eg--------------
@@ -280,7 +297,6 @@ lm_onemonth_potato(monthly_data_x, data_pot, "Kelowna", "maxmon_EHF_95", "Detren
 
 ```
 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 
 re <- lm_season_potato(season_data_x, data_pot, 
@@ -295,8 +311,6 @@ print(re2)
 print(re3)
 
 ```
-
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 
@@ -313,7 +327,6 @@ print(re3)
 colnames(season_data_x)
 ```
 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 #colnames(data_pot)
 # 1] "REF_DATE"              "VALUE"                 "UOM"                  
@@ -321,14 +334,12 @@ colnames(season_data_x)
 # [7] "Loess_Trend_LOESS"     "Detrended_Yield_LOESS"
 ```
 
-
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=17, fig.height=9}
 #colnames(data_pot)
 # 1] "REF_DATE"              "VALUE"                 "UOM"                  
 # [4] "Crop_Type"             "Moving_Avg"            "Detrended_Yield"      
 # [7] "Loess_Trend_LOESS"     "Detrended_Yield_LOESS"
 ```
-
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE,fig.width=10, fig.height=6}
 # plot hist for data_pot in Detrended_Yield
