@@ -56,6 +56,16 @@ step <- 40
 
 ```
 
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#for non-exist date in the df
+#df_missing
+df_date_noexist <- results[[3]]
+summary(df_date_noexist)
+#missing_year_count
+results[[4]]
+```
+
+
 ```{r, echo=FALSE}
 dfff <- df
 kelowna_extra <- read.csv("../data/kelow/kelowna_extra_ubco.csv")

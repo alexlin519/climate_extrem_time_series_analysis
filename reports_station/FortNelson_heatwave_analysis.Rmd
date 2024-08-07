@@ -41,6 +41,14 @@ step <- 40
 
 ```
 
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#for non-exist date in the df
+#df_missing
+df_date_noexist <- results[[3]]
+summary(df_date_noexist)
+#missing_year_count
+results[[4]]
+```
 
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
