@@ -19,6 +19,7 @@ function toggleCollapsible(section) {
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+
 file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
                 "../data/kelow/kelow_1899-1962_p3.csv",
                 "../data/kelow/kelow_1899-1962.csv",
@@ -32,10 +33,10 @@ source("../R/read_data.R")  ## read data
 results <- process_and_save_data(file_paths, station_name)
 df <- results[[1]] 
 # Example usage
-df <- update_precipitation(dfff,"../data/kelow/kelowna_extra_ubco.csv")
+#df <- update_precipitation(df,"../data/kelow/kelowna_extra_ubco.csv")
 # Define the save path
-save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
-write.csv(df, file = save_path, row.names = FALSE)  
+#save_path <- paste0("../output/", station_name, "_raw_filtered_columns.csv")
+#write.csv(df, file = save_path, row.names = FALSE)  
 
 source("../R/data_wrangling.R") ## data wrangling
 source("../R/data_for_temp_plot.R") ## Modify the data by normalizing dates for plotting, get the data ready, and a function to plot a given year vs baseline
@@ -43,6 +44,10 @@ source("../R/data_for_hw_plot.R")
 source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
+
+#source("../R_agricultural/read_data.R")  ## read data
+#source("../R_agricultural/ranking_yield.R") 
+source("../R_agricultural/ehf_vs_yield.R")
 start_year <- 1899
 end_year <- 2024
 
@@ -107,6 +112,8 @@ missing_values <- sapply(df, function(x) sum(is.na(x)))
 # df_wrangling$rolling_window[[5]]  # sample row
 # df_wrangling$rolling_window[[10]] # sample row
 # df_wrangling$rolling_window[[nrow(df_wrangling)]] # Last row
+#get current path
+
 ```
 
 ```{r, echo=FALSE,results = 'show'}
@@ -148,6 +155,11 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 </h1>
 <div style="display:none;"> 
 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+mov_avg
+LOESS_avg
+
+```
 
 </div>
 <h3 onclick="toggleCollapsible(this);">
@@ -178,7 +190,121 @@ save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 ```
 
+</div>
+<h4 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>shows the year with extreme yield </b>
+</h4>
+<div style="display:none;">  
 
+```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
+ehf_extreme_yield <- preprocess_ehf_data(df_combined_ehf1,top_yields)
+
+plot_ehf_extreme_yield(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  top_n = 2)
+
+plot_ehf_extreme_yield(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  lowest_n = 2)
+
+
+plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, station_name, ranking, top_n = NULL, lowest_n = NULL) {
+  # Create an empty data frame to store all years' data
+  all_years_data <- ehf_extreme_yield
+  
+  # Filter data based on top_n or lowest_n if specified
+  if (!is.null(top_n)) {
+    top_data <- all_years_data %>%
+      filter(Type == "Highest") %>%
+      filter(Rank %in% ranking)
+    top_data$Color <- "highest yield"
+  } else {
+    top_data <- data.frame()
+  }
+  
+  if (!is.null(lowest_n)) {
+    low_data <- all_years_data %>%
+      filter(Type == "Lowest") %>%
+      filter(Rank %in% ranking)
+    low_data$Color <- "lowest yield"
+  } else {
+    low_data <- data.frame()
+  }
+  
+  # Combine top and low data
+  all_years_data <- bind_rows(top_data, low_data)
+  all_years_data$Rank <- as.factor(all_years_data$Rank)
+  
+  # Filter data to show only between xintercept = 60 and xintercept = 304
+  all_years_data <- all_years_data %>%
+    filter(DayOfYear >= 60 & DayOfYear <= 304)
+  
+  las_dig <-  ranking[length(ranking)]
+  ggplot(all_years_data, aes(x = DayOfYear)) +
+    geom_line(aes(y = EHF, color = Color, group = interaction(Year, Rank)), size = 0.5, alpha = 0.4) +
+    scale_color_manual(values = c("highest yield" = "red", "lowest yield" = "blue"), name = "Yield Type") +
+    labs(
+      title = paste("EHF Over the Years with Top and Lowest", las_dig ," Yields at", station_name),
+      x = "Day of Year",
+      y = "EHF"
+    ) +
+    theme_minimal() +
+    theme(plot.margin = margin(20, 20, 20, 20)) +
+    theme(aspect.ratio = 1/2) +
+    geom_vline(xintercept = 60, linetype = "dashed", color = "#008000") +
+    geom_vline(xintercept = 120, linetype = "dashed", color = "#808000") +
+    geom_vline(xintercept = 304, linetype = "dashed", color = "#FFD700") +
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12))
+}
+
+# Example usage:
+plot_ehf_extreme_yield(ehf_extreme_yield, start_year, end_year, station_name, (1:3), top_n = 5, lowest_n = 5)
+plot_ehf_extreme_yield(ehf_extreme_yield, start_year, end_year, station_name, (1:10), top_n = 5, lowest_n = 5)
+plot_ehf_extreme_yield(ehf_extreme_yield, start_year, end_year, station_name, (1:20), top_n = 5, lowest_n = 5)
+plot_ehf_extreme_yield(ehf_extreme_yield, start_year, end_year, station_name, (1:40), top_n = 5, lowest_n = 5)
+
+```
+
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+ehf_potato <- df_combined_ehf1 %>%
+  filter(month(LOCAL_DATE) >= 3 & month(LOCAL_DATE) <= 10) %>%
+  filter(LOCAL_YEAR >= 1910 & LOCAL_YEAR <= 2024)
+#filter rank to be small than 20
+top_yields_10 <- top_yields %>%
+  filter(Rank <= 10)
+for (y in top_yields_10$REF_DATE) {
+  p <- ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, y,station_name,
+                           data_pot, top_yields)
+  print(p)
+}
+
+```
+
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, 1941,station_name,
+                           data_pot, top_yields)
+
+```
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# Assuming `ehf_extreme_yield` has columns 'Day_of_Year', 'EHF', and 'Rank'
+ehf_extreme_yield <- ehf_extreme_yield %>%
+  mutate(Rank_Group = case_when(
+    Rank <= 3 ~ "1-3 Highest",
+    Rank <= 6 ~ "4-6 Highest",
+    TRUE ~ "1-3 Lowest"
+  ))
+library(ggplot2)
+
+ggplot(ehf_extreme_yield, aes(x = LOCAL_DATE, y = EHF, color = Rank_Group)) +
+  geom_line() +
+   +
+  labs(title = "EHF Over the Years with Rank Indications",
+       x = "Day of Year", y = "EHF",
+       color = "Rank Group") +
+  theme_minimal()
+
+
+```
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -247,7 +373,8 @@ plot_all_years <- function(start_year, end_year) {
 #print(plot_all_years_with_baseline(start_year,end_year,2000))
 
 
-print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+#print(plot_all_years_highlight_specific_year(start_year,end_year,1941))
+print(plot_all_years_highlight_specific_year(1941,1950,1941))
 ```
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}

@@ -2,6 +2,8 @@
 library(tidyverse)
 library(zoo)
 
+
+###-------FAO data----------------
 # Read the CSV file
 file_paths <- c("../data/agri/FAOSTAT_data.csv",
                 "../data/agri/FAOSTAT_data_4more.csv")
@@ -56,11 +58,14 @@ plot_fao_data <- function(data_fao) {
   }
 }
 
-
+###------------EHF data ----------------
 # Read the CSV file
 file_paths <- c("../output/Abbotsford/EHF_heatmap_5_dayHW.csv",
                 "../output/Kelowna/EHF_heatmap_5_dayHW.csv",
-                "../output/FortStJoh/EHF_heatmap_5_dayHW.csv")
+                "../output/FortStJoh/EHF_heatmap_5_dayHW.csv",
+                "../output/YVR/EHF_heatmap_5_dayHW.csv",
+                "../output/Prince_George/EHF_heatmap_5_dayHW.csv",
+                "../output/FortNelson/EHF_heatmap_5_dayHW.csv")
 # Define the columns needed
 #Month	Day	LOCAL_DATE	LOCAL_YEAR	STATION_NAME	MEAN_TEMPERATURE	Percentile_90	
 #Percentile_95	Rolling_3d_Avg_Temp	EHI_sig	EHI_sig_95	Rolling_Avg_30Day	EHI_accl	
@@ -74,7 +79,7 @@ read_and_select <- function(file_path) {
 data_x <- map_dfr(file_paths, read_and_select)
 
 
-
+###------------new crop data ----------------
 #read crop production data
 # Read the CSV file
 # file_paths <- c("../data/agri/Canola_crop.csv",
@@ -119,13 +124,7 @@ total_produ <- total_produ %>%
 
 
 
-
-
-
-
-
-
-
+###------------new fruit data ----------------
 
 # File paths for Canola, Barley, and Fruit data
 file_paths <- c("../data/agri/Fruit_prod.csv",
@@ -190,5 +189,88 @@ final_data$Crop_Type <- gsub("\\s*\\[.*\\]", "", final_data$Crop_Type)
 full_fruits <- final_data
 
 
+###------------potato only data ----------------
+# File paths for Potato data
+file_paths <- c("../data/agri/Potato_Data.csv")
 
+# Define the columns needed,UOM is unit, VALUE is yield
+needed_columns <- c("REF_DATE", "VALUE","UOM")
+
+# Function to read and select necessary columns, and add crop type
+read_and_select_pot <- function(file_path) {
+  read_csv(file_path) %>%
+    select(all_of(needed_columns))
+}
+
+# Read and combine all datasets
+data_pot <- map_dfr(file_paths, read_and_select_pot)
+
+#create new column called crop type
+data_pot$Crop_Type <- "Potato"
+#plot
+ggplot(data = data_pot, aes(x = REF_DATE, y = VALUE)) +
+  geom_line() +
+  labs(title = "Trends Over Time for Potato", x = "Year", y = "Value")
+
+
+
+
+###------------new veg data ----------------
+
+# Read the CSV file
+
+file_paths <- c("../data/agri/Vegetable_Data.csv")
+# Define the columns needed
+needed_columns <- c("REF_DATE", "Estimates","VALUE","Commodity","UOM")
+read_and_select <- function(file_path) {
+  read.csv(file_path) %>%
+    select(all_of(needed_columns))%>% 
+    rename(Crop_Type = Commodity)
+}
+# Read and combine all datasets
+data_veg <- map_dfr(file_paths, read_and_select)
+
+#na
+sum(is.na(data_veg$VALUE))
+# Impute missing VALUEs with the mean of neighboring VALUEs
+data_veg <- data_veg %>%
+  group_by(Crop_Type,Estimates) %>%
+  mutate(VALUE = na.approx(VALUE, rule = 2))
+sum(is.na(data_veg$VALUE))
+
+# Clean the Crop_Type column by removing "Fresh" and the numbers
+data_veg$Crop_Type <- gsub("Fresh ", "", data_veg$Crop_Type)
+data_veg$Crop_Type <- gsub("\\s*\\[.*\\]", "", data_veg$Crop_Type)
+
+
+
+
+
+# Summarize the data by Crop_Type to get the year range
+veg_year<- data_veg %>%
+  group_by(Crop_Type,Estimates) %>%
+  summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
+
+
+
+
+#NUM of crop type
+length(unique(data_veg$Crop_Type))
+#filter some veg out
+data_veg_1940 <- data_veg %>% 
+  filter(Crop_Type != "broccoli" & Crop_Type != "Brussels sprouts" & Crop_Type != "eggplants (except Chinese eggplants)" & 
+           Crop_Type != "French shallots and green onions" &  Crop_Type != "garlic" &  
+           Crop_Type != "Other fresh fine herbs" &  Crop_Type != "Other fresh melons" &  
+           Crop_Type != "Other fresh vegetables" &  Crop_Type != "parsley" &  
+           Crop_Type != "peppers" &  Crop_Type != "pumpkins" &  Crop_Type != "radishes" &  
+           Crop_Type != "squash and zucchini" &  Crop_Type != "sweet potatoes" &  
+           Crop_Type != "Total fresh vegetables" &  Crop_Type != "watermelons" &  
+           Crop_Type != "rhubarb"  &
+           Crop_Type != "leeks" &  Crop_Type != "tomatoes" &  Crop_Type != "cucumbers and fresh gherkins (all varieties)")
+length(unique(data_veg_1940$Crop_Type))
+
+
+veg_year_2<- data_veg_1940 %>%
+  group_by(Crop_Type,Estimates) %>%
+  summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
 

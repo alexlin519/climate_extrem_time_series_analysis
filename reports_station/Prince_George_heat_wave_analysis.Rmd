@@ -51,12 +51,12 @@ step <- 40
 # Display unique station names
 unique_stations <- df %>%
   distinct(STATION_NAME)
-#print(unique_stations)
+print(unique_stations)
 
 # 1. Summary Statistics
 summary_stats <- summary(df)
 #print(summary_stats)
-summary_stats
+#summary_stats
 # 2. Missing Values Analysis
 missing_values <- sapply(df, function(x) sum(is.na(x)))
 #print(missing_values)

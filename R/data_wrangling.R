@@ -191,7 +191,6 @@ compare_plot_95 <- ggplot(df_90_compare, aes(x = Date, y = Percentile_95, color 
 
 
 
-
 ### new def of ehf
 
 #step 1: merge the 90th percentile for each day to df_wrangling

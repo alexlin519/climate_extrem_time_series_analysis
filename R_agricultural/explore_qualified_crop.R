@@ -1,114 +1,203 @@
 # Load necessary libraries
 library(tidyverse)
 library(zoo)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
 
-# Read the CSV file
-file_paths <- c("../data/agri/veg_data.csv")
-# Define the columns needed
-# Define the columns needed
-needed_columns <- c("REF_DATE", "Estimates","VALUE","Commodity","UOM")
-read_and_select <- function(file_path) {
-  read.csv(file_path) %>%
-    select(all_of(needed_columns))%>% 
-    rename(Crop_Type = Commodity)
+
+calculate_yields <- function(data) {
+  library(dplyr)
+  # Ensure the VALUE column is numeric
+  data$VALUE <- as.numeric(data$VALUE)
+  
+  # Define a helper function to calculate yields
+  calculate_yield <- function(production, area, multiplier) {
+    ifelse(is.na(production) | is.na(area), NA, production * multiplier / area)
+  }
+  
+  # Calculate yields
+  yields <- data %>%
+    filter(Estimates %in% c("Total production (tons)", "Area harvested (acres)",
+                            "Total production (metric tonnes)", "Area harvested (hectares)",
+                            "Marketed production (tons)", "Area planted (acres)",
+                            "Marketed production (metric tonnes)", "Area planted (hectares)")) %>%
+    group_by(REF_DATE, Crop_Type) %>%
+    summarize(
+      yield_tp_ah_acre_pounds = calculate_yield(
+        first(VALUE[Estimates == "Total production (tons)"]),
+        first(VALUE[Estimates == "Area harvested (acres)"]),
+        2000 #
+      ),
+      yield_tp_ah_hectare_kg = calculate_yield(
+        first(VALUE[Estimates == "Total production (metric tonnes)"]),
+        first(VALUE[Estimates == "Area harvested (hectares)"]),
+        892.197 # 2204.62 / 2.471
+      ),
+      yield_mp_ap_acre_pounds = calculate_yield(
+        first(VALUE[Estimates == "Marketed production (tons)"]),
+        first(VALUE[Estimates == "Area planted (acres)"]),
+        2000 #
+      ),
+      yield_mp_ap_hectare_kg = calculate_yield(
+        first(VALUE[Estimates == "Marketed production (metric tonnes)"]),
+        first(VALUE[Estimates == "Area planted (hectares)"]),
+        892.197 # 2204.62 / 2.471
+      ),
+      yield_mp_ah_acre_pounds = calculate_yield(
+        first(VALUE[Estimates == "Marketed production (tons)"]),
+        first(VALUE[Estimates == "Area harvested (acres)"]),
+        2000 #
+      ),
+      yield_mp_ah_hectare_kg = calculate_yield(
+        first(VALUE[Estimates == "Marketed production (metric tonnes)"]),
+        first(VALUE[Estimates == "Area harvested (hectares)"]),
+        892.197 # 2204.62 / 2.471
+      ),
+      yield_tp_ap_acre_pounds = calculate_yield(
+        first(VALUE[Estimates == "Total production (tons)"]),
+        first(VALUE[Estimates == "Area planted (acres)"]),
+        2000 #
+      ),
+      yield_tp_ap_hectare_kg = calculate_yield(
+        first(VALUE[Estimates == "Total production (metric tonnes)"]),
+        first(VALUE[Estimates == "Area planted (hectares)"]),
+        892.197 # 2204.62 / 2.471
+      )
+    )
+  
+  return(yields)
 }
-# Read and combine all datasets
-data_veg <- map_dfr(file_paths, read_and_select)
-#na
-sum(is.na(data_veg$VALUE))
-# Impute missing values with the mean of neighboring values
-data_veg <- data_veg %>%
-  group_by(Crop_Type,Estimates) %>%
-  mutate(VALUE = na.approx(VALUE, rule = 2))
-sum(is.na(data_veg$VALUE))
-
-# Clean the Crop_Type column by removing "Fresh" and the numbers
-data_veg$Crop_Type <- gsub("Fresh ", "", data_veg$Crop_Type)
-data_veg$Crop_Type <- gsub("\\s*\\[.*\\]", "", data_veg$Crop_Type)
-
-
-# Summarize the data by Crop_Type to get the year range
-veg_year<- data_veg %>%
-  group_by(Crop_Type) %>%
-  summarize(Start_Year = min(REF_DATE), End_Year = max(REF_DATE))
-veg_year
-
-
-full_veg <- data_veg
 
 
 
+#### -----------------code----------------
+# data_veg_2 <- data_veg_2 %>%
+#   #filter(Crop_Type == "asparagus") 
+#   filter(Crop_Type == "tomatoes") 
+# 
+# 
+# # Example usage:
+# calculated_yields <- calculate_yields(data_veg_2)
+# 
+# 
+# final_full <- calculated_yields %>%
+#   full_join(data_veg_2_yield_p, by = c("REF_DATE", "Crop_Type")) %>%
+#   full_join(data_veg_2_yield_k, by = c("REF_DATE", "Crop_Type")) %>%
+#   select(-Estimates.x,-Estimates.y)
+# 
+# # Reshape the data to long format
+# long_data <- final_full %>%
+#   gather(key = "Yield_Type", value = "Yield_Value", -REF_DATE, -Crop_Type)
+# 
+# #filter date
+# long_data <- long_data %>%
+#   filter(REF_DATE > 1980)
+# 
+# custom_colors <- c(
+#   "Average_yield_per_acre_pounds" = "red",
+#   "Average_yield_per_hectare_kilograms" = "blue",
+#   "yield_tp_ah_acre_pounds" = "#008000",
+#   "yield_tp_ah_hectare_kg" = "#FF00FF",
+#   "yield_mp_ap_acre_pounds" = "#FFFF00",
+#   "yield_mp_ap_hectare_kg" = "#A52A2A",
+#   "yield_mp_ah_acre_pounds" = "#696969",
+#   "yield_mp_ah_hectare_kg" = "#40E0D0",
+#   "yield_tp_ap_acre_pounds" = "#FF1493",
+#   "yield_tp_ap_hectare_kg" = "#1E90FF"
+# )
+# 
+# # Plot all yields in one plot
+# ggplot(long_data, aes(x = REF_DATE, y = Yield_Value, color = Yield_Type, linetype = Crop_Type)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_color_manual(values = custom_colors) +
+#   labs(title = "Yields Over Time",
+#        x = "Year",
+#        y = "Yield Value",
+#        color = "Yield Type",
+#        linetype = "Crop Type") +
+#   theme_minimal()
+# 
+# #filter estimate
+# long_data_some <- long_data %>%
+#   filter(Yield_Type == "Average_yield_per_acre_pounds" | 
+#            Yield_Type == "yield_mp_ah_hectare_kg" |
+#            Yield_Type == "yield_tp_ap_acre_pounds" )
+# 
+# # Plot all yields in one plot
+# ggplot(long_data_some, aes(x = REF_DATE, y = Yield_Value, color = Yield_Type, linetype = Crop_Type)) +
+#   geom_line() +
+#   geom_point() +
+#   scale_color_manual(values = custom_colors) +
+#   labs(title = "Yields Over Time",
+#        x = "Year",
+#        y = "Yield Value",
+#        color = "Yield Type",
+#        linetype = "Crop Type") +
+#   theme_minimal()
+# 
+# 
 
-# Define the columns needed
-needed_columns <- c("REF_DATE", "Harvest.disposition","VALUE",'GEO',"Type.of.crop","UOM")
 
-# Function to read and select necessary columns, and add crop type
-read_and_select <- function(file_path) {
-  read.csv(file_path) %>%
-    select(all_of(needed_columns)) %>%
-    #rename(Production = VALUE) %>%
-    rename(Crop_Type = Type.of.crop)
+#yield_mp_ah_hectare_kg is final decision
+
+####-----------function------------
+
+
+
+# Function to process the data and create the long format data frame
+process_data <- function(data_veg_2,type_crop) {
+  data_veg_2 <- data_veg_2 %>%
+    filter(Crop_Type == type_crop)
+  
+  calculated_yields <- calculate_yields(data_veg_2)
+  
+  data_veg_2_yield_p <- data_veg_2 %>%
+    filter(Estimates == "Average yield per acre (pounds)" ) %>%
+    select(VALUE,Crop_Type,REF_DATE) %>%
+    rename(Average_yield_per_acre_pounds = VALUE) 
+  data_veg_2_yield_k <- data_veg_2 %>%
+    filter(Estimates == "Average yield per hectare (kilograms)" ) %>%
+    select(VALUE,Crop_Type,REF_DATE) %>%
+    rename(Average_yield_per_hectare_kilograms = VALUE)
+  
+  final_full <- calculated_yields %>%
+    full_join(data_veg_2_yield_p, by = c("REF_DATE", "Crop_Type")) %>%
+    full_join(data_veg_2_yield_k, by = c("REF_DATE", "Crop_Type")) %>%
+    select(-Estimates.x, -Estimates.y)
+  
+  long_data <- final_full %>%
+    gather(key = "Yield_Type", value = "Yield_Value", -REF_DATE, -Crop_Type) %>%
+    filter(REF_DATE > 1980)
+  
+  return(long_data)
 }
 
-# Read and combine all datasets
-data_statcan_crop <- map_dfr(file_paths, read_and_select)
+# Function to plot the data
+plot_yields <- function(long_data, custom_colors) {
+  ggplot(long_data, aes(x = REF_DATE, y = Yield_Value, color = Yield_Type, linetype = Crop_Type)) +
+    geom_line() +
+    geom_point() +
+    scale_color_manual(values = custom_colors) +
+    labs(title = "Yields Over Time",
+         x = "Year",
+         y = "Yield Value",
+         color = "Yield Type",
+         linetype = "Crop Type") +
+    theme_minimal()
+}
 
-
-#filter Harvest.disposition to be Average yield (kilograms per hectare)
-crop_yield <- data_statcan_crop %>% filter(Harvest.disposition == "Average yield (kilograms per hectare)")
-total_produ <- data_statcan_crop %>% filter(Harvest.disposition == "Production (metric tonnes)")
-
-#rename
-crop_yield <- crop_yield %>% rename(yield = VALUE)
-total_produ <- total_produ %>% rename(Production = VALUE)
-# Impute missing values with the mean of neighboring values
-crop_yield <- crop_yield %>%
-  group_by(Crop_Type,GEO) %>%
-  mutate(yield = na.approx(yield, rule = 2))
-
-total_produ <- total_produ %>%
-  group_by(Crop_Type,GEO) %>%
-  mutate(Production = na.approx(Production, rule = 2))
-
-
-
-
-
-
-
-# Convert the data types
-data_statcan_fruit$REF_DATE <- as.integer(data_statcan_fruit$REF_DATE)
-data_statcan_fruit$VALUE <- as.numeric(data_statcan_fruit$VALUE)
-
-#check num of missing
-sum(is.na(data_statcan_fruit))
+# Function to filter specific yield types and plot
+plot_selected_yields <- function(long_data, selected_yield_types, custom_colors) {
+  long_data_some <- long_data %>%
+    filter(Yield_Type %in% selected_yield_types)
+  
+  plot_yields(long_data_some, custom_colors)
+}
 
 
 
 
 
-
-
-# Separate the production and area data
-production_data <- subset(data_statcan_fruit, Estimates == "Marketed production")
-area_data <- subset(data_statcan_fruit, Estimates == "Cultivated area, total")
-
-# Merge production and area data by year and crop type
-#merged_data <- merge(production_data, area_data, by = c("REF_DATE", "Crop_Type"))
-merged_data <- merge(production_data, area_data, by = c("REF_DATE", "Crop_Type"), all.x = TRUE, suffixes = c("_Production", "_Area")) # change to ensure missing area data results in NA
-
-# Rename the columns for clarity
-colnames(merged_data) <- c("Year", "Crop_Type", "Production_Tons", "Production_Estimates", "Production_UOM", "Area_Hectares", "Area_Estimates", "Area_UOM")
-
-# Calculate the yield in kilograms per hectare
-merged_data$Production_Kg <- merged_data$Production_Tons * 1000
-merged_data$Yield_kg_per_ha <- merged_data$Production_Kg / merged_data$Area_Hectares
-
-# Select relevant columns
-final_data <- merged_data[, c("Year", "Crop_Type", "Production_Tons",
-                              "Production_Kg", "Area_Hectares", "Yield_kg_per_ha")]
-
-
-
-
-
+#yield_mp_ah_hectare_kg
