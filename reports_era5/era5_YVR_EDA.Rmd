@@ -4,17 +4,11 @@ output: html_document
 date: "2024-05-30"
 ---
 
-<!-- # ```{r setup, include=FALSE} -->
-<!-- # #library(reticulate) -->
-<!-- # #py_run_string("print('Hello from Python')") -->
-<!-- # # Run a Python script -->
-<!-- # # # py_run_file("script.py") -->
-<!-- # ``` -->
-
 # Data
 
 ```{r setup, include=FALSE,message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 source("../R/era5/YVR_read_wrangling_data.R")  ## read data & wrangling
 # ordered_era5_yvr  # all date
 # era5_yvr_90percentiles # 365 90th
@@ -38,7 +32,9 @@ get 90th from the all year for all day value
 ```{r, echo=FALSE,message=FALSE}
 #Print the result
 #df_percentiles$Percentile_90
+era5_yvr_90percentiles <- process_temperature_data(ordered_era5_yvr)
 
+head(era5_yvr_90percentiles)
 station_name <- "YVR_era5"
 era5_yvr_90percentiles <- era5_yvr_90percentiles %>%
   mutate(Station = station_name)
@@ -65,7 +61,7 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 ## plot given year temp dist vs baseline 90th
 ```{r, echo=FALSE,message=FALSE}
 #df_plot_year_begin <- prepare_plot_data("Percentile_90", 1938, "MAX_TEMPERATURE")
-#\plot_percentiles_vs_year(df_plot_year_begin,1938)
+#plot_percentiles_vs_year(df_plot_year_begin,1938)
 era5_yvr_90percentiles
 
 ```
@@ -231,186 +227,4 @@ write.csv(selected_columns, file = save_path, row.names = FALSE)
 
 ```
 
-
-```{r, echo=FALSE,message=FALSE}
-heatmap <- create_heatmap(combined_df, "04-01","10-31")
-print(heatmap)
- 
-```
-
-
-
-```{r, echo=FALSE,message=FALSE}
-df_3_yvr <- create_heatmap_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
-df_5_yvr <-  create_heatmap_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
-
-```
-
-
-
-```{r, echo=FALSE,message=FALSE}
-#df_3_yvr
-# Rename the column
-colnames(df_3_yvr)[colnames(df_3_yvr) == "Color"] <- "daily_max_temp"
-# Add the new column
-df_3_yvr$station <- "YVR_era5"
-# Save the updated dataframe to a file
-write.csv(df_3_yvr, "../output/era5_YVR_heatmap_3_dayHW.csv", row.names = FALSE)
-
-
-#df_5_yvr
-# Rename the column
-colnames(df_5_yvr)[colnames(df_5_yvr) == "Color"] <- "daily_max_temp"
-# Add the new column
-df_5_yvr$station <- "YVR_era5"
-# Save the updated dataframe to a file
-write.csv(df_5_yvr, "../output/era5_YVR_heatmap_5_dayHW.csv", row.names = FALSE)
-
-```
-
-
-
-
-```{r, echo=FALSE,message=FALSE}
-heatmap <- create_heatmap_diff(combined_df, "04-01","10-31")
-print(heatmap)
- 
-```
-
-```{r, echo=FALSE,message=FALSE}
-df_3_yvr <- create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 3, start_date = '04-01', end_date = '10-31') 
-df_5_yvr <-create_heatmap_diff_filter_hw(combined_df, heat_wave_length = 5, start_date = '04-01', end_date = '10-31') 
-
-```
-
-## seperate view of the heatmap
-```{r, echo=FALSE,message=FALSE}
-# list_of_dfs <- list()
-# 
-# for (year in 1941:1960) {
-#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-#   
-#   # Add the prepared data frame to the list
-#   list_of_dfs[[as.character(year)]] <- prepared_df
-# }
-# # Combine the data frames into one
-# combined_df2 <- do.call(rbind, list_of_dfs)
-# 
-# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-# print(heatmap)
-# 
-# 
-# list_of_dfs <- list()
-# for (year in 1960:1980) {
-#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-#   
-#   # Add the prepared data frame to the list
-#   list_of_dfs[[as.character(year)]] <- prepared_df
-# }
-# # Combine the data frames into one
-# combined_df2 <- do.call(rbind, list_of_dfs)
-# 
-# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-# print(heatmap)
-# 
-# list_of_dfs <- list()
-# for (year in 1980:2000) {
-#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-#   
-#   # Add the prepared data frame to the list
-#   list_of_dfs[[as.character(year)]] <- prepared_df
-# }
-# # Combine the data frames into one
-# combined_df2 <- do.call(rbind, list_of_dfs)
-# 
-# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-# print(heatmap)
-
-
-# 
-# list_of_dfs <- list()
-# for (year in 2000:2024) {
-#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-#   
-#   # Add the prepared data frame to the list
-#   list_of_dfs[[as.character(year)]] <- prepared_df
-# }
-# # Combine the data frames into one
-# combined_df2 <- do.call(rbind, list_of_dfs)
-# 
-# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-# print(heatmap)
- 
-```
-
-
-## examine specific year (grep line vs 90 vs specific year)
-```{r, echo=FALSE,message=FALSE}
-# Define the specific years you want to process
-# years_to_process <- c(1947,1958,1970, 2009, 2021)
-# 
-# # Initialize an empty list to store data frames for each year
-# list_of_dfs <- list()
-#   
-# for (year in years_to_process) {
-#   # Assuming `df` is the base data frame, apply the `prepare_heatmap_plot_data` function
-#   prepared_df <- prepare_heatmap_plot_data(df, "Percentile_90", year, "MAX_TEMPERATURE")
-#   
-#   # Add the prepared data frame to the list
-#   list_of_dfs[[as.character(year)]] <- prepared_df
-# }
-# # Combine the data frames into one
-# combined_df2 <- do.call(rbind, list_of_dfs)
-# 
-# heatmap <- create_heatmap_diff(combined_df2, "04-01","10-31")
-# print(heatmap)
-# 
-# for (year in years_to_process) {
-#   print(plot_all_years_highlight_specific_year(start_year,end_year,year))
-# }
-```
-## according bar
-```{r, echo=FALSE,message=FALSE}
-# # Loop over the sequence of years
-# years_to_process <- c(1947,1958,1970, 2009, 2021)
-# for (year_single in years_to_process) {
-#   df_plot <- prepare_plot_data("Percentile_90", year_single, "MAX_TEMPERATURE")
-#   summaries <- process_data_by_year(process_data_for_hw(df_plot), year_single)
-#   plots <- plot_case_summary(summaries, year_single)
-#   
-#   print(plots$month_plot)
-#   print(plots$hw_length_plot)
-#}
-```
-
-
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
-
-```{r, echo=FALSE,message=FALSE}
-```
 

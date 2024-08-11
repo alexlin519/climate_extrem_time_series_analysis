@@ -4,6 +4,7 @@ library(zoo)
 library(purrr)
 library(tidyr)
 
+setwd("/Users/alexlin/summer_stat/climate_extreme_RA/R")
 #Define file paths
 file_paths <- c("../data/era5_YVR.csv"
                 )
@@ -20,9 +21,6 @@ era5_yvr <- map_dfr(file_paths, read_and_select)
 # Display the first few rows of the combined data
 head(era5_yvr)
 
-
-
-# Assuming 'eras_yvr' is your dataframe
 ordered_era5_yvr <- era5_yvr %>%
   arrange(date)
 
@@ -91,8 +89,4 @@ process_temperature_data <- function(df) {
 
 
 
-era5_yvr_90percentiles <- process_temperature_data(ordered_era5_yvr)
 
-
-
-head(era5_yvr_90percentiles)

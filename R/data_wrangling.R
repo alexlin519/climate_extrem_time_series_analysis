@@ -136,7 +136,9 @@ df_grouped_mean <- df_wrangling %>%
 df_percentiles <- df_grouped %>%
   mutate(
     Percentile_90 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.90,'na.rm'=TRUE)),
-    Percentile_95 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.95,'na.rm'=TRUE))
+    Percentile_95 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.95,'na.rm'=TRUE)),
+    Percentile_05 = map_dbl(ROLLING_WINDOW_ALL_YEAR_VALUES, ~ quantile(.x, 0.05,'na.rm'=TRUE))
+    
   )
 
 df_percentiles_all <- df_grouped_all %>%
@@ -150,7 +152,7 @@ df_percentiles_mean <- df_grouped_mean %>%
     Percentile_90 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.90,'na.rm'=TRUE)),
     Percentile_95 = map_dbl(ROLLWIN_30YEAR_MEAN, ~ quantile(.x, 0.95,'na.rm'=TRUE))
   )
-
+#final decision is use  df_percentiles
 
 
 # Add a column to distinguish between the two datasets

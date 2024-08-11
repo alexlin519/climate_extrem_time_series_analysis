@@ -291,7 +291,7 @@ for (y in top_yields_10$REF_DATE) {
 ```
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
-ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, 1941,station_name,
+ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, 2021,station_name,
                            data_pot, top_yields)
 
 ```

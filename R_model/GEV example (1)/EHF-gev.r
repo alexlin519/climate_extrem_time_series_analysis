@@ -69,12 +69,12 @@ ggplot(ehf0609, aes(x = year, y = yv)) +
   theme_minimal()
 # Example: LOESS smoothing
 library(ggplot2)
-ggplot(ehf0609, aes(x=year, y=fn)) + 
+ggplot(ehf0609, aes(x=year, y=yv)) + 
   geom_point() + 
   geom_smooth(method="loess")
-3.# Example: Seasonal Decomposition
+# Example: Seasonal Decomposition
 library(forecast)
-decomposed = stl(ts(ehf0609$fn, frequency=12), s.window="periodic")
+decomposed = stl(ts(ehf0609$yv, frequency=12), s.window="periodic")
 plot(decomposed)
 
 # ============================================================

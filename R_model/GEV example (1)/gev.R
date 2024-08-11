@@ -20,7 +20,7 @@ pgev=function(x, xi=1, mu=0, sigma=1)
 }
 
 # p = vector or scalar with values in the interval (0,1)
-qgev=function(p, xi=1, mu=0, sigma=1) 
+q_gev=function(p, xi=1, mu=0, sigma=1) 
 { mu+(sigma/xi)*((-log(p))^(-xi)-1) }
 
 # This function assumes tmp>0 below
