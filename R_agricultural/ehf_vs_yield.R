@@ -17,7 +17,7 @@ rank_colors <- c("1" = "red", "2" = "orange", "3" = "yellow", "4" = "green", "5"
 #                  '#D2B48C', '#808000', '#FFFF00', '#40E0D0', '#00BFFF', '#1E90FF', '#8A2BE2', '#FF1493',
 #                  '#A52A2A', '#7FFF00', '#8B008B', '#FF69B4','#A9A9A9', '#696969')
 
-plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, station_name,ranking, top_n = NULL, lowest_n = NULL) {
+plot_ehf_extreme_yield_single <- function(ehf_extreme_yield, start_year, end_year, station_name,ranking, top_n = NULL, lowest_n = NULL) {
   # Create an empty data frame to store all years' data
   all_years_data <- ehf_extreme_yield 
   # Loop through each year and bind the data
@@ -45,7 +45,7 @@ plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, stat
   all_years_data$Rank <- as.factor(all_years_data$Rank)
   
   ggplot(all_years_data, aes(x = DayOfYear)) +
-    geom_line(aes(y = EHF, color = Rank,group = Year), size = 0.5, alpha = 0.7) +
+    geom_line(aes(y = EHF_95, color = Rank,group = Year), size = 0.5, alpha = 0.7) +
     scale_color_manual(values = rank_colors, name = "Rank") +
     labs(
       title = paste("EHF Over the Years with", "at", station_name), #title_rank,

@@ -260,7 +260,7 @@ for (c in bad_quality){
 
 <!--TEXT SHOWS: -->
 
-<b>Part 2: patato data</b>
+<b>Part 2: potato data</b>
 
 </h1>
 
