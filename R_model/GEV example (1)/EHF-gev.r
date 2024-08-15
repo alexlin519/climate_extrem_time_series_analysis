@@ -58,25 +58,6 @@ YV_trend = lm(yv ~ I((year-1941)/10), data=ehf0609)
 summary(YV_trend)
 cat("\n------------------------------------------------------------\n\n")
 
-# What are better methods to assess trend?
-# Create the plot
-ggplot(ehf0609, aes(x = year, y = yv)) +
-  geom_point() +  # Plot the data points
-  geom_smooth(method = "lm", formula = y ~ I((x - 1941) / 10), color = "blue") +  # Add the linear regression line
-  labs(title = "Trend of YV Over Years",
-       x = "Year",
-       y = "YV") +
-  theme_minimal()
-# Example: LOESS smoothing
-library(ggplot2)
-ggplot(ehf0609, aes(x=year, y=yv)) + 
-  geom_point() + 
-  geom_smooth(method="loess")
-# Example: Seasonal Decomposition
-library(forecast)
-decomposed = stl(ts(ehf0609$yv, frequency=12), s.window="periodic")
-plot(decomposed)
-
 # ============================================================
 
 # serial correlation for signed cube root

@@ -201,6 +201,39 @@ save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 ```
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> ECF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
+df_ecf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) <= 4 | month(LOCAL_DATE) >= 8) %>%
+  # LOWEST ECf
+  arrange(ECF_05) %>%
+  slice_head(n = 30)
+
+#unique year
+unique(df_ecf_top_6$LOCAL_YEAR)
+
+
+plot_ecf(df_combined_ehf1,2024)
+plot_ecf(df_combined_ehf1,1985)
+plot_ecf(df_combined_ehf1,1968)
+plot_ecf(df_combined_ehf1,2022)
+# Example usage
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 2024,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 2022,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 1985,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 1968,station_name)
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+
+
 </div>
 <h4 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -252,9 +285,9 @@ plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, stat
     geom_line(aes(y = ECF_05, color = Color, group = interaction(Year, Rank)), size = 0.5, alpha = 0.4) +
     scale_color_manual(values = c("highest yield" = "red", "lowest yield" = "blue"), name = "Yield Type") +
     labs(
-      title = paste("EHF Over the Years with Top and Lowest", las_dig ," Yields at", station_name),
+      title = paste("ECF_05 Over the Years with Top and Lowest", las_dig ," Yields at", station_name),
       x = "Day of Year",
-      y = "EHF"
+      y = "ECF_05"
     ) +
     theme_minimal() +
     theme(plot.margin = margin(20, 20, 20, 20)) +

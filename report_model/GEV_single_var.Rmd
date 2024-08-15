@@ -25,7 +25,6 @@ source("../R_model/GEV example (1)/gev.R")
 source("../R_model/read_data.R") 
 source("../R_model/GEV_model.R") 
 
-
 ```
 
 
@@ -83,8 +82,36 @@ print(plots$tail_behavior_plot)
 <div style="display:none;">  
 
 
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b>Assess trend for EHF </b>
+</h3>
+<div style="display:none;">  
 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# What are better methods to assess trend?
+ehf0609 = read.csv("../R_model/GEV example (1)/ehf0609.csv", header=T)
 
+# Create the plot
+ggplot(ehf0609, aes(x = year, y = yv)) +
+  geom_point() +  # Plot the data points
+  geom_smooth(method = "lm", formula = y ~ I((x - 1941) / 10), color = "blue") +  # Add the linear regression line
+  labs(title = "Trend of YV Over Years",
+       x = "Year",
+       y = "YV") +
+  theme_minimal()
+# Example: LOESS smoothing
+library(ggplot2)
+ggplot(ehf0609, aes(x=year, y=yv)) + 
+  geom_point() + 
+  geom_smooth(method="loess")
+# Example: Seasonal Decomposition
+library(forecast)
+decomposed = stl(ts(ehf0609$yv, frequency=12), s.window="periodic")
+plot(decomposed)
+```
+
+</div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
 <b>maxEHF</b>
