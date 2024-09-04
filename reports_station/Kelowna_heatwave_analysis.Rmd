@@ -188,10 +188,10 @@ df_ehf_top_6 <- df_combined_ehf1 %>%
 unique(df_ehf_top_6$LOCAL_YEAR)
 
 
-plot_ehf(df_combined_ehf1,1941)
-plot_ehf(df_combined_ehf1,2021)
-plot_ehf(df_combined_ehf1,1993)
-plot_ehf(df_combined_ehf1,2006)
+plot_ehf95(df_combined_ehf1,1941)
+plot_ehf95(df_combined_ehf1,2021)
+plot_ehf95(df_combined_ehf1,1993)
+plot_ehf95(df_combined_ehf1,2006)
 # Example usage
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
@@ -341,7 +341,6 @@ library(ggplot2)
 
 ggplot(ehf_extreme_yield, aes(x = LOCAL_DATE, y = EHF, color = Rank_Group)) +
   geom_line() +
-   +
   labs(title = "EHF Over the Years with Rank Indications",
        x = "Day of Year", y = "EHF",
        color = "Rank Group") +

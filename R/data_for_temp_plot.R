@@ -97,6 +97,26 @@ plot_ehf95 <- function(df_combined_ehf1,year) {
           axis.title = element_text(size = 12)) 
 }
 
+#in the future, change all the function to plot_ehf95
+plot_ehf <- function(df_combined_ehf1,year) {
+  # filter the data for the target year
+  df_combined_ehf1_filter_year <- df_combined_ehf1 %>%
+    filter(LOCAL_YEAR == year)
+  # Plot the EHF
+  ggplot(df_combined_ehf1_filter_year, aes(x = LOCAL_DATE, y = EHF_95)) +
+    geom_line() +
+    labs(
+      title = paste("Excessive Heat Factor (EHF) Over for", year),
+      x = "Date",
+      y = "EHF"
+    ) +
+    theme_minimal()+
+    scale_x_date(date_labels = "%b %d", date_breaks = "5 day")+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) 
+}
+
 
 plot_ecf <- function(df_combined_ehf1,year) {
   # filter the data for the target year

@@ -15,53 +15,6 @@ editor_options:
 
 The summary of the R code structure is as follows:
 
-## 
-
-Below is an overview of the folder structure used in the project:
-
--   **climate_extreme_RA** *(Last modified: Aug 9, 2024, 12:25 PM)*
-    -   **final_data_report** *(Last modified: Today at 11:26 AM)*
-        -   `summary_code.Rmd` *(459 KB, Aug 9, 2024, 5:00 PM)*
-        -   `summary_data.Rmd` *(459 KB, Aug 9, 2024, 5:00 PM)*
-        -   `summary.html` *(15.5 MB, Aug 9, 2024, 4:42 PM)*
-        -   **reference** *(Last modified: Aug 9, 2024, 4:28 PM)*
-        -   **images** *(Last modified: Aug 9, 2024, 3:16 PM)*
-    -   **report_model** *(Last modified: Aug 10, 2024, 6:35 PM)*
-        -   `GEV_single_var.html` *(4.1 MB, Aug 10, 2024, 6:35 PM)*
-        -   `GEV_single_var.Rmd` *(24 KB, Aug 10, 2024, 6:35 PM)*
-    -   **report_agricultural** *(Last modified: Aug 10, 2024, 5:46 PM)*
-        -   `agri_lm_model.Rmd` *(11 KB, Aug 10, 2024, 11:22 AM)*
-        -   `agri_lm_model.html` *(25.9 MB, Aug 2, 2024, 8:14 AM)*
-        -   `FAOSTAT.Rmd` *(23 KB, Jul 29, 2024, 4:24 PM)*
-        -   `FAOSTAT.html` *(36.3 MB, Jul 28, 2024, 1:59 PM)*
-    -   **R_model** *(Last modified: Aug 10, 2024, 3:13 PM)*
-    -   **reports_station** *(Last modified: Aug 7, 2024, 2:46 PM)*
-        -   `Kelowna_heatwave_analysis.Rmd` *(22 KB, Yesterday at 8:56
-            PM)*
-        -   `Prince_George_ave_analysis.Rmd` *(17 KB, Aug 7, 2024, 3:37
-            PM)*
-        -   `Abbotsford_heatwave_analysis-copy.Rmd` *(22 KB, Aug 7,
-            2024, 2:56 PM)*
-        -   `FortNelson_heatwave_analysis.Rmd` *(16 KB, Aug 6, 2024,
-            6:26 PM)*
-        -   `YVR_heatwave_analysis.Rmd` *(15 KB, Aug 6, 2024, 6:24 PM)*
-        -   `FortStJohn_heatwave_analysis.Rmd` *(17 KB, Jul 30, 2024,
-            8:55 PM)*
-        -   `FortStJohn_heatwave_analysis.Rmd.html` *(9.7 MB, Jul 23,
-            2024, 6:02 PM)*
-        -   `3_station_compare.Rmd` *(30 KB, Jul 20, 2024, 5:43 PM)*
-        -   `3_station_compare.html` *(27.9 MB, Jul 12, 2024, 10:55 AM)*
-        -   `YVR_heat_wave_analysis.html` *(7.1 MB, Jul 12, 2024, 9:59
-            AM)*
-        -   `Prince_George_ave_analysis.html` *(9.9 MB, Jul 12, 2024,
-            9:52 AM)*
-        -   `FortNelson_heatwave_analysis.html` *(7.9 MB, Jul 12, 2024,
-            9:40 AM)*
-        -   `Kelowna_heatwave_analysis.html` *(8.7 MB, Jul 12, 2024,
-            9:37 AM)*
-
-## Explanation
-
 -   **`climate_extreme_RA`**: This is the root directory for the
     project.
 
@@ -70,82 +23,43 @@ Below is an overview of the folder structure used in the project:
         files are the rendered results.
 
     -   **`final_data_report`**: Contains the final summary reports and
-        associated code/data used to generate the summary. The
-        `summary_code.Rmd` and `summary_data.Rmd` files contain the code
-        and data detailed intro, allowing users to quickly understand
-        the code/ data source and ensure easy reproductivyty. The
-        `.html` file is a accordingly rendered report.
+        associated code/data used to generate the summary.
 
-    -   `output`: This directory contains processed data files and
+        -   The `summary_code.Rmd` and `summary_data.Rmd` files contain
+            the code and data detailed intro, allowing users to quickly
+            understand the code/ data source and ensure easy
+            reproductivyty. The `.html` file is a accordingly rendered
+            report.
+
+        -   The `requirements.txt` file lists all the
+            dependencies—specific the exact versions of each libraries
+            and packages—that this R project needs to function
+            correctly.
+
+    -   **`output`**: This directory contains processed data files and
         results used for analysis. Each CSV file is associated with
-        specific stations.
+        specific stations including raw filtered data, heatwave data for
+        heatmap plots, percentiles, and monthly maxEHF.
 
-        -   **Raw Filtered Data:** Files with names like
-            `Kelowna_raw_filtered_columns.csv`,`YVR_raw_filtered_columns.csv`.they
-            contain the raw climate data from the temperature station
-            that has only been filtered the necessary columns but did
-            not do other data cleaning yet.
+    -   **`report_model`:** Contains GEV model reports for annual
+        maximum EHF and average exceedance values at various stations.
+        The `.Rmd` files contain the code, and the `.html` files are the
+        output reports.
 
-        -   **Percentiles Files:** These files provide statistical
-            summaries of termperature percentile for different
-            locations. For instance, `Kelowna_percentiles.csv` include
-            90th and 95th percentile calculations relevant to the
-            temperature data.
+    -   **`report_agricultural`:** This section is focused on
+        agricultural data analysis and includes two detailed reports:
+        `FAOSTAT.Rmd` and `Agri_lm_model.Rmd`.
 
-        -   **Monthly Max EHF Files:** These files capture the maximum
-            Excess Heat Factor (EHF) per month for each station each
-            year. Examples include `Kelowna_monthly_max_EHF.csv`,
-            `FortNelson_monthly_max_EHF.csv`, and
-            `Abbotsford_monthly_max_EHF.csv`.
+    -   `report_drought`:This section focuses on the analysis of dry
+        periods, including the maximum consecutive dry days
+        (`max_consec`) and average exceedance of the avg temperature
+        days (`avgexc`). Within the report, there are 2 anaysis:
 
-        -   **Heatmap Files:** The data represent Heatwave for different
-            location which is in the format that ready for heat map plot
-            . Files such as `Kelowna_heatmap_5_dayHW.csv`,
-            `EHF_heatmap_3_dayHW.csv` and
-            `FortNelson_heatmap_3_dayHW_95.csv`. They indicate the
-            heatwave duration (3-day or 5-day) and specific percentile
-            threshold (e.g., 95th percentile by \_95 or default 90th
-            percentile). The name also indecates the calculation method
-            / way to define the heatwave, like EHF\_ or default the 95 /
-            90 percentiles definition.
+        -   Correlation Analysis: Scatter plots are generated, with the
+            top 20 data points highlighted for clarity.
 
-    ### Summary
-
-    The data is organized by station names such as Kelowna, YVR,
-    FortNelson, Prince George, Kamloops, and others. This organization
-    facilitates easy reference and analysis of specific datasets,
-    whether you are examining raw data, heatmaps, or percentile
-    calculations.
-
--   
-
-    -   
-
-    -   **`report_model`:** Contains the GEV (Generalized Extreme Value)
-        model reports. The `.Rmd` files contain the code, and the
-        `.html` files are the output reports.
-
-    -   **`report_agricultural`:** Similar to `report_model`, but
-        focused on agricultural data analysis.
-
-    -   reportdrought
-
-    -   report era5
-
-    -   literature review
-
-    -   **`R_model`:** This folder is dedicated to R scripts or models,
-        likely for different analytical processes.
-
-    -   r\_
-
-    -   r\_
-
-    -   r\_
-
-    -   R
-
-    -   data
+        -   Ranking: Analysis includes ranking based on `max_consec` and
+            `avgexc`.
 
 ------------------------------------------------------------------------
 
@@ -164,7 +78,7 @@ province. And `.html` are the rendered outputs of the `.Rmd` files,
 providing a user-friendly, web-based view of the analysis. They
 typically include visualizations, summaries, and findings.
 
-### Detailed Breakdown of the Contents:
+Detailed Breakdown of the Contents:
 
 `3_station_compare.Rmd`: A comparative analysis of heat waves across all
 stations.
@@ -192,7 +106,7 @@ including:
         crop datasets contains yield data for the Peace River Area, with
         Fort St. John chosen to represent that region.
 
-### Summary:
+#### Summary:
 
 The folder `reports_station` organizes heat wave analyses by location,
 with both R Markdown scripts (`.Rmd`) and their corresponding HTML
@@ -201,37 +115,71 @@ studies on the impact of heat waves at various weather stations across
 different regions, comparing and contrasting the findings where
 relevant.
 
-#### 1.1 Description:
+#### 2. Output
 
-We are examining daily climate data from temperature stations across
-Canada, focusing on five key stations that are most representative of
-the entire province of British Columbia. The dataset includes the
-following columns:
+-   **Raw Filtered Data:** Files with names like
+    `Kelowna_raw_filtered_columns.csv`,`YVR_raw_filtered_columns.csv`
+    contain the raw climate data from the temperature stations. These
+    datasets have been filtered to retain only the necessary columns,
+    but no further data cleaning has been performed.
 
-**x**: Longitude
+-   **Percentiles Files:** These files provide statistical summaries of
+    termperature percentile for different locations. For instance,
+    `Kelowna_percentiles.csv` include 90th and 95th percentile
+    calculations relevant to the temperature data.
 
-**y**: Latitude
+-   **Monthly Max EHF Files:** These files capture the maximum Excess
+    Heat Factor (EHF) per month for each station each year. Examples
+    include `Kelowna_monthly_max_EHF.csv`,
+    `FortNelson_monthly_max_EHF.csv`, and
+    `Abbotsford_monthly_max_EHF.csv`.
 
-**LOCAL_DATE**: Date in the format year-month-day
-**TOTAL_PRECIPITATION**: Total precipitation in mm
+-   **Heatmap Files:** The data in these files represents heatwaves for
+    different locations and is formatted for heatmap plotting. Files
+    such as `Kelowna_heatmap_5_dayHW.csv`, `EHF_heatmap_3_dayHW.csv` and
+    `FortNelson_heatmap_3_dayHW_95.csv`. They indicate the heatwave
+    duration (3-day or 5-day) and specific percentile threshold (e.g.,
+    95th percentile indicated by \_95 or the default 90th percentile).
+    The file names also indicate the method used to define the heatwave,
+    such as `EHF_` or the default percentile-based definition.
 
-**STATION_NAME**: Name of the station
+#### Summary
 
-**MEAN_TEMPERATURE**: Mean of daily maximum and minimum temperatures
+The data is organized by station names such as Kelowna, YVR, FortNelson,
+Prince George, Kamloops, and others. This organization facilitates easy
+reference and analysis of specific datasets, whether you are examining
+raw data, heatmaps, or percentile calculations.
 
-**MAX_TEMPERATURE**: Daily maximum temperature
+#### 3. report_agricultural
 
-**MIN_TEMPERATURE**: Daily minimum temperature
+-   **FAOSTAT Report**
 
-**TOTAL_RAIN**: Total rainfall
+    -   Linear regression on different time scale.
 
-**MIN_REL_HUMIDITY**: Minimum relative humidity
+        -   **Linear Regression for Yield vs. EHF 95:** Analysis
+            includes weekly and monthly **FAO** agricultural data for
+            Abbotsford, Kelowna, and FortStJohn for all type of field
+            crops.
+        -   **Linear Regression for Yield vs. Weekly Max Temp:** Focused
+            on Abbotsford.
 
-**LOCAL_YEAR**: Year
+    -   Exploratory Data Analysis (EDA) plots for each crop data set.
 
-**LOCAL_MONTH**: Month
+        -   **Field Crop Data:** Analysis of yield, total production,
+            and total cultivated area.
+            -   **Linear Models (LM) with Crop Data (1990-2024):**
+                Specific focus on FortStJohn monthly data for the Peace
+                River region for the field crops.
+        -   **Fruits Data:** Includes year range analysis, yield
+            (kilograms per hectare), marketed production (tons), total
+            cultivated area (hectares), and filling missing area data
+            with mean values.
+        -   **Vegetable Data:** Includes various quality replacement
+            plots for yield data, ranging from good to bad quality.
 
-*Our goal is to identify stations with data extending back to 1941 in
-order to compare the heatwave of 1941 with that of 2021.*
+-   **Agriculture Linear Regression Model**
 
-<br>
+    -   **Vegetable Data:** Series of plots showing different quality
+        replacements for yield data.
+    -   **Potato Data:** Analysis focusing on the specific potato in
+        terms of monthly and seasonally linear regression.
