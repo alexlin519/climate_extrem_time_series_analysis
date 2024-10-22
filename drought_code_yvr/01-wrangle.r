@@ -48,7 +48,7 @@ process_data <- function(file_path,station_name) {
   imissbyrow <- apply(is.na(df), 1, sum)
   
   # Define the specific path where you want to save the data (replace with your actual path)
-  save_path <- "../drought_code_yvr/data"
+  save_path <- "../output/Rdata"
   # Construct the file name with station name
   file_name <- paste0(station_name, "-temp-precip.RData")
   
@@ -56,8 +56,15 @@ process_data <- function(file_path,station_name) {
   full_file_path <- file.path(save_path, file_name)
   file_name = paste0(station_name, "-temp-precip.RData")
   # Save the data and missing information
-  save(file = full_file_path, df, imissbycol, imissbyrow,
-       missing_mintem, missing_maxtem, missing_meantem, missing_prec)
+  
+  # Assume some_station_name is a function input
+  station_df <- paste0(station_name, "_df")  
+  # Assign df to the dynamically created variable name
+  assign(station_df, df)
+  save(list = c(station_df, "imissbycol", "imissbyrow", 
+                "missing_mintem", "missing_maxtem", 
+                "missing_meantem", "missing_prec"), 
+       file = full_file_path)
   return(full_file_path)
 }
 

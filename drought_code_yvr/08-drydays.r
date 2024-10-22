@@ -1,6 +1,27 @@
+load_Rdf<- function(path) {
+  # Load all objects from the specified .RData file
+  load(path)
+  
+  # Get all objects currently in the environment
+  objs <- ls()
+  
+  # Identify the object that is a dataframe
+  df_name <- objs[sapply(objs, function(x) is.data.frame(get(x)))]
+  
+  # Return the dataframe by name
+  if (length(df_name) == 1) {
+    return(get(df_name))
+  } else {
+    stop("There is either no dataframe or more than one dataframe in the .RData file.")
+  }
+}
+
+
+
+
 impute_temps <- function(file_path_temp_precip) {
   # Load the data
-  load(file_path_temp_precip)
+  df <- load_Rdf(file_path_temp_precip)
   # # Identify the number of consecutive NAs at the beginning of df$maxtemp
   # n_na <- sum(cumprod(is.na(df$maxtemp)))
   # 
@@ -8,7 +29,6 @@ impute_temps <- function(file_path_temp_precip) {
   # if (n_na > 0) {
   #   df <- df[-(1:n_na), ]
   # }
-  
   imax <- which(is.na(df$maxtemp))
   imin <- which(is.na(df$mintemp))
   
@@ -72,8 +92,14 @@ calculate_max_consec <- function(data_imputed,station_name) {
     }
   }
   df_dropna$consec <- consec
+  #create a new column yrmon
   df_dropna$yrmon <- 100*df_dropna$year + df_dropna$month
   
+
+  df_imputed = data.frame(year=df_dropna$year, month=df_dropna$month, yyyymmdd=df_dropna$yyyymmdd,
+                           yrmon = df_dropna$yrmon,
+                           mintemp=df_dropna$mintemp, meantemp=df_dropna$meantemp, maxtemp=df_dropna$maxtemp, totprec=df_dropna$totprec)
+
   byMonth2 <- as_tibble(df_dropna) %>% 
     dplyr::group_by(yrmon) %>%
     dplyr::summarise(max_consec = max(consec))
@@ -86,6 +112,19 @@ calculate_max_consec <- function(data_imputed,station_name) {
   
   # Save the data and missing information
   write.csv(file = full_file_path, byMonth2, row.names = FALSE)
+  
+  
+  
+  # Create a dynamic variable name based on the station name
+  station_df <- paste0(station_name, "_imputed")
+  
+  # Assign df_imputed to the dynamically created variable name
+  assign(station_df, df_imputed)
+  # Define the full file path
+  full_file_path <- paste0("../output/Rdata/",  station_name, "_imputed.RData")
+  save(list = station_df, file = full_file_path)
+  
+  # Return the full file path
   return(full_file_path)
 }
 

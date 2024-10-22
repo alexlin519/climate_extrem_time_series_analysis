@@ -84,6 +84,7 @@ max5d_precip_bymonth_path <- compute_cumulative_precip(temp_precip_path, "YVR")
 ```{r, echo=FALSE,warning=FALSE,message=FALSE}
 imputed_temp_data <- impute_temps(temp_precip_path)
 consec_precip_bymonth_path <- calculate_max_consec(imputed_temp_data, "YVR")
+
 ```
 
 
@@ -125,7 +126,7 @@ plot_avg_temp_change(heatwave_data)
 # Call the function with the path to your CSV file
 temp_precip_path<- process_data("../output/Kelowna_raw_filtered_columns.csv","Kelowna")
 
-percentiles90th_path<- process_base_years(temp_precip_path,"Kelowna")
+#percentiles90th_path<- process_base_years(temp_precip_path,"Kelowna")
 
 imputed_temp_data <- impute_temps(temp_precip_path)
 
@@ -171,7 +172,7 @@ plot_avg_temp_change(heatwave_data)
 
 # Call the function with the path to your CSV file
 temp_precip_path<- process_data("../output/Prince_George_raw_filtered_columns.csv","Prince_George")
-percentiles90th_path<- process_base_years(temp_precip_path,"Prince_George")
+#percentiles90th_path<- process_base_years(temp_precip_path,"Prince_George")
 
 imputed_temp_data <- impute_temps(temp_precip_path)
 
@@ -213,7 +214,7 @@ plot_avg_temp_change(heatwave_data)
 
 # Call the function with the path to your CSV file
 temp_precip_path<- process_data("../output/FortNelson_raw_filtered_columns.csv","FortNelson")
-percentiles90th_path<- process_base_years(temp_precip_path,"FortNelson")
+#percentiles90th_path<- process_base_years(temp_precip_path,"FortNelson")
 
 imputed_temp_data <- impute_temps(temp_precip_path)
 
@@ -257,7 +258,7 @@ plot_avg_temp_change(heatwave_data)
 # Call the function with the path to your CSV file
 temp_precip_path<- process_data("../output/Abbotsford_raw_filtered_columns.csv","Abbotsford")
 
-percentiles90th_path<- process_base_years(temp_precip_path,"Abbotsford")
+#percentiles90th_path<- process_base_years(temp_precip_path,"Abbotsford")
 
 imputed_temp_data <- impute_temps(temp_precip_path)
 
