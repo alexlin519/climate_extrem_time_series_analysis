@@ -41,8 +41,8 @@ top_n_highest_lowest <- function(data, n, col_var){
   
 }
 #eg
-top_n_highest_lowest(data_pot, 5, "VALUE")
-top_n_highest_lowest(data_pot, 10, "Detrended_Yield_LOESS")
+#top_n_highest_lowest(data_pot, 5, "VALUE")
+#top_n_highest_lowest(data_pot, 10, "Detrended_Yield_LOESS")
 
 
 

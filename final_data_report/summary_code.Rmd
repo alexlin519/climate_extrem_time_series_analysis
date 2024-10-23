@@ -1,0 +1,185 @@
+---
+title: "Summary for the R code structure"
+date: "2024-08-01"
+bibliography: reference.bib
+output:
+  html_document:
+    toc: true
+    toc_depth: 4  # This specifies the depth of headers to include in the table of contents
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+## R code and File Structure Overview
+
+The summary of the R code structure is as follows:
+
+-   **`climate_extreme_RA`**: This is the root directory for the
+    project.
+
+    -   **`reports_station`**: Contains specific analyses for various
+        stations. The `.Rmd` files are the scripts, and the `.html`
+        files are the rendered results.
+
+    -   **`final_data_report`**: Contains the final summary reports and
+        associated code/data used to generate the summary.
+
+        -   The `summary_code.Rmd` and `summary_data.Rmd` files contain
+            the code and data detailed intro, allowing users to quickly
+            understand the code/ data source and ensure easy
+            reproductivyty. The `.html` file is a accordingly rendered
+            report.
+
+        -   The `requirements.txt` file lists all the
+            dependencies—specific the exact versions of each libraries
+            and packages—that this R project needs to function
+            correctly.
+
+    -   **`output`**: This directory contains processed data files and
+        results used for analysis. Each CSV file is associated with
+        specific stations including raw filtered data, heatwave data for
+        heatmap plots, percentiles, and monthly maxEHF.
+
+    -   **`report_model`:** Contains GEV model reports for annual
+        maximum EHF and average exceedance values at various stations.
+        The `.Rmd` files contain the code, and the `.html` files are the
+        output reports.
+
+    -   **`report_agricultural`:** This section is focused on
+        agricultural data analysis and includes two detailed reports:
+        `FAOSTAT.Rmd` and `Agri_lm_model.Rmd`.
+
+    -   `report_drought`:This section focuses on the analysis of dry
+        periods, including the maximum consecutive dry days
+        (`max_consec`) and average exceedance of the avg temperature
+        days (`avgexc`). Within the report, there are 2 anaysis:
+
+        -   Correlation Analysis: Scatter plots are generated, with the
+            top 20 data points highlighted for clarity.
+
+        -   Ranking: Analysis includes ranking based on `max_consec` and
+            `avgexc`.
+
+------------------------------------------------------------------------
+
+This structure helps in maintaining a clear organization of various
+reports and their respective code, making it easy to navigate and
+understand the different analyses performed.
+
+<br>
+
+#### ![]()**1. Station report**
+
+The folder named `reports_station` contains a collection of R Markdown
+(`.Rmd`) files and their corresponding HTML output files. These files
+aim to the analysis of heat waves at specific weather stations across BC
+province. And `.html` are the rendered outputs of the `.Rmd` files,
+providing a user-friendly, web-based view of the analysis. They
+typically include visualizations, summaries, and findings.
+
+Detailed Breakdown of the Contents:
+
+`3_station_compare.Rmd`: A comparative analysis of heat waves across all
+stations.
+
+The rest is analysis of heat waves in specific temperature station
+including:
+
+-   `Kelowna_heatwave_analysis.Rmd`
+
+    -   In the Kelowna analysis, we examined the relationship between
+        potato yield data and the Excess Heat Factor (EHF) for the
+        Kelowna station.
+
+-   `YVR_heat_wave_analysis.Rmd`
+
+-   `Prince_George_heat_wave_analysis.Rmd`
+
+-   `Abbotsford_heatwave_analysis.Rmd`
+
+-   `FortNelson_heatwave_analysis.Rmd`
+
+-   `FortStJohn_heatwave_analysis.Rmd`
+
+    -   Fort St. John was included in the analysis because one of the
+        crop datasets contains yield data for the Peace River Area, with
+        Fort St. John chosen to represent that region.
+
+#### Summary:
+
+The folder `reports_station` organizes heat wave analyses by location,
+with both R Markdown scripts (`.Rmd`) and their corresponding HTML
+outputs. This structure suggests that you are conducting detailed
+studies on the impact of heat waves at various weather stations across
+different regions, comparing and contrasting the findings where
+relevant.
+
+#### 2. Output
+
+-   **Raw Filtered Data:** Files with names like
+    `Kelowna_raw_filtered_columns.csv`,`YVR_raw_filtered_columns.csv`
+    contain the raw climate data from the temperature stations. These
+    datasets have been filtered to retain only the necessary columns,
+    but no further data cleaning has been performed.
+
+-   **Percentiles Files:** These files provide statistical summaries of
+    termperature percentile for different locations. For instance,
+    `Kelowna_percentiles.csv` include 90th and 95th percentile
+    calculations relevant to the temperature data.
+
+-   **Monthly Max EHF Files:** These files capture the maximum Excess
+    Heat Factor (EHF) per month for each station each year. Examples
+    include `Kelowna_monthly_max_EHF.csv`,
+    `FortNelson_monthly_max_EHF.csv`, and
+    `Abbotsford_monthly_max_EHF.csv`.
+
+-   **Heatmap Files:** The data in these files represents heatwaves for
+    different locations and is formatted for heatmap plotting. Files
+    such as `Kelowna_heatmap_5_dayHW.csv`, `EHF_heatmap_3_dayHW.csv` and
+    `FortNelson_heatmap_3_dayHW_95.csv`. They indicate the heatwave
+    duration (3-day or 5-day) and specific percentile threshold (e.g.,
+    95th percentile indicated by \_95 or the default 90th percentile).
+    The file names also indicate the method used to define the heatwave,
+    such as `EHF_` or the default percentile-based definition.
+
+#### Summary
+
+The data is organized by station names such as Kelowna, YVR, FortNelson,
+Prince George, Kamloops, and others. This organization facilitates easy
+reference and analysis of specific datasets, whether you are examining
+raw data, heatmaps, or percentile calculations.
+
+#### 3. report_agricultural
+
+-   **FAOSTAT Report**
+
+    -   Linear regression on different time scale.
+
+        -   **Linear Regression for Yield vs. EHF 95:** Analysis
+            includes weekly and monthly **FAO** agricultural data for
+            Abbotsford, Kelowna, and FortStJohn for all type of field
+            crops.
+        -   **Linear Regression for Yield vs. Weekly Max Temp:** Focused
+            on Abbotsford.
+
+    -   Exploratory Data Analysis (EDA) plots for each crop data set.
+
+        -   **Field Crop Data:** Analysis of yield, total production,
+            and total cultivated area.
+            -   **Linear Models (LM) with Crop Data (1990-2024):**
+                Specific focus on FortStJohn monthly data for the Peace
+                River region for the field crops.
+        -   **Fruits Data:** Includes year range analysis, yield
+            (kilograms per hectare), marketed production (tons), total
+            cultivated area (hectares), and filling missing area data
+            with mean values.
+        -   **Vegetable Data:** Includes various quality replacement
+            plots for yield data, ranging from good to bad quality.
+
+-   **Agriculture Linear Regression Model**
+
+    -   **Vegetable Data:** Series of plots showing different quality
+        replacements for yield data.
+    -   **Potato Data:** Analysis focusing on the specific potato in
+        terms of monthly and seasonally linear regression.

@@ -78,17 +78,57 @@ plot_percentiles_vs_year <- function(df_plot_year,year) {
     theme(aspect.ratio = 1/2)
 }
 
-plot_ehf <- function(df_combined_ehf1,year) {
+plot_ehf95 <- function(df_combined_ehf1,year) {
   # filter the data for the target year
   df_combined_ehf1_filter_year <- df_combined_ehf1 %>%
     filter(LOCAL_YEAR == year)
   # Plot the EHF
-  ggplot(df_combined_ehf1_filter_year, aes(x = LOCAL_DATE, y = EHF)) +
+  ggplot(df_combined_ehf1_filter_year, aes(x = LOCAL_DATE, y = EHF_95)) +
     geom_line() +
     labs(
       title = paste("Excessive Heat Factor (EHF) Over for", year),
       x = "Date",
       y = "EHF"
+    ) +
+    theme_minimal()+
+    scale_x_date(date_labels = "%b %d", date_breaks = "5 day")+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) 
+}
+
+#in the future, change all the function to plot_ehf95
+plot_ehf <- function(df_combined_ehf1,year) {
+  # filter the data for the target year
+  df_combined_ehf1_filter_year <- df_combined_ehf1 %>%
+    filter(LOCAL_YEAR == year)
+  # Plot the EHF
+  ggplot(df_combined_ehf1_filter_year, aes(x = LOCAL_DATE, y = EHF_95)) +
+    geom_line() +
+    labs(
+      title = paste("Excessive Heat Factor (EHF) Over for", year),
+      x = "Date",
+      y = "EHF"
+    ) +
+    theme_minimal()+
+    scale_x_date(date_labels = "%b %d", date_breaks = "5 day")+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) 
+}
+
+
+plot_ecf <- function(df_combined_ehf1,year) {
+  # filter the data for the target year
+  df_combined_ehf1_filter_year <- df_combined_ehf1 %>%
+    filter(LOCAL_YEAR == year)
+  # Plot the ECF
+  ggplot(df_combined_ehf1_filter_year, aes(x = LOCAL_DATE, y = ECF_05)) +
+    geom_line() +
+    labs(
+      title = paste("Excessive Cold Factor (ECF) Over for", year),
+      x = "Date",
+      y = "ECF"
     ) +
     theme_minimal()+
     scale_x_date(date_labels = "%b %d", date_breaks = "5 day")+
@@ -117,7 +157,7 @@ plot_ehf_all <- function(df_combined_ehf1, start_year, end_year, specific_year,s
   # Plot all years in grey and the specific year in red
   ggplot(all_years_data, aes(x = DayOfYear)) +
     geom_line(data = filter(all_years_data, Year != specific_year), 
-              aes(y = EHF, group = Year), 
+              aes(y = EHF_95, group = Year), 
               color = "grey", alpha = 0.5) +
     geom_line(data = filter(all_years_data, Year == specific_year), 
               aes(y = EHF), 
@@ -140,3 +180,40 @@ plot_ehf_all <- function(df_combined_ehf1, start_year, end_year, specific_year,s
 }
 
 
+plot_ecf_all <- function(df_combined_ehf1, start_year, end_year, specific_year,station_name) {
+  # Create an empty data frame to store all years' data
+  all_years_data <- data.frame()
+  
+  # Loop through each year and bind the data
+  for (year in start_year:end_year) {
+    df_plot_year <- df_combined_ehf1 %>%
+      filter(LOCAL_YEAR == year) %>%
+      mutate(DayOfYear = as.integer(format(LOCAL_DATE, "%j")),
+             Year = year)
+    all_years_data <- bind_rows(all_years_data, df_plot_year)
+  }
+  
+  # Plot all years in grey and the specific year in red
+  ggplot(all_years_data, aes(x = DayOfYear)) +
+    geom_line(data = filter(all_years_data, Year != specific_year), 
+              aes(y = ECF_05, group = Year), 
+              color = "grey", alpha = 0.5) +
+    geom_line(data = filter(all_years_data, Year == specific_year), 
+              aes(y = ECF_05), 
+              color = "red") +
+    labs(
+      title = paste("ECF_05 Over the Years with Highlight on", specific_year,"at",station_name),
+      x = "Day of Year",
+      y = "ECF_05"
+    ) +
+    theme_minimal(base_size = 11) +
+    theme(plot.margin = margin(20, 20, 20, 20)) +
+    theme(aspect.ratio = 1/2) +
+    scale_x_continuous(
+      breaks = seq(1, 365, by = 5),
+      labels = function(x) format(day_of_year_to_date(x), "%b %d")
+    )+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 6),
+          plot.title = element_text(size = 14, face = "bold"),
+          axis.title = element_text(size = 12)) 
+}

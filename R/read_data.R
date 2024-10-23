@@ -27,10 +27,15 @@ process_and_save_data <- function(file_paths, station_name) {
   #   filter_all(all_vars(is.finite(.)))
   
   summary_original <- summary(df)
-  
   # deal with the non-exist date, call helper function
-  #result <- deal_with_non_exist_date(df)
-  result <- NA
+  print("Deal with non-exist date")
+  
+  #make sure min(df$LOCAL_DATE) or max(df$LOCAL_DATE) is not NA
+  #filter out the NA
+  df_part_date <- df %>%
+    filter(!is.na(LOCAL_DATE))
+  result <- deal_with_non_exist_date(df_part_date)
+  print("Deal with non-exist date done")
   #df_complete_final, df_missing, missing_summary
   
   # Define the save path
@@ -38,7 +43,8 @@ process_and_save_data <- function(file_paths, station_name) {
   
   # Save the selected columns as a CSV file
   # Save the selected columns as a CSV file if the result is not NA
-  if (!is.na(result)) {
+  
+  if (!is.null(result)) {
     write.csv(result[[1]], file = save_path, row.names = FALSE)
     print(paste("Data ", station_name, " saved to:", save_path))
     return(list(result[[1]], summary_original, result[[2]], result[[3]]))
@@ -52,21 +58,24 @@ process_and_save_data <- function(file_paths, station_name) {
 }
 
 
-deal_with_non_exist_date <- function(df){
+deal_with_non_exist_date <- function(df_date){
+  
   # Ensure the date column is in Date format
-  df$LOCAL_DATE <- as.Date(df$LOCAL_DATE, format="%Y-%m-%d")
+  df_date$LOCAL_DATE <- as.Date(df_date$LOCAL_DATE, format="%Y-%m-%d")
+  # Remove NA values if any
+  df_date <- df_date[!is.na(df_date$LOCAL_DATE), ]
   # Create a complete sequence of dates
-  complete_dates <- data.frame(LOCAL_DATE = seq(min(df$LOCAL_DATE), max(df$LOCAL_DATE), by="day"))
+  complete_dates <- data.frame(LOCAL_DATE = seq(min(df_date$LOCAL_DATE), max(df_date$LOCAL_DATE), by="day"))
 
   # Check if the dataframe is already complete
-  if (nrow(df) == nrow(complete_dates)) {
+  if (nrow(df_date) == nrow(complete_dates)) {
     # If complete, return NA and print a message
     print("The dataframe is already complete. No missing dates.")
     return(NA)
   }
   # Merge the complete dates with the original dataset
   df_complete <- complete_dates %>%
-    left_join(df, by = "LOCAL_DATE")
+    left_join(df_date, by = "LOCAL_DATE")
   
   # Identify and fill in missing values with NA
   df_complete <- df_complete %>%
@@ -76,30 +85,41 @@ deal_with_non_exist_date <- function(df){
            MIN_TEMPERATURE = ifelse(is.na(MIN_TEMPERATURE), NA, MIN_TEMPERATURE))
   
   # Impute temperature by averaging the values from the surrounding dates
-  df_complete <- df_complete %>%
-    mutate(MAX_TEMPERATURE = ifelse(is.na(MAX_TEMPERATURE),
-                                    (lag(MAX_TEMPERATURE, 1) + lead(MAX_TEMPERATURE, 1)) / 2,
-                                    MAX_TEMPERATURE),
-           MIN_TEMPERATURE = ifelse(is.na(MIN_TEMPERATURE),
-                                    (lag(MIN_TEMPERATURE, 1) + lead(MIN_TEMPERATURE, 1)) / 2,
-                                    MIN_TEMPERATURE))
+  # df_date_complete <- df_date_complete %>%
+  #   mutate(MAX_TEMPERATURE = ifelse(is.na(MAX_TEMPERATURE),
+  #                                   (lag(MAX_TEMPERATURE, 1) + lead(MAX_TEMPERATURE, 1)) / 2,
+  #                                   MAX_TEMPERATURE),
+  #          MIN_TEMPERATURE = ifelse(is.na(MIN_TEMPERATURE),
+  #                                   (lag(MIN_TEMPERATURE, 1) + lead(MIN_TEMPERATURE, 1)) / 2,
+  #                                   MIN_TEMPERATURE))
   
   # Show the completed dataframe
-  print(df_complete)
+  #print(df_date_complete)
+  
   
   # Summarize the added missing rows
-  missing_summary <- df_complete %>%
-    filter(STATION_NAME == "missing") %>%
-    summarise(
-      count_missing = n(),
-      first_missing_date = min(LOCAL_DATE),
-      last_missing_date = max(LOCAL_DATE)
-    )
+
   df_missing <- df_complete %>%
     filter(STATION_NAME == "missing")
-
+  #sum up the count by year using LOCAL_DATE
+  missing_summary <- df_missing %>%
+    mutate(LOCAL_YEAR = year(LOCAL_DATE)) %>%
+    group_by(LOCAL_YEAR) %>%
+    summarise(count = n())
+  
+  
+  
   df_complete_final <- df_complete %>%
     mutate(STATION_NAME = station_name)
+  
+  
+  # Calculate the number of missing dates in the original dataframe
+  missing_dates_count <- nrow(df_complete_final) - nrow(df)
+  print("Number of missing dates in the original dataframe:")
+  print(missing_dates_count)
+  print(nrow(df_missing))
+  
+  
   # Return all 2 df and summary
   return(list(df_complete_final, df_missing, missing_summary))
 }

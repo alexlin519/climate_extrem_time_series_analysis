@@ -15,17 +15,17 @@ read_and_select <- function(file_path) {
 }
 # Read and combine all datasets
 data_fao <- map_dfr(file_paths, read_and_select)
-head(data_fao)
-unique(data_fao$Item)
+#head(data_fao)
+#unique(data_fao$Item)
 # Check the structure of the dataset
-str(data_fao)
+#str(data_fao)
 
 # Get a summary of the dataset
-summary(data_fao)
+#summary(data_fao)
 
 
 # Check for missing values
-sum(is.na(data_fao))
+#sum(is.na(data_fao))
 
 # Remove rows with missing values (if necessary)
 data_fao <- na.omit(data_fao)
@@ -151,7 +151,7 @@ data_statcan_fruit$REF_DATE <- as.integer(data_statcan_fruit$REF_DATE)
 data_statcan_fruit$VALUE <- as.numeric(data_statcan_fruit$VALUE)
 
 #check num of missing
-sum(is.na(data_statcan_fruit))
+#sum(is.na(data_statcan_fruit))
 
 
 

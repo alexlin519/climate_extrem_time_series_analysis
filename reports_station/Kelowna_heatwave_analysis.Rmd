@@ -45,8 +45,9 @@ source("../R/hw_plot_all_year_temp.R") ## all year in grey, baseline blue
 source("../R/hw_plot_overview.R") 
 source("../R/heatmap_real.R") 
 
-#source("../R_agricultural/read_data.R")  ## read data
-#source("../R_agricultural/ranking_yield.R") 
+source("../R_agricultural/read_data.R")  ## read data
+source("../R_agricultural/model_potato.R")
+source("../R_agricultural/ranking_yield.R") 
 source("../R_agricultural/ehf_vs_yield.R")
 start_year <- 1899
 end_year <- 2024
@@ -55,6 +56,16 @@ step <- 40
 
 
 ```
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+#for non-exist date in the df
+#df_missing
+df_date_noexist <- results[[3]]
+summary(df_date_noexist)
+#missing_year_count
+results[[4]]
+```
+
 
 ```{r, echo=FALSE}
 dfff <- df
@@ -177,10 +188,10 @@ df_ehf_top_6 <- df_combined_ehf1 %>%
 unique(df_ehf_top_6$LOCAL_YEAR)
 
 
-plot_ehf(df_combined_ehf1,1941)
-plot_ehf(df_combined_ehf1,2021)
-plot_ehf(df_combined_ehf1,1993)
-plot_ehf(df_combined_ehf1,2006)
+plot_ehf95(df_combined_ehf1,1941)
+plot_ehf95(df_combined_ehf1,2021)
+plot_ehf95(df_combined_ehf1,1993)
+plot_ehf95(df_combined_ehf1,2006)
 # Example usage
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 1941,station_name)
 plot_ehf_all(df_combined_ehf1, start_year, end_year, 2021,station_name)
@@ -189,6 +200,39 @@ plot_ehf_all(df_combined_ehf1, start_year, end_year, 2006,station_name)
 save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
 write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 ```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> ECF plot</b>
+</h3>
+<div style="display:none;">  
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+# filter the date to be April to Aug before slice
+df_ecf_top_6 <- df_combined_ehf1 %>%
+   filter(month(LOCAL_DATE) <= 4 | month(LOCAL_DATE) >= 8) %>%
+  # LOWEST ECf
+  arrange(ECF_05) %>%
+  slice_head(n = 30)
+
+#unique year
+unique(df_ecf_top_6$LOCAL_YEAR)
+
+
+plot_ecf(df_combined_ehf1,2024)
+plot_ecf(df_combined_ehf1,1985)
+plot_ecf(df_combined_ehf1,1968)
+plot_ecf(df_combined_ehf1,2022)
+# Example usage
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 2024,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 2022,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 1985,station_name)
+plot_ecf_all(df_combined_ehf1, start_year, end_year, 1968,station_name)
+save_path <- paste0("../output/",station_name,"_monthly_max_EHF.csv")
+write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
+```
+
 
 </div>
 <h4 onclick="toggleCollapsible(this);">
@@ -200,9 +244,9 @@ write.csv(monthly_max_EHF, file = save_path, row.names = FALSE)
 ```{r, echo=FALSE,message=FALSE, warning=FALSE,fig.width=10}
 ehf_extreme_yield <- preprocess_ehf_data(df_combined_ehf1,top_yields)
 
-plot_ehf_extreme_yield(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  top_n = 2)
+plot_ehf_extreme_yield_single(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  top_n = 2)
 
-plot_ehf_extreme_yield(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  lowest_n = 2)
+plot_ehf_extreme_yield_single(ehf_extreme_yield,start_year, end_year, "Kelowna",  (1:6),  lowest_n = 2)
 
 
 plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, station_name, ranking, top_n = NULL, lowest_n = NULL) {
@@ -238,12 +282,12 @@ plot_ehf_extreme_yield <- function(ehf_extreme_yield, start_year, end_year, stat
   
   las_dig <-  ranking[length(ranking)]
   ggplot(all_years_data, aes(x = DayOfYear)) +
-    geom_line(aes(y = EHF, color = Color, group = interaction(Year, Rank)), size = 0.5, alpha = 0.4) +
+    geom_line(aes(y = ECF_05, color = Color, group = interaction(Year, Rank)), size = 0.5, alpha = 0.4) +
     scale_color_manual(values = c("highest yield" = "red", "lowest yield" = "blue"), name = "Yield Type") +
     labs(
-      title = paste("EHF Over the Years with Top and Lowest", las_dig ," Yields at", station_name),
+      title = paste("ECF_05 Over the Years with Top and Lowest", las_dig ," Yields at", station_name),
       x = "Day of Year",
-      y = "EHF"
+      y = "ECF_05"
     ) +
     theme_minimal() +
     theme(plot.margin = margin(20, 20, 20, 20)) +
@@ -281,7 +325,7 @@ for (y in top_yields_10$REF_DATE) {
 ```
 
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
-ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, 1941,station_name,
+ehf_1y_add_text_annotation(ehf_potato, start_year, end_year, 2021,station_name,
                            data_pot, top_yields)
 
 ```
@@ -297,7 +341,6 @@ library(ggplot2)
 
 ggplot(ehf_extreme_yield, aes(x = LOCAL_DATE, y = EHF, color = Rank_Group)) +
   geom_line() +
-   +
   labs(title = "EHF Over the Years with Rank Indications",
        x = "Day of Year", y = "EHF",
        color = "Rank Group") +

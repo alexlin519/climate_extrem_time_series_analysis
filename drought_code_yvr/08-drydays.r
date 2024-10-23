@@ -1,6 +1,37 @@
+load_Rdf<- function(path) {
+  # Load all objects from the specified .RData file
+  load(path)
+  
+  # Get all objects currently in the environment
+  objs <- ls()
+  
+  # Identify the object that is a dataframe
+  df_name <- objs[sapply(objs, function(x) is.data.frame(get(x)))]
+  
+  # Return the dataframe by name
+  if (length(df_name) == 1) {
+    return(get(df_name))
+  } else {
+    stop("There is either no dataframe or more than one dataframe in the .RData file.")
+  }
+}
+
 impute_temps <- function(file_path_temp_precip) {
   # Load the data
+  #df <- load_Rdf(file_path_temp_precip)
   load(file_path_temp_precip)
+  
+  # Get all objects currently in the environment
+  objs <- ls()
+  
+  # Identify the object that is a dataframe
+  dff <- objs[sapply(objs, function(x) is.data.frame(get(x)))]
+  # Return the dataframe by name
+  if (length(dff) == 1) {
+    df <- get(dff)
+  } else {
+    stop("There is either no dataframe or more than one dataframe in the .RData file.")
+  }
   # # Identify the number of consecutive NAs at the beginning of df$maxtemp
   # n_na <- sum(cumprod(is.na(df$maxtemp)))
   # 
@@ -8,10 +39,9 @@ impute_temps <- function(file_path_temp_precip) {
   # if (n_na > 0) {
   #   df <- df[-(1:n_na), ]
   # }
-  
   imax <- which(is.na(df$maxtemp))
   imin <- which(is.na(df$mintemp))
-  
+  imean <- which(is.na(df$meantemp))
   for(i in imax) {
     i1 <- i-1
     while(is.na(df$maxtemp[i1])) { i1 <- i1-1 }
@@ -21,7 +51,6 @@ impute_temps <- function(file_path_temp_precip) {
     max2 <- df$maxtemp[i2]
     df$maxtemp[i] <- (max1 + max2) / 2
   }
-  
   for(i in imin) {
     i1 <- i-1
     while(is.na(df$mintemp[i1])) { i1 <- i1-1 }
@@ -31,6 +60,34 @@ impute_temps <- function(file_path_temp_precip) {
     min2 <- df$mintemp[i2]
     df$mintemp[i] <- (min1 + min2) / 2
   }
+  
+  # meantemp
+  # meantemp = df$meantemp
+  # for(i in imean)
+  # { cat(i,mintmp[i],mintemp[i],maxtmp[i],maxtemp[i],df$meantemp[i],"\n")
+  #   meantemp[i] = (mintemp[i]+maxtemp[i])/2
+  #   cat(meantemp[i],"\n")
+  # }
+  
+  for (i in imean) {
+    if (!is.na(df$mintemp[i]) && !is.na(df$maxtemp[i])) {
+      # Impute mean temperature using min and max temperatures
+      df$meantemp[i] <- (df$mintemp[i] + df$maxtemp[i]) / 2
+    } else {
+      # If mintemp or maxtemp is missing, print a warning
+      cat("Warning: Cannot impute mean temp for index", i, 
+          "due to missing min or max temperature\n")
+    }
+  }
+  
+  # totprec
+  # ignore  missing precipation in first 59 days (2 months)
+  # these will not be used for later analysis
+  iomit = 1:59
+
+  df$totprec[is.na(df$totprec)] = 0
+  df$totprec[iomit] = NA
+  
   data_imputed <- df
   return(data_imputed)
 }
@@ -72,8 +129,14 @@ calculate_max_consec <- function(data_imputed,station_name) {
     }
   }
   df_dropna$consec <- consec
+  #create a new column yrmon
   df_dropna$yrmon <- 100*df_dropna$year + df_dropna$month
   
+
+  df_imputed = data.frame(year=df_dropna$year, month=df_dropna$month, yyyymmdd=df_dropna$yyyymmdd,
+                           yrmon = df_dropna$yrmon,
+                           mintemp=df_dropna$mintemp, meantemp=df_dropna$meantemp, maxtemp=df_dropna$maxtemp, totprec=df_dropna$totprec)
+
   byMonth2 <- as_tibble(df_dropna) %>% 
     dplyr::group_by(yrmon) %>%
     dplyr::summarise(max_consec = max(consec))
@@ -86,6 +149,19 @@ calculate_max_consec <- function(data_imputed,station_name) {
   
   # Save the data and missing information
   write.csv(file = full_file_path, byMonth2, row.names = FALSE)
+  
+  
+  
+  # Create a dynamic variable name based on the station name
+  station_df <- paste0(station_name, "_imputed")
+  
+  # Assign df_imputed to the dynamically created variable name
+  assign(station_df, df_imputed)
+  # Define the full file path
+  full_file_path <- paste0("../output/Rdata/",  station_name, "_imputed.RData")
+  save(list = station_df, file = full_file_path)
+  
+  # Return the full file path
   return(full_file_path)
 }
 
