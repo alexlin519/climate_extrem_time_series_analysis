@@ -16,9 +16,6 @@ load_Rdf<- function(path) {
   }
 }
 
-
-
-
 impute_temps <- function(file_path_temp_precip) {
   # Load the data
   df <- load_Rdf(file_path_temp_precip)
@@ -51,6 +48,8 @@ impute_temps <- function(file_path_temp_precip) {
     min2 <- df$mintemp[i2]
     df$mintemp[i] <- (min1 + min2) / 2
   }
+  
+  df$meantemp <- (df$mintemp + df$maxtemp) / 2
   data_imputed <- df
   return(data_imputed)
 }
