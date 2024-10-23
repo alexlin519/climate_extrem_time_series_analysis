@@ -60,34 +60,38 @@ save_station_results <- function(station_name, monthly_spei_data, bal_ts) {
 calculate_spei_all <- function(station_data, station_name, lat,start_year, end_year, end_month) {
   # Step 2: Calculate monthly aggregates and PET/BAL
   station_monthly <- calculate_monthly_aggregates(station_data, lat, end_month)
-  print("station_monthly done")
   # Step 3: Calculate SPEI
   station_spei_df <- calculate_spei(station_monthly, start_year, end_year)
-  print("station_spei_df done")
   # Step 4: Save results
   save_path <- save_station_results(station_name, station_monthly, station_spei_df)
-  print("save_path done")
-  return(save_path) #save_path
+  results <- list(station_monthly, station_spei_df)
+  return(results) #save_path
 }
 
 
 # Example usage
 #for yvr
 imputed_df <- load_dataframe("../output/Rdata/YVR_imputed.RData")
-save_path <- calculate_spei_all(imputed_df, "YVR", 49.195, 1937,2023, 202301)
-
+results <- calculate_spei_all(imputed_df, "YVR", 49.195, 1937,2023, 202301)
+spei_monthly <- results[[1]]
+spei_ts <- results[[2]]
 #for abbotsford
 imputed_df <- load_dataframe("../output/Rdata/Abbotsford_imputed.RData")
-save_path <- calculate_spei_all(imputed_df, "Abbotsford", 49.05, 1937,2023, 202301)
-
+results <- calculate_spei_all(imputed_df, "Abbotsford", 49.31, 1937,2023, 202301)
+spei_monthly <- results[[1]]
+spei_ts <- results[[2]]
 # for Fornelson
 imputed_df <- load_dataframe("../output/Rdata/FortNelson_imputed.RData")
-save_path <- calculate_spei_all(imputed_df, "FortNelson", 58.8, 1937,2023, 202301)
-
+results <- calculate_spei_all(imputed_df, "FortNelson",58.617, 1937,2023, 202301)
+spei_monthly <- results[[1]]
+spei_ts <- results[[2]]
 #for prince george
-imputed_df <- load_dataframe("../output/Rdata/PrinceGeorge_imputed.RData")
-save_path <- calculate_spei_all(imputed_df, "PrinceGeorge", 53.9, 1937,2023, 202301)
-
+imputed_df <- load_dataframe("../output/Rdata/Prince_George_imputed.RData")
+results <- calculate_spei_all(imputed_df, "Prince_George", 54.115, 1937,2023, 202301)
+spei_monthly <- results[[1]]
+spei_ts <- results[[2]]
 #for kelowna
 imputed_df <- load_dataframe("../output/Rdata/Kelowna_imputed.RData")
-save_path <- calculate_spei_all(imputed_df, "Kelowna", 49.9, 1937,2023, 202301)
+results <- calculate_spei_all(imputed_df, "Kelowna", 50.05, 1937,2023, 202301)
+spei_monthly <- results[[1]]
+spei_ts <- results[[2]]
