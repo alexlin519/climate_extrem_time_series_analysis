@@ -50,20 +50,23 @@ calculate_spei <- function(monthly_data, start_year, end_year) {
   station_spei_df$date <- as.Date(paste0(floor(time(station_spei$fitted)), "-", 
                                          sprintf("%02d", 
                                                  1 + round((time(station_spei$fitted) - floor(time(station_spei$fitted))) * 12)), "-01"))
-  return(station_spei_df)
+  results <- list(station_spei_df, station_spei)
+  return(results)
 }
-save_station_results <- function(station_name, monthly_spei_data, bal_ts) {
+save_station_results <- function(station_name, monthly_spei_data, bal_ts,spei_model_result) {
   full_file_path <- paste0("../output/Rdata/",  station_name, "_spei.RData")
-  save(file = full_file_path, monthly_spei_data, bal_ts)
+  save(file = full_file_path, monthly_spei_data, bal_ts,spei_model_result)
   return(full_file_path)
 }
 calculate_spei_all <- function(station_data, station_name, lat,start_year, end_year, end_month) {
   # Step 2: Calculate monthly aggregates and PET/BAL
   station_monthly <- calculate_monthly_aggregates(station_data, lat, end_month)
   # Step 3: Calculate SPEI
-  station_spei_df <- calculate_spei(station_monthly, start_year, end_year)
+  results <- calculate_spei(station_monthly, start_year, end_year)
+  station_spei_df <- results[[1]]
+  spei_model_result <- results[[2]]
   # Step 4: Save results
-  save_path <- save_station_results(station_name, station_monthly, station_spei_df)
+  save_path <- save_station_results(station_name, station_monthly, station_spei_df,spei_model_result)
   results <- list(station_monthly, station_spei_df)
   return(results) #save_path
 }
@@ -95,3 +98,4 @@ imputed_df <- load_dataframe("../output/Rdata/Kelowna_imputed.RData")
 results <- calculate_spei_all(imputed_df, "Kelowna", 50.05, 1937,2023, 202301)
 spei_monthly <- results[[1]]
 spei_ts <- results[[2]]
+
