@@ -24,7 +24,8 @@ file_paths <- c( "../data/Abbotsford/Daily climate data.csv",
                  "../data/Abbotsford/Daily_Climate_Data_0.csv",
                 "../data/Abbotsford/Daily climate data (1).csv",
                 "../data/Abbotsford/Daily climate data (2).csv",
-                "../data/Abbotsford/Daily climate data (3).csv")
+                #"../data/Abbotsford/Daily climate data (3).csv")
+                "../data/Abbotsford/abb Climate Daily Data (1).csv")
 
 station_name <- "Abbotsford"
 source("../R/read_data.R")  ## read data
