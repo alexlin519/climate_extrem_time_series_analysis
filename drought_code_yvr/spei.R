@@ -55,7 +55,7 @@ calculate_spei <- function(monthly_data, start_year, end_year) {
 }
 save_station_results <- function(station_name, monthly_spei_data, bal_ts,spei_model_result) {
   full_file_path <- paste0("../output/Rdata/",  station_name, "_spei.RData")
-  save(file = full_file_path, monthly_spei_data, bal_ts,spei_model_result)
+  save(file = full_file_path, monthly_spei_data, spei_fitted,spei_model_result)
   return(full_file_path)
 }
 calculate_spei_all <- function(station_data, station_name, lat,start_year, end_year, end_month) {

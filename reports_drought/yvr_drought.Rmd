@@ -84,7 +84,7 @@ max5d_precip_bymonth_path <- compute_cumulative_precip(temp_precip_path, "YVR")
 ```{r, echo=FALSE,warning=FALSE,message=FALSE}
 imputed_temp_data <- impute_temps(temp_precip_path)
 consec_precip_bymonth_path <- calculate_max_consec(imputed_temp_data, "YVR")
-
+ 
 ```
 
 

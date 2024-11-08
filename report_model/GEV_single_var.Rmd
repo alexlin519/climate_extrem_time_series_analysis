@@ -48,7 +48,7 @@ source("../R_model/GEV_model.R")
 </h3>
 <div style="display:none;">  
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-# Example usage
+
 plots <- gev_analysis_plots(ehf_ymax_wide, "fn","Annual MAX EHF")
 print(plots$qq_plot)
 print(plots$return_level_plot)
@@ -71,6 +71,65 @@ print(plots$tail_behavior_plot)
 
 ```
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+load("../output/Rdata/FortNelson_imputed.RData")
+#aggregate monthly precipitation
+fn_imputed_month_prec <- FortNelson_imputed %>% select(year,month, totprec) %>% group_by(year,month) %>% summarise(totprec = sum(totprec,na.rm = TRUE))
+fn_imputed_month_prec$station <- "fn"
+fn_oct_prec <- fn_imputed_month_prec %>% filter(month == 10)
+
+tot_prec_oct_wide <- fn_oct_prec %>% select(year,totprec) %>% rename(fn = totprec)
+
+#load other station data
+load("../output/Rdata/Abbotsford_imputed.RData")
+load("../output/Rdata/Kelowna_imputed.RData")
+load("../output/Rdata/Prince_George_imputed.RData")
+load("../output/Rdata/YVR_imputed.RData")
+
+ab_imputed_month_prec <- Abbotsford_imputed %>% select(year,month, totprec) %>% group_by(year,month) %>% summarise(totprec = sum(totprec,na.rm = TRUE))
+ab_imputed_month_prec$station <- "ab"
+ab_oct_prec <- ab_imputed_month_prec %>% filter(month == 10)
+
+ke_imputed_month_prec <- Kelowna_imputed %>% select(year,month, totprec) %>% group_by(year,month) %>% summarise(totprec = sum(totprec,na.rm = TRUE))
+ke_imputed_month_prec$station <- "ke"
+ke_oct_prec <- ke_imputed_month_prec %>% filter(month == 10)
+
+pg_imputed_month_prec <- Prince_George_imputed %>% select(year,month, totprec) %>% group_by(year,month) %>% summarise(totprec = sum(totprec,na.rm = TRUE))
+pg_imputed_month_prec$station <- "pg"
+pg_oct_prec <- pg_imputed_month_prec %>% filter(month == 10)
+
+yv_imputed_month_prec <- YVR_imputed %>% select(year,month, totprec) %>% group_by(year,month) %>% summarise(totprec = sum(totprec,na.rm = TRUE))
+yv_imputed_month_prec$station <- "yv"
+yv_oct_prec <- yv_imputed_month_prec %>% filter(month == 10)
+
+#merge all station data into tot_prec_oct_wide
+#filter the column to only year and total precipitation
+ab_oct_prec_merge <- ab_oct_prec %>% select(year,totprec) %>% rename(ab = totprec)
+ke_oct_prec_merge <- ke_oct_prec %>% select(year,totprec) %>% rename(ke = totprec)
+pg_oct_prec_merge <- pg_oct_prec %>% select(year,totprec) %>% rename(pg = totprec)
+yv_oct_prec_merge <- yv_oct_prec %>% select(year,totprec) %>% rename(yv = totprec)
+
+
+tot_prec_oct_wide <- merge(tot_prec_oct_wide, ab_oct_prec_merge, by = "year", all = TRUE)
+tot_prec_oct_wide <- merge(tot_prec_oct_wide, ke_oct_prec_merge, by = "year", all = TRUE)
+tot_prec_oct_wide <- merge(tot_prec_oct_wide, pg_oct_prec_merge, by = "year", all = TRUE)
+tot_prec_oct_wide <- merge(tot_prec_oct_wide, yv_oct_prec_merge, by = "year", all = TRUE)
+
+#need to look into why pg not from 1937!!
+tot_prec_oct_wide_nonna <- tot_prec_oct_wide %>% filter(!is.na(fn) & !is.na(ab) & !is.na(ke) & !is.na(yv) & !is.na(pg))
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "fn","Annual MAX Avg Exc Temp")
+print(plots$qq_plot)
+print(plots$return_level_plot)
+print(plots$tail_behavior_plot)
+
+```
 </div>
 
 
