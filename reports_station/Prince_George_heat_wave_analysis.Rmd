@@ -19,7 +19,8 @@ function toggleCollapsible(section) {
 knitr::opts_chunk$set(echo = TRUE)
 file_paths <- c("../data/Prince_George 1942 Climate data daily.csv",
                 "../data/Prince_George Climate data daily (1).csv",
-                "../data/Prince_Geo_2009_to_2024.csv",
+                #"../data/Prince_Geo_2009_to_2024.csv",
+                "../data/pg Climate Daily Data.csv",
                 "../data/Prince_Geo_1997_to_2009.csv",
                 "../data/Prince_George_1940-1942.csv")
 station_name <- "Prince_George" 

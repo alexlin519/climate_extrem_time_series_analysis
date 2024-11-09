@@ -58,6 +58,7 @@ process_and_save_data <- function(file_paths, station_name) {
 }
 
 
+
 deal_with_non_exist_date <- function(df_date){
   
   # Ensure the date column is in Date format

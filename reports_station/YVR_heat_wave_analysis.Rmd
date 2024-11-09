@@ -24,8 +24,8 @@ station_name <- "YVR"
 file_paths <- c("../data/YVR1108447-daily1937to1964.csv",
                 "../data/YVR1108447-daily1964to1991.csv",
                 "../data/YVR1108447-daily1991to2013.csv",
-                "../data/YVR climate daily 2013 to 2024 copy.csv")
-
+                "../data/yvr Climate Daily Data.csv") #2024 nov data
+                #it is the 2024 5 data:  "../data/YVR climate daily 2013 to 2024 copy.csv"
 source("../R/read_data.R")  ## read data
 results <- process_and_save_data(file_paths, station_name)
 df <- results[[1]] 

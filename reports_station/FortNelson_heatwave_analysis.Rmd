@@ -25,7 +25,8 @@ station_name <- "FortNelson"
 file_paths <- c("../data/FortNelson/Daily climate data.csv",
                 "../data/FortNelson/Daily climate data (1).csv",
                 "../data/FortNelson/Daily climate data (2).csv",
-                "../data/FortNelson/Daily climate data (3).csv")
+                "../data/FortNelson/Daily climate data (3).csv",
+                "../data/FortNelson/fn climate-daily.csv")
 source("../R/read_data.R")  ## read data
 results <- process_and_save_data(file_paths, station_name)
 df <- results[[1]] 
