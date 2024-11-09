@@ -27,7 +27,7 @@ file_paths <- c("../data/kelow/kelow_1899-1962_p2.csv",
                 "../data/kelow/kelow_1968-2005_p2.csv",
                 "../data/kelow/kelow_1968-2005.csv",
                 "../data/kelow/kelow_2005-2010.csv",
-                #"../data/kelow/kelow_2009-2024.csv")
+                #"../data/kelow/kelow_2009-2024.csv",
                 "../data/kelow/kwn Climate Daily Data.csv")
 station_name <- "Kelowna"
 source("../R/read_data.R")  ## read data

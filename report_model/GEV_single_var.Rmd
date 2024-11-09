@@ -72,12 +72,7 @@ print(plots$tail_behavior_plot)
 ```
 
 
-</div>
-<h3 onclick="toggleCollapsible(this);">
-<!--TEXT SHOWS: -->
-<b> total precipitation</b>
-</h3>
-<div style="display:none;">  
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 load("../output/Rdata/FortNelson_imputed.RData")
 #aggregate monthly precipitation
@@ -124,7 +119,16 @@ tot_prec_oct_wide <- merge(tot_prec_oct_wide, yv_oct_prec_merge, by = "year", al
 
 #need to look into why pg not from 1937!!
 tot_prec_oct_wide_nonna <- tot_prec_oct_wide %>% filter(!is.na(fn) & !is.na(ab) & !is.na(ke) & !is.na(yv) & !is.na(pg))
-plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "fn","Annual MAX Avg Exc Temp")
+```
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "fn","October Total Precipitation")
 print(plots$qq_plot)
 print(plots$return_level_plot)
 print(plots$tail_behavior_plot)
@@ -188,6 +192,19 @@ print(plots$tail_behavior_plot)
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "yv","October Total Precipitation")
+print(plots$qq_plot)
+print(plots$return_level_plot)
+print(plots$tail_behavior_plot)
+
+```
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
 <b> avgexc</b>
 </h3>
 <div style="display:none;"> 
@@ -220,6 +237,21 @@ print(plots$tail_behavior_plot)
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 # Example usage
 plots <- gev_analysis_plots(ehf_ymax_wide, "ke","Annual MAX EHF")
+print(plots$qq_plot)
+print(plots$return_level_plot)
+print(plots$tail_behavior_plot)
+
+```
+
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "ke","October Total Precipitation")
 print(plots$qq_plot)
 print(plots$return_level_plot)
 print(plots$tail_behavior_plot)
@@ -267,6 +299,21 @@ print(plots$tail_behavior_plot)
 
 ```
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "ab","October Total Precipitation")
+print(plots$qq_plot)
+print(plots$return_level_plot)
+print(plots$tail_behavior_plot)
+
+```
+
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
@@ -308,6 +355,20 @@ print(plots$tail_behavior_plot)
 
 ```
 
+
+</div>
+<h3 onclick="toggleCollapsible(this);">
+<!--TEXT SHOWS: -->
+<b> total precipitation</b>
+</h3>
+<div style="display:none;">  
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+plots <- gev_analysis_plots(tot_prec_oct_wide_nonna, "pg","October Total Precipitation")
+print(plots$qq_plot)
+print(plots$return_level_plot)
+print(plots$tail_behavior_plot)
+
+```
 </div>
 <h3 onclick="toggleCollapsible(this);">
 <!--TEXT SHOWS: -->
